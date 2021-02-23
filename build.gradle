@@ -91,7 +91,8 @@ checkstyle {
 }
 
 pmd {
-  toolVersion = "6.18.0"
+  toolVersion = "6.30.0"
+  ignoreFailures = true
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
   reportsDir = file("$project.buildDir/reports/pmd")
   // https://github.com/pmd/pmd/issues/876
@@ -99,24 +100,37 @@ pmd {
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
+def coverageExclusionList = [
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/Application*',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/config/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/domain/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/exception/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/repository/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/service/**',
+]
+
 jacocoTestReport {
-  executionData(test, integration)
-  reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: coverageExclusionList)
+    }))
   }
 }
 
-project.tasks['sonarqube'].dependsOn jacocoTestReport
+
+
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.projectName", "Reform :: em-hrs-ingestor"
+    property "sonar.projectKey", "uk.gov.hmcts.reform.em.hrs:em-hrs-ingestor"
+    property "sonar.exclusions", coverageExclusionList.join(", ")
+    property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
   }
 }
+
+
 
 // before committing a change, make sure task still works
 dependencyUpdates {
@@ -160,11 +174,16 @@ repositories {
 }
 
 def versions = [
+  lombok          : '1.18.10',
   junit           : '5.7.0',
   junitPlatform   : '1.7.0',
   reformLogging   : '5.1.5',
   springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2'
+  springfoxSwagger: '2.9.2',
+
+  serenity           : '2.3.12',
+  serenityRestAssured : '2.3.4',
+  serenityreporter   : '2.3.12',
 ]
 
 ext.libraries = [
@@ -177,7 +196,18 @@ ext.libraries = [
   ]
 ]
 
+
+def withoutStuff = {
+  exclude group: 'com.sun.xml.bind', module: 'jaxb-osgi'
+  exclude group: 'com.vaadin.external.google', module: 'android-json'
+  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-security'
+  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-test'
+  exclude group: 'uk.gov.hmcts.reform', module: 'java-logging-spring'
+}
+
 dependencies {
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -192,15 +222,41 @@ dependencies {
 
   compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
   compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
-  
+
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.40'
   compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.40'
 
   testImplementation libraries.junit5
+
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+
+  //azure components
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.10.0'
+
+
+//rest clients
+  implementation(
+    "com.squareup.okhttp3:okhttp:4.9.0",
+    "com.squareup.okhttp3:logging-interceptor:4.9.0"
+  )
+
+
+  testImplementation 'com.github.gmazzo:okhttp-mock:1.3.2'
+  testImplementation "org.springframework.boot:spring-boot-starter-test", withoutStuff
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+
+
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity, withoutStuff
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenityRestAssured, withoutStuff
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-single-page-report', version: versions.serenityreporter
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
@@ -208,9 +264,10 @@ dependencies {
   functionalTestImplementation sourceSets.main.runtimeClasspath
 
   smokeTestImplementation sourceSets.main.runtimeClasspath
+  smokeTestImplementation sourceSets.test.runtimeClasspath
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
 
 bootJar {
   getArchiveFileName().set(provider {
@@ -224,4 +281,18 @@ bootJar {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
+}
+
+dependencyManagement {
+  dependencies {
+
+    dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.30') {
+      entry 'kotlin'
+      entry 'kotlin-stdlib'
+      entry 'kotlin-reflect'
+      entry 'kotlin-stdlib-common'
+      entry 'kotlin-stdlib-jdk7'
+      entry 'kotlin-stdlib-jdk8'
+    }
+  }
 }

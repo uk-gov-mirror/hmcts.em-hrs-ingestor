@@ -1,0 +1,18 @@
+apiVersion: v2
+description: A Helm chart for Hearing Recordings Service
+name: em-hrs
+home: https://github.com/hmcts/em-hrs-ingestion
+version: 0.0.1
+maintainers:
+  - name: HMCTS Evidence Management team
+dependencies:
+  - name: job
+    version: ~0.5.1
+    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
+  - name: java
+    version: 3.4.4
+    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
+  - name: blobstorage
+    version: 0.2.1
+    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
+    condition: blobstorage.enabled
