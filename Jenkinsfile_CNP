@@ -4,7 +4,7 @@ properties([
     [
         $class: 'GithubProjectProperty',
         displayName: 'Hearing Recording Service',
-        projectUrlStr: 'https://github.com/hmcts/em-hrs-ingestion'
+        projectUrlStr: 'https://github.com/hmcts/em-hrs-ingestor'
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']

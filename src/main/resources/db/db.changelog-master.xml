@@ -57,9 +57,9 @@
             </column>
             <column name="hearing_location_reference" type="VARCHAR(255)"/>
             <column name="hearing_source" type="VARCHAR(255)"/>
-            <column name="ingestion_file_source_uri" type="VARCHAR(255)"/>
-            <column name="ingestion_retry_count" type="INTEGER"/>
-            <column name="ingestion_status" type="VARCHAR(255)"/>
+            <column name="ingestor_file_source_uri" type="VARCHAR(255)"/>
+            <column name="ingestor_retry_count" type="INTEGER"/>
+            <column name="ingestor_status" type="VARCHAR(255)"/>
             <column name="jurisdiction_code" type="VARCHAR(255)"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
             <column name="last_modified_by_service" type="VARCHAR(255)"/>
@@ -114,9 +114,9 @@
             </column>
             <column name="hearing_location_reference" type="VARCHAR(255)"/>
             <column name="hearing_source" type="VARCHAR(255)"/>
-            <column name="ingestion_file_source_uri" type="VARCHAR(255)"/>
-            <column name="ingestion_retry_count" type="INTEGER"/>
-            <column name="ingestion_status" type="VARCHAR(255)"/>
+            <column name="ingestor_file_source_uri" type="VARCHAR(255)"/>
+            <column name="ingestor_retry_count" type="INTEGER"/>
+            <column name="ingestor_status" type="VARCHAR(255)"/>
             <column name="jurisdiction_code" type="VARCHAR(255)"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
             <column name="last_modified_by_service" type="VARCHAR(255)"/>
@@ -177,13 +177,13 @@
         <dropColumn columnName="file_size_mb" tableName="hearing_recording"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612463985388-13">
-        <dropColumn columnName="ingestion_file_source_uri" tableName="hearing_recording"/>
+        <dropColumn columnName="ingestor_file_source_uri" tableName="hearing_recording"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612463985388-14">
-        <dropColumn columnName="ingestion_retry_count" tableName="hearing_recording"/>
+        <dropColumn columnName="ingestor_retry_count" tableName="hearing_recording"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612463985388-15">
-        <dropColumn columnName="ingestion_status" tableName="hearing_recording"/>
+        <dropColumn columnName="ingestor_status" tableName="hearing_recording"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612463985388-16">
         <dropColumn columnName="recording_length_mins" tableName="hearing_recording"/>
@@ -230,14 +230,14 @@
     </changeSet>
     <changeSet author="paul (generated)" id="1612796723423-5">
         <addColumn tableName="hearing_recording_segment">
-            <column name="segment_ingestion_status" type="varchar(255)"/>
+            <column name="segment_ingestor_status" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="paul (generated)" id="1612796723423-6">
         <dropColumn columnName="ccd_id" tableName="hearing_recording"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612796723423-7">
-        <dropColumn columnName="ingestion_status" tableName="hearing_recording_segment"/>
+        <dropColumn columnName="ingestor_status" tableName="hearing_recording_segment"/>
     </changeSet>
     <changeSet author="paul (generated)" id="1612796723423-8">
         <dropColumn columnName="recorded_date_time" tableName="audit_entry"/>
