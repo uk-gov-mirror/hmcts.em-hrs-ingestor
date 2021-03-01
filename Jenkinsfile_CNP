@@ -32,7 +32,7 @@ def vaultOverrides = [
 ]
 
 withPipeline(type , product, component) {
-    enableDbMigration('em-hrs-api')
+
     overrideVaultEnvironments(vaultOverrides)
     loadVaultSecrets(secrets)
 
