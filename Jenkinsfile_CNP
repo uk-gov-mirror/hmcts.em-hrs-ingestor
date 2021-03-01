@@ -1,0 +1,51 @@
+#!groovy
+
+properties([
+    [
+        $class: 'GithubProjectProperty',
+        displayName: 'HRS Ingestor Service',
+        projectUrlStr: 'https://github.com/hmcts/em-hrs-ingestor'
+    ],
+    pipelineTriggers([
+        [$class: 'GitHubPushTrigger']
+    ])
+])
+
+@Library("Infrastructure")
+
+def type = "java"
+def product = "em"
+def component = "hrs-ingestor"
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
+def vaultOverrides = [
+        'preview' : 'aat',
+        'spreview': 'saat'
+]
+
+withPipeline(type , product, component) {
+
+    overrideVaultEnvironments(vaultOverrides)
+    loadVaultSecrets(secrets)
+
+    onMaster {
+        after('test') {
+            sh '''
+            curl https://raw.githubusercontent.com/hmcts/reform-api-docs/master/bin/publish-swagger-docs.sh > publish-swagger-docs.sh
+            sh ./publish-swagger-docs.sh
+             '''
+        }
+    }
+
+    after('functionalTest:preview') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
+}
