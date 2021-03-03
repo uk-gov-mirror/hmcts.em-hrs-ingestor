@@ -214,7 +214,7 @@ mainClassName = 'uk.gov.hmcts.reform.demo.Application'
 
 bootJar {
   getArchiveFileName().set(provider {
-    'spring-boot-template.jar'
+    'em-hrs-ingestor.jar'
   })
 
   manifest {
