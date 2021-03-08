@@ -150,6 +150,7 @@ sonarqube {
   properties {
     property "sonar.projectName", "Reform :: em-hrs-ingestor"
     property "sonar.projectKey", "uk.gov.hmcts.reform.em.hrs:em-hrs-ingestor"
+    property "sonar.exclusions", coverageExclusionList.join(", ")
     property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
   }
 }
