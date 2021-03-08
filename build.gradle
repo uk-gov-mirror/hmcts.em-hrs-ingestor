@@ -18,6 +18,10 @@ allprojects {
   targetCompatibility = '11'
 }
 
+/***********************************************************************************************************************
+ * Source Sets
+ **********************************************************************************************************************/
+
 sourceSets {
   functionalTest {
     java {
@@ -46,6 +50,10 @@ sourceSets {
     resources.srcDir file('src/smokeTest/resources')
   }
 }
+
+/***********************************************************************************************************************
+ * Build Tasks
+ **********************************************************************************************************************/
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
@@ -84,20 +92,34 @@ task smoke(type: Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+/***********************************************************************************************************************
+ * Code Checks
+ **********************************************************************************************************************/
+
 checkstyle {
-  maxWarnings = 0
+  maxWarnings = 10
   toolVersion = '8.29'
   getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
 }
 
 pmd {
-  toolVersion = "6.18.0"
+  toolVersion = "6.30.0"
+  ignoreFailures = true
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
   reportsDir = file("$project.buildDir/reports/pmd")
   // https://github.com/pmd/pmd/issues/876
   ruleSets = []
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
+
+def coverageExclusionList = [
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/Application*',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/config/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/domain/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/exception/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/repository/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/service/**',
+]
 
 jacocoTestReport {
   executionData(test, integration)
@@ -106,9 +128,23 @@ jacocoTestReport {
     csv.enabled = false
     xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: coverageExclusionList)
+    }))
+  }
 }
 
 project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+
+//sonarqube {
+//  properties {
+//    property "sonar.projectName", "Reform :: em-hrs-ingestor"
+//    property "sonar.projectKey", "uk.gov.hmcts.reform.em.hrs:em-hrs-ingestor"
+//    property "sonar.exclusions", coverageExclusionList.join(", ")
+//    property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+//  }
+//}
 
 sonarqube {
   properties {
@@ -118,6 +154,9 @@ sonarqube {
   }
 }
 
+/***********************************************************************************************************************
+ * Dependency Management
+ **********************************************************************************************************************/
 configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
@@ -141,25 +180,67 @@ dependencyUpdates {
 
 // https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
 dependencyCheck {
+  // Specifies if the build should be failed if a CVSS score above a specified level is identified.
+  // range of 0-10 fails the build, anything greater and it doesn't fail the build
+  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'config/owasp/suppressions.xml'
+
+  analyzers {
+    // Disable scanning of .NET related binaries
+    assemblyEnabled = false
+  }
 }
 
 dependencyManagement {
   dependencies {
 
-    // CVE-2018-10237 - Unbounded memory allocation
     dependencySet(group: 'com.google.guava', version: '30.1-jre') {
+      // Guava CVE-2018-10237 - Unbounded memory allocation
       entry 'guava'
+    }
+
+    dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.30') {
+      entry 'kotlin'
+      entry 'kotlin-stdlib'
+      entry 'kotlin-reflect'
+      entry 'kotlin-stdlib-common'
+      entry 'kotlin-stdlib-jdk7'
+      entry 'kotlin-stdlib-jdk8'
+    }
+
+    //CVE-2021-21290
+    dependencySet(group: 'io.netty', version: '4.1.59.Final') {
+      entry 'netty-buffer'
+      entry 'netty-codec'
+      entry 'netty-common'
+      entry 'netty-handler'
+      entry 'netty-resolver'
+      entry 'netty-transport'
+      entry 'netty-codec-http'
+      entry 'netty-codec-http2'
+      entry 'netty-transport-native-epoll'
+      entry 'netty-transport-native-kqueue'
+      entry 'netty-transport-native-unix-common'
+      entry 'netty-codec-socks'
+      entry 'netty-handler-proxy'
     }
 
     //CVE-2021-22112
     dependencySet(group: 'org.springframework.security', version: '5.3.8.RELEASE') {
+      entry 'spring-security-config'
+      entry 'spring-security-core'
       entry 'spring-security-crypto'
+      entry 'spring-security-oauth2-client'
+      entry 'spring-security-oauth2-core'
+      entry 'spring-security-oauth2-jose'
+      entry 'spring-security-oauth2-resource-server'
+      entry 'spring-security-web'
     }
   }
 }
 
 repositories {
+  maven { url "https://dl.bintray.com/hmcts/hmcts-maven" } //TODO confirm this should be the primary maven repo (it is in dm store and em stictching)
   mavenLocal()
   jcenter()
   mavenCentral()
@@ -170,7 +251,11 @@ def versions = [
   junitPlatform   : '1.7.1',
   reformLogging   : '5.1.5',
   springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2'
+  springfoxSwagger: '2.9.2',
+
+  serenity           : '2.3.12',
+  serenityRestAssured : '2.3.4',
+  serenityreporter   : '2.3.12',
 ]
 
 ext.libraries = [
@@ -183,7 +268,18 @@ ext.libraries = [
   ]
 ]
 
+
+def withoutStuff = {
+  exclude group: 'com.sun.xml.bind', module: 'jaxb-osgi'
+  exclude group: 'com.vaadin.external.google', module: 'android-json'
+  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-security'
+  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-test'
+  exclude group: 'uk.gov.hmcts.reform', module: 'java-logging-spring'
+}
+
 dependencies {
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -200,20 +296,60 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
 
   testImplementation libraries.junit5
+
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
 
-  integrationTestImplementation sourceSets.main.runtimeClasspath
-  integrationTestImplementation sourceSets.test.runtimeClasspath
+  //azure components
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.10.0'
+
+
+//rest clients
+  implementation(
+    "com.squareup.okhttp3:okhttp:4.9.0",
+    "com.squareup.okhttp3:logging-interceptor:4.9.0"
+  )
+
+
+  testImplementation 'com.github.gmazzo:okhttp-mock:1.3.2'
+  testImplementation "org.springframework.boot:spring-boot-starter-test", withoutStuff
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+
+
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity, withoutStuff
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenityRestAssured, withoutStuff
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-single-page-report', version: versions.serenityreporter
+  smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
+
+/***********************************************************************************************************************
+ * TEST SOURCE SETS
+ **********************************************************************************************************************/
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
 
+  integrationTestImplementation sourceSets.main.runtimeClasspath
+  integrationTestImplementation sourceSets.test.runtimeClasspath
+
   smokeTestImplementation sourceSets.main.runtimeClasspath
+  smokeTestImplementation sourceSets.test.runtimeClasspath
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+/***********************************************************************************************************************
+ * Adhoc
+ **********************************************************************************************************************/
+
+test {
+  failFast = true
+
+}
+
+mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
 
 bootJar {
   getArchiveFileName().set(provider {
