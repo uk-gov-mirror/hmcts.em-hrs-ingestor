@@ -3,7 +3,7 @@
 properties([
     [
         $class: 'GithubProjectProperty',
-        displayName: 'Hearing Recording Service',
+        displayName: 'HRS Ingestor Service',
         projectUrlStr: 'https://github.com/hmcts/em-hrs-ingestor'
     ],
     pipelineTriggers([
@@ -15,7 +15,7 @@ properties([
 
 def type = "java"
 def product = "em"
-def component = "hrs"
+def component = "hrs-ingestor"
 
 def secrets = [
         's2s-${env}': [
@@ -35,19 +35,13 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     ]
 }
 
-// Vars for Kubernetes
-env.IDAM_API_BASE_URI = 'https://idam-api.aat.platform.hmcts.net'
-env.OPEN_ID_API_BASE_URI = 'https://idam-web-public.aat.platform.hmcts.net/o'
-env.S2S_BASE_URI = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-env.IDAM_WEBSHOW_WHITELIST = 'https://em-show-aat.service.core-compute-aat.internal/oauth2/callback'
-
 def vaultOverrides = [
         'preview' : 'aat',
         'spreview': 'saat'
 ]
 
 withPipeline(type , product, component) {
-    enableDbMigration('em-hrs')
+
     overrideVaultEnvironments(vaultOverrides)
     loadVaultSecrets(secrets)
 
