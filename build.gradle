@@ -10,13 +10,17 @@ plugins {
   id 'org.sonarqube' version '3.1.1'
 }
 
-group = 'uk.gov.hmcts.reform'
+group = 'uk.gov.hmcts.reform.em.hrs'
 version = '0.0.1'
 
 allprojects {
   sourceCompatibility = '11'
   targetCompatibility = '11'
 }
+
+/***********************************************************************************************************************
+ * Source Sets
+ **********************************************************************************************************************/
 
 sourceSets {
   functionalTest {
@@ -46,6 +50,10 @@ sourceSets {
     resources.srcDir file('src/smokeTest/resources')
   }
 }
+
+/***********************************************************************************************************************
+ * Build Tasks
+ **********************************************************************************************************************/
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
@@ -84,8 +92,12 @@ task smoke(type: Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+/***********************************************************************************************************************
+ * Code Checks
+ **********************************************************************************************************************/
+
 checkstyle {
-  maxWarnings = 0
+  maxWarnings = 10
   toolVersion = '8.29'
   getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
 }
@@ -134,6 +146,9 @@ sonarqube {
   }
 }
 
+/***********************************************************************************************************************
+ * Dependency Management
+ **********************************************************************************************************************/
 configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
@@ -217,6 +232,7 @@ dependencyManagement {
 }
 
 repositories {
+  maven { url "https://dl.bintray.com/hmcts/hmcts-maven" } //TODO confirm this should be the primary maven repo (it is in dm store and em stictching)
   mavenLocal()
   jcenter()
   mavenCentral()
@@ -304,13 +320,26 @@ dependencies {
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-single-page-report', version: versions.serenityreporter
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
-  integrationTestImplementation sourceSets.main.runtimeClasspath
-  integrationTestImplementation sourceSets.test.runtimeClasspath
+/***********************************************************************************************************************
+ * TEST SOURCE SETS
+ **********************************************************************************************************************/
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
 
+  integrationTestImplementation sourceSets.main.runtimeClasspath
+  integrationTestImplementation sourceSets.test.runtimeClasspath
+
   smokeTestImplementation sourceSets.main.runtimeClasspath
   smokeTestImplementation sourceSets.test.runtimeClasspath
+}
+
+/***********************************************************************************************************************
+ * Adhoc
+ **********************************************************************************************************************/
+
+test {
+  failFast = true
+
 }
 
 mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
@@ -327,18 +356,4 @@ bootJar {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-}
-
-dependencyManagement {
-  dependencies {
-
-    dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.30') {
-      entry 'kotlin'
-      entry 'kotlin-stdlib'
-      entry 'kotlin-reflect'
-      entry 'kotlin-stdlib-common'
-      entry 'kotlin-stdlib-jdk7'
-      entry 'kotlin-stdlib-jdk8'
-    }
-  }
 }
