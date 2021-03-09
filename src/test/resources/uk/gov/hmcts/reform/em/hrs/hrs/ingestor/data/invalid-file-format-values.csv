@@ -1,19 +1,37 @@
 ﻿Invalid File Format Key,Invalid File Format Value
-Invalid File Format,00_2020-10-20-09.05.50.150-UTC_0
-Invalid File Format,0144-GF0YM621_2020-10-20-10.00.30.150-UTC_0
-Invalid File Format,AB-0144-GF0YM700_2020-10-20-11.30.00.150-UTC_0
-Invalid File Format,CV-0144_2020-10-20-11.45.20.150-UTC_0
-#Invalid File Format,cv-0144-CD0XT621_2020-10-20-14.05.10.150-UTC_0
-Invalid File Format,CV0144-HL0NP630_2020-10-20-13.10.20.150-UTC_0
-#Invalid File Format,CV-0144HN1ZP520_2020-10-20-12.30.50.150-UTC_0
-#Invalid File Format,CV-0150-GH0YN819Part1_2020-07-29-09.03.40.236-UTC_0
+# Invalid Data Accumulated and Given By the Business Analyst
+Invalid File Format- (No Jurisdiction code or Case reference),00_2020-10-20-09.05.50.150-UTC_0
+Invalid File Format - (No Jurisdiction code),0144-GF0YM621_2020-10-20-10.00.30.150-UTC_0
+Invalid File Format- (Invalid Jurisdiction code),AB-0144-GF0YM700_2020-10-20-11.30.00.150-UTC_0
+Invalid File Format- (No case reference),CV-0144_2020-10-20-11.45.20.150-UTC_0
+Invalid File Format - (No location code),CV0144-HL0NP630_2020-10-20-13.10.20.150-UTC_0
+Invalid File Format - (No location code),CV-0144HN1ZP520_2020-10-20-12.30.50.150-UTC_0
 Invalid File Format,CV-O144-GF0EN121_2020-10-20-16.45.00.150-UTC_0
-Invalid File Format,CV-PE0XM210_2020-10-20-15.30.20.150-UTC_0
+Invalid File Format - (No location code),CV-PE0XM210_2020-10-20-15.30.20.150-UTC_0
+# Invalid Data Accumulated and Given By the Team Lead
 Invalid File Format - (No proper - delimiter),fam0217sa20c00140170820_2020-08-17-09.09.31.325-UTC_0
 Invalid File Format - (cv (lower case) is not a recognised Jurisdiction),cvl0217g00hv051010920_2020-09-01-13.25.13.641-UTC_0
 Invalid File Format - (civil is not a recognised Jurisdiction),civil-d01yp430-060820-060820_2020-08-06-10.55.31.570-UTC_0
 Invalid File Format - (No proper Location Code),CV--216-LAT_2020-09-17-09.26.07.400-UTC_0
 Invalid File Format - (av not a proper Location Code),av_2020-09-17-12.05.26.771-UTC_0
-#Invalid File Format - ,CV-0291-g20yj687_2020-09-01-09.14.47.314-UTC_0
 Invalid File Format - (No proper delimitation for the Jurisdiction Code),gu18p00564_2020-08-06-08.44.03.671-UTC_0
-
+Invalid File Format - (No proper delimitation for the Jurisdiction Code or Case Reference),QB2019001304_2020-10-30-10.55.05.753-UTC_0
+Invalid File Format - (No location code),QBTEST1_2020-09-28-10.01.57.155-UTC_1
+Invalid File Format- (No Jurisdiction code or Case reference),QB2017002538_2020-10-08-11.54.54.777-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),maxine_2020-09-28-12.18.59.613-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),000001-2025_2020-11-04-11.51.26.564-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),me20c00257_2020-09-23-12.59.26.231-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),le20c50004_2020-10-19-10.33.38.034-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),le20p00837_2020-10-08-13.53.51.339-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),F31YM154-BainesVBurchillandMazey_2020-10-22-13.01.18.152-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),F80LS083_2020-08-20-09.02.15.120-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),cop13329994_2020-10-09-12.46.38.074-UTC_0
+Invalid File Format- (No relevant Jurisdiction code or Case reference),0243famls19c00852_2020-08-26-09.33.08.187-UTC_0
+Invalid File Format-(Invalid Jurisdiction Code),3333_2020-10-19-11.28.25.859-UTC_0
+Invalid File Format-(Starts with a Hyphen),-ia-pa-01785-2020_2020-08-17-08.50.31.735-UTC_0
+Invalid File Format-(No Location Code),FM-BV17D13327-231020-11-25am_2020-10-23-10.24.47.172-UTC_0
+Invalid File Format-(No Location Code),CV-G90OX124-Cosgrove-v-keyersbridge_2020-07-01-11.10.27.531-UTC_0
+Invalid File Format-(No Valid Jurisdiction Code),MORNING-TIB-ALDERSHOT-20-08-2020_2020-08-20-09.09.20.164-UTC_0
+Invalid File Format-(Not a Valid Jurisdiction Code),980-Family-0274-SA19P01379-16July20-1000am_2020-07-16-08.59.50.552-UTC_0
+Invalid File Format-(Underscored File),------------------------------------------------------------------------_2020-09-21-08.42.19.960-UTC_0
+Invalid File Format-(Invalid Jurisdiction Code for 3 Digit Location Code),co-808-2020_2020-10-28-10.51.07.072-UTC_0
