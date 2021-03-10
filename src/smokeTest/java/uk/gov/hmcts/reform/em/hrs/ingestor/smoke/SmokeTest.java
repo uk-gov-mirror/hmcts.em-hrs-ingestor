@@ -38,6 +38,6 @@ public class SmokeTest {
                 .statusCode(200).extract().body().asString();
 
 
-        assertEquals(MESSAGE, response,"");
+        assertEquals(MESSAGE, response, "");
     }
 }

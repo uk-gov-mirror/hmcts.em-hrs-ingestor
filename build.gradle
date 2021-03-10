@@ -242,22 +242,23 @@ dependencyManagement {
 }
 
 repositories {
-  maven { url "https://dl.bintray.com/hmcts/hmcts-maven" } //TODO confirm this should be the primary maven repo (it is in dm store and em stictching)
+  maven { url "https://dl.bintray.com/hmcts/hmcts-maven" }
+  //TODO confirm this should be the primary maven repo (it is in dm store and em stictching)
   mavenLocal()
   jcenter()
   mavenCentral()
 }
 
 def versions = [
-  lombok          : '1.18.10',
-  junit           : '5.7.1',
-  junitPlatform   : '1.7.1',
-  reformLogging   : '5.1.5',
-  springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2',
+  lombok             : '1.18.10',
+  junit              : '5.7.1',
+  junitPlatform      : '1.7.1',
+  reformLogging      : '5.1.5',
+  springBoot         : springBoot.class.package.implementationVersion,
+  springfoxSwagger   : '2.9.2',
 
   serenity           : '2.3.12',
-  serenityRestAssured : '2.3.4',
+  serenityRestAssured: '2.3.4',
   serenityreporter   : '2.3.12',
 ]
 
@@ -290,17 +291,17 @@ dependencies {
 
   implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
-    implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-    implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE'
-    implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
-    implementation 'org.projectlombok:lombok:1.18.16'
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE'
+  implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
+  implementation 'org.projectlombok:lombok:1.18.16'
 
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    smokeTestImplementation "ch.qos.logback:logback-classic:1.2.3"
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
+  annotationProcessor 'org.projectlombok:lombok:1.18.12'
+  compileOnly 'org.projectlombok:lombok:1.18.12'
+  smokeTestImplementation "ch.qos.logback:logback-classic:1.2.3"
 
   testImplementation libraries.junit5
 
@@ -369,5 +370,5 @@ bootJar {
 }
 
 wrapper {
-    distributionType = Wrapper.DistributionType.ALL
+  distributionType = Wrapper.DistributionType.ALL
 }

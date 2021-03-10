@@ -7,5 +7,5 @@ def product = "em"
 def component = "hrs-ingestor"
 
 withPipeline(type, product, component) {
-    disableLegacyDeployment()
+  disableLegacyDeployment()
 }
