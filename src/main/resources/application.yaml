@@ -20,3 +20,6 @@ azure:
     connection-string: ${STORAGEACCOUNT_PRIMARY_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
     cvp-blob-container-reference: ${STORAGE_CONTAINER_CVP_CONTAINER_NAME:emhrstestcvpcontainer}
     enabled: true
+
+s2s.hrs.api:
+  url: ${HRS_API_BASE_URI:http://localhost:8080}
