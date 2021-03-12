@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.AppConfig;
-import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestRetrofitConfig;
+import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestOkHttpClientConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
 
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIOException;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@SpringBootTest(classes = {TestRetrofitConfig.class, AppConfig.class, HrsApiClientImpl.class})
+@SpringBootTest(classes = {TestOkHttpClientConfig.class, AppConfig.class, HrsApiClientImpl.class})
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 class HrsApiClientImplTest {
     private static final String TEST_FILE = "file.mp4";

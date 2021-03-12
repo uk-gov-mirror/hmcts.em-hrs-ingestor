@@ -28,6 +28,10 @@ public class AzureOperations {
 
     public void uploadToContainer(final String filePath) {
         final String content = fairy.textProducer().sentence();
+        uploadToContainer(filePath, content);
+    }
+
+    public void uploadToContainer(final String filePath, final String content) {
         final InputStream data = new ByteArrayInputStream(content.getBytes());
 
         final BlobClient blobClient = blobContainerClient.getBlobClient(filePath);

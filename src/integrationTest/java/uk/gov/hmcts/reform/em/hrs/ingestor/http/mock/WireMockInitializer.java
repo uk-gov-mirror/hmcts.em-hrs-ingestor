@@ -23,7 +23,7 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
         });
 
         TestPropertyValues
-            .of("s2s.hrs.api.url:http://localhost:" + wireMockServer.port())
+            .of("s2s.hrs.api.url=http://localhost:" + wireMockServer.port())
             .applyTo(configurableApplicationContext);
     }
 }

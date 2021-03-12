@@ -5,7 +5,10 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,5 +60,15 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
         return blobItems.streamByPage()
             .flatMap(x -> x.getValue().stream().map(BlobItem::getName))
             .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public void downloadFile(final String filename, final ByteArrayOutputStream output) throws IOException {
+        final BlockBlobClient blobClient = blobContainerClient.getBlobClient(filename).getBlockBlobClient();
+        final int dataSize = (int) blobClient.getProperties().getBlobSize();
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(dataSize);
+        blobClient.download(outputStream);
+        outputStream.writeTo(output);
+        outputStream.close();
     }
 }
