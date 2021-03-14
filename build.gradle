@@ -296,19 +296,12 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE'
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
   implementation 'org.projectlombok:lombok:1.18.16'
+  implementation group: 'com.opencsv', name: 'opencsv', version: '5.3'
+
 
   compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
   compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
-  annotationProcessor 'org.projectlombok:lombok:1.18.12'
   compileOnly 'org.projectlombok:lombok:1.18.12'
-  smokeTestImplementation "ch.qos.logback:logback-classic:1.2.3"
-
-  testImplementation libraries.junit5
-
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
-    exclude group: 'junit', module: 'junit'
-    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  }
 
   //azure components
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.10.0'
@@ -327,6 +320,17 @@ dependencies {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+  testImplementation libraries.junit5
+
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+  testImplementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+  testCompile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
+  testCompile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
+  testImplementation 'org.projectlombok:lombok:1.18.16'
+  testCompileOnly 'org.projectlombok:lombok:1.18.12'
 
 
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity, withoutStuff

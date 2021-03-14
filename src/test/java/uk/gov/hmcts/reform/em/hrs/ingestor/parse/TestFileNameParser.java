@@ -1,13 +1,17 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.CourtDTO;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,7 +21,7 @@ public class TestFileNameParser {
 
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
     @CsvSource(value = {"Empty Value,''", "Spaced Value,' '", "Value Value,NIL"}, nullValues = "NIL")
-    public void test_negative_invalid_file_name_input(final String inputKey, final String inputValue) {
+    public void test_negative_invalid_file_name_input(final String inputKey, final String inputValue) throws Exception {
         try {
             FileNameParser.parseFileName(inputValue);
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -29,16 +33,38 @@ public class TestFileNameParser {
 
     }
 
+    @Test
+    public void test_load_court_details() throws Exception{
+        List<CourtDTO> listOfCourts = FileNameParser.getCourtDetails();
+        assertEquals(166, listOfCourts.size());
+    }
+
     @ParameterizedTest(name = "Wrong Format File Names : {0} --> {1}")
     @CsvFileSource(resources = "/uk/gov/hmcts/reform/em/hrs/hrs/ingestor/data/invalid-file-format-values.csv",
         numLinesToSkip = 1)
-    public void test_negative_wrong_format_file_name_input(final String inputKey, final String inputValue) {
+    public void test_negative_wrong_format_file_name_input(final String inputKey, final String inputValue) throws Exception {
         Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
         assertEquals(1, responseMap.size());
         assertEquals(
             Arrays.stream(inputValue.split("_")).findFirst().get(),
             responseMap.get("CaseID").toString().trim()
         );
+    }
+
+    @ParameterizedTest(name = "Self Evaluation File : {0} --> {1}")
+    @CsvFileSource(resources = "/uk/gov/hmcts/reform/em/hrs/hrs/ingestor/data/All_report_size_2020-11-06T16_32_41+0000- Analysis_With_Filename.csv",
+        numLinesToSkip = 1)
+   /*@CsvSource(value = {
+      "IA-0127-EA-01875-2020_2020-07-16-09.57.05.563-UTC_0.mp4,IA,Yes,127,Yes,EA-01875-2020"})*/
+    public void test_input_file_input(final String fileName,
+                                      final String jurisdiction,
+                                      final String jurisdictionMatch,
+                                      final String locationCode,
+                                      final String locationMatch,
+                                      final String caseID) throws Exception {
+        String inputValue = fileName.substring(0, fileName.lastIndexOf('.'));
+        Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
+        verifyValuesOfMappedResponse(responseMap, jurisdiction, jurisdictionMatch ,locationCode, locationMatch, caseID);
     }
 
     @ParameterizedTest(name = "Positive tests for Civil and Family : {0} --> {1}")
@@ -53,7 +79,7 @@ public class TestFileNameParser {
         "Valid File Location Code 3 Digits 2,CP-005-13605371-AB_2020-09-10-13.18.39.768-UTC_0"},
         nullValues = "NIL")
     public void test_positive_location_code_based_input_for_civil_and_family(final String inputKey,
-                                                                             final String inputValue) {
+                                                                             final String inputValue) throws Exception {
 
         Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
@@ -122,7 +148,7 @@ public class TestFileNameParser {
         "Valid File Name Case Reference Hyphenated Lower Case,"
             + "ia-hu-15010-2019-hu-15014-2019-hu-15015-2019_2020-10-22-13.43.14.176-UTC_0"},
         nullValues = "NIL")
-    public void test_positive_case_reference_based_input_for_tribunals(final String inputKey, final String inputValue) {
+    public void test_positive_case_reference_based_input_for_tribunals(final String inputKey, final String inputValue) throws Exception {
 
         Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
@@ -175,7 +201,7 @@ public class TestFileNameParser {
         "Valid File Name All Lower Case Location Code 0372,cv-0372-074mc866_2020-09-10-10.21.54.116-UTC_0"},
         nullValues = "NIL")
     public void test_positive_location_code_based_input_for_royal_courts_of_justice(final String inputKey,
-                                                                                    final String inputValue) {
+                                                                                    final String inputValue) throws Exception {
 
         Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
@@ -212,7 +238,7 @@ public class TestFileNameParser {
         "Valid File Name All Lower Case Hyphenated Lower Case,qb-0164-co-2020-01425_2020-10-23-13.02.08.818-UTC_0"},
         nullValues = "NIL")
     public void test_positive_non_location_code_based_input_for_royal_courts_of_justice(final String inputKey,
-                                                                                        final String inputvalue) {
+                                                                                        final String inputvalue) throws Exception {
 
         Map<String, Object> responseMap = FileNameParser.parseFileName(inputvalue);
         switch (inputKey) {
@@ -260,6 +286,88 @@ public class TestFileNameParser {
 
     private void verifyValuesOfMappedResponse(final Map<String, Object> responseMap,
                                               final String jurisdictionCode,
+                                              final String jurisdictionMatch,
+                                              final String locationCode,
+                                              final String locationMatch,
+                                              final String caseReference) {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("Input Jurisdiction Code " + jurisdictionCode);
+        System.out.println("Input Location Code " + locationCode);
+        System.out.println("Input Case Reference " + caseReference);
+
+        if ((Objects.nonNull(jurisdictionMatch) && !jurisdictionMatch.isEmpty() && !jurisdictionMatch.isBlank() && jurisdictionMatch.equalsIgnoreCase("Yes"))
+            && (Objects.nonNull(locationMatch) && !locationMatch.isEmpty() && !locationMatch.isBlank() && locationMatch.equalsIgnoreCase("Yes"))) {
+
+            System.out.println("The Complete Scenario");
+            System.out
+                .println("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
+            System.out.println("The value of the Mapped Location Code" + responseMap.get("LocationCode").toString());
+            System.out.println("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
+
+            assertTrue(responseMap.size() == 5);
+            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
+            assertTrue(locationCode.equalsIgnoreCase(responseMap.get("LocationCode").toString().trim()));
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+
+        } else if ((Objects.nonNull(jurisdictionMatch) && !jurisdictionMatch.isEmpty() && !jurisdictionMatch.isBlank() && jurisdictionMatch.equalsIgnoreCase("Yes"))
+            && (Objects.nonNull(locationMatch) && !locationMatch.isEmpty() && !locationMatch.isBlank() && !locationMatch.equalsIgnoreCase("Yes"))) {
+
+            System.out.println("The No Location Code Scenario");
+            System.out
+                .println("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
+            System.out.println("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
+
+            assertTrue(responseMap.size() == 4);
+            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+
+        } else {
+            System.out.println("The Only Case ID Scenario");
+            assertTrue(responseMap.size() == 1);
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+        }
+
+       /* if ((Objects.isNull(jurisdictionCode) || jurisdictionCode.isEmpty() || jurisdictionCode.isBlank())
+            && (Objects.nonNull(jurisdictionMatch) || !jurisdictionMatch.isEmpty() || !jurisdictionMatch.isBlank() || !jurisdictionMatch.equalsIgnoreCase("Yes"))
+            && (Objects.isNull(locationCode) || locationCode.isEmpty() || locationCode.isBlank())
+            && (Objects.nonNull(locationMatch) || !locationMatch.isEmpty() || !locationMatch.isBlank()) || !locationMatch.equalsIgnoreCase("Yes")) {
+
+            System.out.println("The Only Case ID Scenario");
+            assertTrue(responseMap.size() == 1);
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+
+        } else if ((Objects.nonNull(jurisdictionCode) || !jurisdictionCode.isEmpty() || !jurisdictionCode.isBlank())
+            && (Objects.isNull(jurisdictionMatch) || jurisdictionMatch.isEmpty() || jurisdictionMatch.isBlank() || jurisdictionMatch.equalsIgnoreCase("Yes"))
+            && (Objects.isNull(locationCode) || locationCode.isEmpty() || locationCode.isBlank())
+            && (Objects.nonNull(locationMatch) || !locationMatch.isEmpty() || !locationMatch.isBlank() || !locationMatch.equalsIgnoreCase("Yes"))) {
+
+            System.out.println("The No Location Code Scenario");
+            System.out
+                .println("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
+            System.out.println("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
+
+            assertTrue(responseMap.size() == 4);
+            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+
+        } else {
+
+            System.out.println("The Complete Scenario");
+            System.out
+                .println("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
+            System.out.println("The value of the Mapped Location Code" + responseMap.get("LocationCode").toString());
+            System.out.println("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
+
+            assertTrue(responseMap.size() == 5);
+            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
+            assertTrue(locationCode.equalsIgnoreCase(responseMap.get("LocationCode").toString().trim()));
+            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
+        }*/
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    }
+
+    private void verifyValuesOfMappedResponse(final Map<String, Object> responseMap,
+                                              final String jurisdictionCode,
                                               final String locationCode,
                                               final String caseReference,
                                               final String segment,
@@ -267,7 +375,7 @@ public class TestFileNameParser {
                                               final int day, final int hour,
                                               final int minute, final int second, final int nano) {
         assertTrue(responseMap.size() == 5 || responseMap.size() == 4);
-        assertEquals(jurisdictionCode, responseMap.get("Jurisdiction").toString().trim());
+        assertEquals(caseReference, responseMap.get("CaseID").toString());
         if (responseMap.size() == 5 && responseMap.get("LocationCode") != null) {
             assertEquals(locationCode, responseMap.get("LocationCode").toString().trim());
         }

@@ -1,14 +1,21 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
+import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ResourceUtils;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.CourtDTO;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -30,7 +37,9 @@ public class FileNameParser {
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
 
-    public static final Map<String, Object> parseFileName(final String fileName) {
+    private static List<CourtDTO> courtDTOs;
+
+    public static final Map<String, Object> parseFileName(final String fileName) throws Exception {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
@@ -53,18 +62,19 @@ public class FileNameParser {
             ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        return processMatcher(fileName,
-                              civilAndFamilyBasedMatcher,
-                              tribunalsBasedMatcher,
-                              royalCourtsOfJusticeWithLocationBasedMatcher,
-                              royalCourtsOfJusticeWithoutLocationBasedMatcher
+        return processMatcher(
+            fileName,
+            civilAndFamilyBasedMatcher,
+            tribunalsBasedMatcher,
+            royalCourtsOfJusticeWithLocationBasedMatcher,
+            royalCourtsOfJusticeWithoutLocationBasedMatcher
         );
     }
 
     private static Map<String, Object> processMatcher(final String fileName, final Matcher civilAndFamilyBasedMatcher,
                                                       final Matcher tribunalsBasedMatcher,
                                                       final Matcher royalCourtsOfJusticeWithLocationBasedMatcher,
-                                                      final Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher) {
+                                                      final Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher) throws Exception {
 
         if (royalCourtsOfJusticeWithLocationBasedMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
@@ -89,12 +99,17 @@ public class FileNameParser {
         }
     }
 
-    private static final Map<String, Object> processLocationBasedMatcher(final Matcher locationBasedMatcher) {
+    private static final Map<String, Object> processLocationBasedMatcher(final Matcher locationBasedMatcher)
+        throws Exception {
+
         Map<String, Object> responseMap = new HashMap<String, Object>();
         responseMap.put("Jurisdiction", locationBasedMatcher.group(1));
-        final String locationCode = locationBasedMatcher.group(2);
-        responseMap.put("LocationCode", locationCode.trim().length() == 4
-            ? locationCode.replaceFirst("^0*", "") : locationCode);
+        String locationCode = locationBasedMatcher.group(2);
+        locationCode = locationCode.trim().length() == 4
+            ? locationCode.replaceFirst("^0*", "") : locationCode;
+        if (checkCourtLocationCode(locationCode)) {
+            responseMap.put("LocationCode", locationCode);
+        }
         responseMap.put("CaseID", locationBasedMatcher.group(5));
         responseMap
             .put("RecordingDateTime", processRawDatePart(locationBasedMatcher.group(6), locationBasedMatcher.group(7)));
@@ -128,7 +143,6 @@ public class FileNameParser {
         return responseMap;
     }
 
-
     private static LocalDateTime processRawDatePart(final String rawDatePart, final String timeZone) {
 
         log.debug("The Later File Part " + rawDatePart);
@@ -140,5 +154,35 @@ public class FileNameParser {
 
         log.debug("The value of the Formatted Date Time Object" + dateTimeObject);
         return dateTimeObject;
+    }
+
+    public static List<CourtDTO> getCourtDetails() throws IOException {
+        if (courtDTOs == null) {
+            courtDTOs = loadCourtDetails();
+        }
+        return courtDTOs;
+    }
+
+    private static List<CourtDTO> loadCourtDetails() throws IOException {
+        String fileName = "uk/gov/hmcts/reform/em/hrs/ingestor/data/court_codes.csv";
+        List<CourtDTO> beans = new CsvToBeanBuilder<CourtDTO>(new FileReader(getFile(fileName)))
+            .withSkipLines(1)
+            .withType(CourtDTO.class)
+            .build().parse();
+        return beans;
+    }
+
+    private static boolean checkCourtLocationCode(final String locationCode) throws IOException {
+       return getCourtDetails().stream().anyMatch(courtDTO -> {
+            return courtDTO.getCourtCode().equals(locationCode.trim());
+        });
+    }
+
+    private static File getFile(final String path) throws IOException {
+
+        File file = ResourceUtils.getFile("classpath:" + path);
+        //File is found
+        log.debug("File Found : " + file.exists());
+        return file;
     }
 }
