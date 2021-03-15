@@ -30,6 +30,7 @@ class CvpBlobstoreClientImplTest {
     private static final String FOLDER_ONE = "folder-1";
     private static final String FOLDER_TWO = "folder-2";
     private static final String FOLDER_THREE = "folder-3";
+    private static final String EMPTY_FOLDER = "folder-0";
     private static final String ONE_ITEM_FOLDER = "one-item-folder";
     private static final String MANY_ITEMS_FOLDER = "many-items-folder";
 
@@ -49,7 +50,7 @@ class CvpBlobstoreClientImplTest {
 
     @Test
     void testShouldReturnEmptySetWhenFolderDoesNotExist() {
-        final Set<String> files = underTest.findByFolder("folder-0");
+        final Set<String> files = underTest.findByFolder(EMPTY_FOLDER);
 
         assertThat(files).isEmpty();
     }

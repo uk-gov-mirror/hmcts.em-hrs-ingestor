@@ -70,7 +70,7 @@ class HrsApiClientImplTest {
     }
 
     @Test
-    void testShouldGetSuccessCodeWithTimeout() {
+    void testShouldRaiseExceptionWhenResponseTimesOut() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(PATH))
                 .willReturn(aResponse()
@@ -82,7 +82,7 @@ class HrsApiClientImplTest {
     }
 
     @Test
-    void testShouldGetSuccessCodeWithEmptyBody() {
+    void testShouldRaiseExceptionWhenResponseBodyIsEmpty() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(PATH))
                 .willReturn(aResponse()
@@ -94,7 +94,7 @@ class HrsApiClientImplTest {
     }
 
     @Test
-    void testShouldGetSuccessCodeWithFaultyBody() {
+    void testShouldRaiseExceptionWhenResponseHasFaultyBody() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(PATH))
                 .willReturn(aResponse()
@@ -106,7 +106,7 @@ class HrsApiClientImplTest {
     }
 
     @Test
-    void testShouldGetSuccessCodeWithConnectionReset() {
+    void testShouldRaiseExceptionWhenConnectionResets() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(PATH))
                 .willReturn(aResponse()
@@ -118,7 +118,7 @@ class HrsApiClientImplTest {
     }
 
     @Test
-    void testShouldGetErrorCodeWithTimeout() {
+    void testShouldRaiseExceptionWhenTimeoutGettingErrorBody() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(PATH))
                 .willReturn(aResponse()
