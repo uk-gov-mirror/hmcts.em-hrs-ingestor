@@ -297,7 +297,7 @@ dependencies {
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
   implementation 'org.projectlombok:lombok:1.18.16'
 
-  implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
+  implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
   implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
 
   //azure components
