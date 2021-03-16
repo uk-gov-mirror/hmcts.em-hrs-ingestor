@@ -20,10 +20,7 @@ public class AntivirusClientImpl implements AntivirusClient {
     public AvScanResult scan(final InputStream input) throws IOException {
         final byte[] result = clamavClient.scan(input);
 
-        if (!ClamAVClient.isCleanReply(result)) {
-            return AvScanResult.INFECTED;
-        }
-        return AvScanResult.CLEAN;
+        return ClamAVClient.isCleanReply(result) ? AvScanResult.CLEAN : AvScanResult.INFECTED;
     }
 
 }

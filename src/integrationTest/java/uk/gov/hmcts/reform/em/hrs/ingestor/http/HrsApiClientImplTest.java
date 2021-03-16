@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.AppConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestOkHttpClientConfig;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
 
-import java.util.Set;
 import javax.inject.Inject;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -49,9 +49,9 @@ class HrsApiClientImplTest {
                                 .withBody("[\"file.mp4\"]"))
         );
 
-        final Set<String> ingestedFiles = underTest.getIngestedFiles(TEST_FOLDER);
+        final HrsFileSet ingestedFiles = underTest.getIngestedFiles(TEST_FOLDER);
 
-        assertThat(ingestedFiles).singleElement().isEqualTo(TEST_FILE);
+        assertThat(ingestedFiles.getHrsFiles()).singleElement().isEqualTo(TEST_FILE);
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
 
 import java.io.ByteArrayOutputStream;
@@ -50,9 +51,9 @@ class CvpBlobstoreClientImplTest {
 
     @Test
     void testShouldReturnEmptySetWhenFolderDoesNotExist() {
-        final Set<String> files = underTest.findByFolder(EMPTY_FOLDER);
+        final CvpFileSet cvpFileSet = underTest.findByFolder(EMPTY_FOLDER);
 
-        assertThat(files).isEmpty();
+        assertThat(cvpFileSet.getCvpFiles()).isEmpty();
     }
 
     @Test
@@ -60,9 +61,9 @@ class CvpBlobstoreClientImplTest {
         final String filePath = ONE_ITEM_FOLDER + "/" + UUID.randomUUID().toString() + ".txt";
         azureOperations.uploadToContainer(filePath);
 
-        final Set<String> files = underTest.findByFolder(ONE_ITEM_FOLDER);
+        final CvpFileSet cvpFileSet = underTest.findByFolder(ONE_ITEM_FOLDER);
 
-        assertThat(files).singleElement().isEqualTo(filePath);
+        assertThat(cvpFileSet.getCvpFiles()).singleElement().isEqualTo(filePath);
     }
 
     @Test
@@ -70,9 +71,9 @@ class CvpBlobstoreClientImplTest {
         final Set<String> filePaths = generateFilePaths();
         azureOperations.uploadToContainer(filePaths);
 
-        final Set<String> files = underTest.findByFolder(MANY_ITEMS_FOLDER);
+        final CvpFileSet cvpFileSet = underTest.findByFolder(MANY_ITEMS_FOLDER);
 
-        assertThat(files).hasSameElementsAs(filePaths);
+        assertThat(cvpFileSet.getCvpFiles()).hasSameElementsAs(filePaths);
     }
 
     @Test

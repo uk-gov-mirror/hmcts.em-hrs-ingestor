@@ -42,6 +42,7 @@ class AntivirusClientImplTest {
         final InputStream input = getFileInputStream(CLEAN_FILE);
 
         final AvScanResult result = underTest.scan(input);
+        input.close();
 
         assertThat(result).isEqualTo(AvScanResult.CLEAN);
     }

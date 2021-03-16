@@ -6,6 +6,7 @@ import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     }
 
     @Override
-    public Set<String> findByFolder(String folderName) {
+    public CvpFileSet findByFolder(String folderName) {
         final BlobListDetails blobListDetails = new BlobListDetails()
             .setRetrieveDeletedBlobs(false)
             .setRetrieveSnapshots(false);
@@ -57,9 +58,11 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
 
         final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
 
-        return blobItems.streamByPage()
+        final Set<String> files = blobItems.streamByPage()
             .flatMap(x -> x.getValue().stream().map(BlobItem::getName))
             .collect(Collectors.toUnmodifiableSet());
+
+        return new CvpFileSet(files);
     }
 
     @Override

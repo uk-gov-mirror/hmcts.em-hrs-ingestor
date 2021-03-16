@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 
 import java.io.IOException;
@@ -27,16 +28,22 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public Set<String> getIngestedFiles(String folderName) throws HrsApiException, IOException {
+    public HrsFileSet getIngestedFiles(String folderName) throws HrsApiException, IOException {
         final Response<ResponseBody> response = hrsHttpClient.getFiles(String.format(PATH, folderName))
             .execute();
 
         if (response.isSuccessful()) {
-            return parseBody(response.body());
+            final Set<String> files = parseBody(response.body());
+            return new HrsFileSet(files);
         } else {
             final String errorMessage = parseErrorBody(response.code(), response.message(), response.errorBody());
             throw new HrsApiException(errorMessage);
         }
+    }
+
+    @Override
+    public void post(String filename) {
+        // TODO
     }
 
     private Set<String> parseBody(final ResponseBody body) throws HrsApiException, IOException {
