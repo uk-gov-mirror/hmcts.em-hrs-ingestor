@@ -328,6 +328,7 @@ dependencies {
     exclude group: 'com.google.guava', module: 'guava'
   }
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2'
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
 
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity, withoutStuff
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity

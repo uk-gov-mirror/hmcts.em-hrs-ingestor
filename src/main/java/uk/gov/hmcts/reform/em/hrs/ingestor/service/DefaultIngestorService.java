@@ -10,9 +10,9 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.Collections;
 import java.util.Set;
 import javax.inject.Inject;
@@ -67,7 +67,7 @@ public class DefaultIngestorService implements IngestorService {
         try {
             final AvScanResult result = downloadAndScan(file);
             if (result == AvScanResult.INFECTED) {
-                LOGGER.info("File is infected: " + file);  // TODO: covered by EM-3582
+                LOGGER.info("File is infected: {}", file);  // TODO: covered by EM-3582
             }
             return result == AvScanResult.CLEAN;
         } catch (IOException e) {
@@ -77,11 +77,10 @@ public class DefaultIngestorService implements IngestorService {
     }
 
     private AvScanResult downloadAndScan(final String file) throws IOException {
-        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+        try (final PipedInputStream input = new PipedInputStream();
+             final PipedOutputStream output = new PipedOutputStream(input)) {
             cvpBlobstoreClient.downloadFile(file, output);
-            try (final ByteArrayInputStream inStream = new ByteArrayInputStream(output.toByteArray())) {
-                return antivirusClient.scan(inStream);
-            }
+            return antivirusClient.scan(input);
         }
     }
 }

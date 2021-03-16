@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 
-import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -55,7 +55,7 @@ class DefaultIngestorServiceTest {
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(FOLDER_ONE);
         doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(FOLDER_ONE);
         doReturn(Set.of(YET_TO_INGEST_FILE)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
-        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
         // THEN
         // Filename parsing happen here
@@ -68,7 +68,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).findByFolder(FOLDER_ONE);
         verify(hrsApiClient, times(1)).getIngestedFiles(FOLDER_ONE);
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
     }
 
@@ -78,7 +78,7 @@ class DefaultIngestorServiceTest {
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
         doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(anyString());
         doReturn(Set.of(YET_TO_INGEST_FILE)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
-        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         doReturn(AvScanResult.INFECTED).when(antivirusClient).scan(any(InputStream.class));
         // THEN
         // Filename parsing happen here
@@ -91,7 +91,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(3)).findByFolder(anyString());
         verify(hrsApiClient, times(3)).getIngestedFiles(anyString());
         verify(ingestionFilterer, times(3)).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, times(3)).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, times(3)).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, times(3)).scan(any(InputStream.class));
     }
 
@@ -101,7 +101,7 @@ class DefaultIngestorServiceTest {
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(FOLDER_ONE);
         doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(FOLDER_ONE);
         doReturn(Set.of(YET_TO_INGEST_FILE)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
-        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         doReturn(AvScanResult.INFECTED).when(antivirusClient).scan(any(InputStream.class));
         // THEN
         // Filename parsing happen here
@@ -114,7 +114,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).findByFolder(FOLDER_ONE);
         verify(hrsApiClient, times(1)).getIngestedFiles(FOLDER_ONE);
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
     }
 
@@ -130,7 +130,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).findByFolder(anyString());
         verify(hrsApiClient, times(1)).getIngestedFiles(anyString());
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
     }
 
@@ -146,7 +146,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).findByFolder(anyString());
         verify(hrsApiClient, times(1)).getIngestedFiles(anyString());
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
     }
 
@@ -156,7 +156,7 @@ class DefaultIngestorServiceTest {
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
         doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(anyString());
         doReturn(Set.of(YET_TO_INGEST_FILE)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
-        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         doThrow(IOException.class).when(antivirusClient).scan(any(InputStream.class));
 
         underTest.ingest();
@@ -165,7 +165,7 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).findByFolder(anyString());
         verify(hrsApiClient, times(1)).getIngestedFiles(anyString());
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
-        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(ByteArrayOutputStream.class));
+        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST_FILE), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
     }
 

@@ -7,7 +7,10 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
 
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.time.Duration;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -16,6 +19,7 @@ import java.util.stream.IntStream;
 import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(classes = {
     TestAzureStorageConfiguration.class,
@@ -34,6 +38,7 @@ class CvpBlobstoreClientImplTest {
     private static final String EMPTY_FOLDER = "folder-0";
     private static final String ONE_ITEM_FOLDER = "one-item-folder";
     private static final String MANY_ITEMS_FOLDER = "many-items-folder";
+    private static final String TEST_DATA = "Hello World!";
 
     @BeforeEach
     void setup() {
@@ -79,14 +84,33 @@ class CvpBlobstoreClientImplTest {
     @Test
     void testShouldDownloadFile() throws Exception {
         final String filePath = ONE_ITEM_FOLDER + "/" + UUID.randomUUID().toString() + ".txt";
-        final String data = "Hello World!";
-        azureOperations.uploadToContainer(filePath, data);
+        azureOperations.uploadToContainer(filePath, TEST_DATA);
 
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        underTest.downloadFile(filePath, output);
+        try (final PipedInputStream pipedInput = new PipedInputStream();
+             final PipedOutputStream output = new PipedOutputStream(pipedInput)) {
 
-        assertThat(output.toString()).isEqualTo(data);
-        output.close();
+            underTest.downloadFile(filePath, output);
+
+            assertThat(pipedInput).satisfies(this::assertStreamContent);
+        }
+    }
+
+    void assertStreamContent(final InputStream input) {
+        final StringBuilder sb = new StringBuilder();
+        try {
+            await().atMost(Duration.ofSeconds(10)).until(() -> {
+                while (true) {
+                    sb.append((char) input.read());
+                    final String s = sb.toString();
+                    if (s.contains(TEST_DATA)) {
+                        break;
+                    }
+                }
+                return true;
+            });
+        } finally {
+            assertThat(sb.toString()).isEqualTo(TEST_DATA);
+        }
     }
 
     private void populateCvpBlobstore() {

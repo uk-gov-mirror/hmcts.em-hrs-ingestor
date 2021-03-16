@@ -8,8 +8,7 @@ import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,12 +65,8 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     }
 
     @Override
-    public void downloadFile(final String filename, final ByteArrayOutputStream output) throws IOException {
+    public void downloadFile(final String filename, final OutputStream output) {
         final BlockBlobClient blobClient = blobContainerClient.getBlobClient(filename).getBlockBlobClient();
-        final int dataSize = (int) blobClient.getProperties().getBlobSize();
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(dataSize);
-        blobClient.download(outputStream);
-        outputStream.writeTo(output);
-        outputStream.close();
+        blobClient.download(output);
     }
 }
