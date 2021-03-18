@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.http;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Fault;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,9 +35,9 @@ class HrsApiClientImplTest {
     @Inject
     private HrsApiClientImpl underTest;
 
-    @AfterEach
-    public void afterEach() {
-        this.wireMockServer.resetAll();
+    @BeforeEach
+    public void prepare() {
+        wireMockServer.resetAll();
     }
 
     @Test

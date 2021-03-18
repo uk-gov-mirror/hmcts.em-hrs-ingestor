@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.storage;
 
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 
 import java.io.OutputStream;
 import java.util.Set;
@@ -8,7 +8,7 @@ import java.util.Set;
 public interface CvpBlobstoreClient {
     Set<String> getFolders();
 
-    CvpFileSet findByFolder(String folderName);
+    CvpItemSet findByFolder(String folderName);
 
     void downloadFile(String filename, OutputStream output);
 }

@@ -6,10 +6,12 @@ import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 
 import java.io.OutputStream;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -46,7 +48,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     }
 
     @Override
-    public CvpFileSet findByFolder(String folderName) {
+    public CvpItemSet findByFolder(String folderName) {
         final BlobListDetails blobListDetails = new BlobListDetails()
             .setRetrieveDeletedBlobs(false)
             .setRetrieveSnapshots(false);
@@ -57,11 +59,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
 
         final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
 
-        final Set<String> files = blobItems.streamByPage()
-            .flatMap(x -> x.getValue().stream().map(BlobItem::getName))
-            .collect(Collectors.toUnmodifiableSet());
-
-        return new CvpFileSet(files);
+        return transform(blobItems);
     }
 
     @Override
@@ -69,4 +67,27 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
         final BlockBlobClient blobClient = blobContainerClient.getBlobClient(filename).getBlockBlobClient();
         blobClient.download(output);
     }
+
+    private CvpItemSet transform(final PagedIterable<BlobItem> blobItems) {
+        final Set<CvpItem> files = blobItems.streamByPage()
+            .flatMap(x -> x.getValue().stream().map(y -> {
+                final String md5Hash = getMd5Hash(y.getProperties().getContentMd5());
+                final String filename = y.getName();
+
+                return new CvpItem(filename, getUrl(filename), md5Hash);
+            }))
+            .collect(Collectors.toUnmodifiableSet());
+
+        return new CvpItemSet(files);
+    }
+
+    private String getUrl(final String filename) {
+        final BlockBlobClient blobClient = blobContainerClient.getBlobClient(filename).getBlockBlobClient();
+        return blobClient.getBlobUrl();
+    }
+
+    private String getMd5Hash(final byte[] digest) {
+        return Base64.getEncoder().encodeToString(digest);
+    }
+
 }

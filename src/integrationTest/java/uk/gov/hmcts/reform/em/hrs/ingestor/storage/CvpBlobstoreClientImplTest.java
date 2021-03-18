@@ -4,13 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
 
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -56,19 +59,26 @@ class CvpBlobstoreClientImplTest {
 
     @Test
     void testShouldReturnEmptySetWhenFolderDoesNotExist() {
-        final CvpFileSet cvpFileSet = underTest.findByFolder(EMPTY_FOLDER);
+        final CvpItemSet cvpItemSet = underTest.findByFolder(EMPTY_FOLDER);
 
-        assertThat(cvpFileSet.getCvpFiles()).isEmpty();
+        assertThat(cvpItemSet.getCvpItems()).isEmpty();
     }
 
     @Test
-    void testShouldReturnASetContainingOneWhenFolderContainsOneItem() {
+    void testShouldReturnASetContainingOneWhenFolderContainsOneItem() throws Exception {
         final String filePath = ONE_ITEM_FOLDER + "/" + UUID.randomUUID().toString() + ".txt";
-        azureOperations.uploadToContainer(filePath);
+        final String expectedHash = getMd5Hash();
+        azureOperations.uploadToContainer(filePath, TEST_DATA);
 
-        final CvpFileSet cvpFileSet = underTest.findByFolder(ONE_ITEM_FOLDER);
+        final CvpItemSet cvpItemSet = underTest.findByFolder(ONE_ITEM_FOLDER);
 
-        assertThat(cvpFileSet.getCvpFiles()).singleElement().isEqualTo(filePath);
+        assertThat(cvpItemSet.getCvpItems()).singleElement().satisfies(x -> {
+            assertThat(x.getFilename()).isEqualTo(filePath);
+            assertThat(x.getMd5Hash()).isEqualTo(expectedHash);
+            assertThat(x.getFileUri())
+                .startsWith("http://localhost:")
+                .contains("/devstoreaccount1/hrs-test-container/one-item-folder");
+        });
     }
 
     @Test
@@ -76,9 +86,9 @@ class CvpBlobstoreClientImplTest {
         final Set<String> filePaths = generateFilePaths();
         azureOperations.uploadToContainer(filePaths);
 
-        final CvpFileSet cvpFileSet = underTest.findByFolder(MANY_ITEMS_FOLDER);
+        final CvpItemSet cvpItemSet = underTest.findByFolder(MANY_ITEMS_FOLDER);
 
-        assertThat(cvpFileSet.getCvpFiles()).hasSameElementsAs(filePaths);
+        assertThat(cvpItemSet.getCvpFiles()).hasSameElementsAs(filePaths);
     }
 
     @Test
@@ -129,5 +139,12 @@ class CvpBlobstoreClientImplTest {
         return IntStream.rangeClosed(1, number)
             .mapToObj(x -> MANY_ITEMS_FOLDER + "/f" + x + ".txt")
             .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private String getMd5Hash() throws NoSuchAlgorithmException {
+        final MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(TEST_DATA.getBytes());
+        final byte[] digest = md.digest();
+        return Base64.getEncoder().encodeToString(digest);
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 
 import java.io.IOException;
@@ -14,7 +15,6 @@ import javax.inject.Named;
 
 @Named
 public class HrsApiClientImpl implements HrsApiClient {
-    private static final String PATH = "/folders/%s/hearing-recording-file-names";
     private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {
     };
 
@@ -29,7 +29,7 @@ public class HrsApiClientImpl implements HrsApiClient {
 
     @Override
     public HrsFileSet getIngestedFiles(String folderName) throws HrsApiException, IOException {
-        final Response<ResponseBody> response = hrsHttpClient.getFiles(String.format(PATH, folderName))
+        final Response<ResponseBody> response = hrsHttpClient.getFiles(folderName)
             .execute();
 
         if (response.isSuccessful()) {
@@ -42,7 +42,7 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public void post(String filename) {
+    public void postFile(final String folder, final Metadata metadata) {
         // TODO
     }
 
