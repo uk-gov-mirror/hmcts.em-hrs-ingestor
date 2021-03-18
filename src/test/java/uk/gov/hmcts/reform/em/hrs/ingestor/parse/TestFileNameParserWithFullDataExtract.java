@@ -79,6 +79,7 @@ public class TestFileNameParserWithFullDataExtract {
             assertTrue(caseReference.equalsIgnoreCase(hrsFilenameParsedDataDTO.getCaseID().trim()));
 
         } else {
+
             log.debug("The Only Case ID Scenario");
             assertNull(hrsFilenameParsedDataDTO.getJurisdiction());
             assertNull(hrsFilenameParsedDataDTO.getLocationCode());
