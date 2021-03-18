@@ -1,29 +1,18 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import uk.gov.hmcts.reform.em.hrs.ingestor.dto.CourtDTO;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HRSFilenameParsedDataDTO;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class TestFileNameParser {
-
-    @Test
-    public void test_load_court_details() throws Exception {
-        List<CourtDTO> listOfCourts = FileNameParser.getCourtDetails();
-        assertEquals(166, listOfCourts.size());
-    }
 
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
     @CsvSource(value = {"Empty Value,''", "Spaced Value,' '", "Value Value,NIL"}, nullValues = "NIL")
@@ -44,11 +33,10 @@ public class TestFileNameParser {
         numLinesToSkip = 1)
     public void test_negative_wrong_format_file_name_input(final String inputKey, final String inputValue)
         throws Exception {
-        Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
-        assertEquals(1, responseMap.size());
+        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         assertEquals(
             Arrays.stream(inputValue.split("_")).findFirst().get(),
-            responseMap.get("CaseID").toString().trim()
+            hrsFilenameParsedDataDTO.getCaseID().toString().trim()
         );
     }
 
@@ -66,52 +54,52 @@ public class TestFileNameParser {
     public void test_positive_location_code_based_input_for_civil_and_family(final String inputKey,
                                                                              final String inputValue) throws Exception {
 
-        Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
+        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case":
-                verifyValuesOfMappedResponse(responseMap, "CV", "150",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "150",
                                              "GN00NT095", "0", 2020, 7, 29,
                                              9, 3, 40, 236000000
                 );
                 break;
             case "Valid File Case Reference Small Case":
-                verifyValuesOfMappedResponse(responseMap, "CV", "291",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "291",
                                              "g20yj687", "0", 2020, 9, 1,
                                              9, 14, 47, 314000000
                 );
                 break;
             case "Valid File Case Reference Jurisdiction Lower Case":
-                verifyValuesOfMappedResponse(responseMap, "cv", "144",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "cv", "144",
                                              "CD0XT621", "0", 2020, 10, 20,
                                              14, 5, 10, 150000000
                 );
                 break;
             case "Valid File Case Reference Case Reference Mixed Case":
-                verifyValuesOfMappedResponse(responseMap, "CV", "150",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "150",
                                              "GH0YN819Part1", "99", 2020, 7, 29,
                                              9, 3, 40, 236000000
                 );
                 break;
             case "Valid File Case Hyphenated 1":
-                verifyValuesOfMappedResponse(responseMap, "FM", "291",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "FM", "291",
                                              "OX20P00022-Keene-v-England", "0", 2020, 6, 30,
                                              10, 30, 18, 388000000
                 );
                 break;
             case "Valid File Case Hyphenated 2":
-                verifyValuesOfMappedResponse(responseMap, "CV", "291",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "291",
                                              "IP-2019-000175-DPA-v-Dagyanno", "10", 2020, 7, 2,
                                              9, 23, 23, 994000000
                 );
                 break;
             case "Valid File Location Code 3 Digits 1":
-                verifyValuesOfMappedResponse(responseMap, "FM", "211",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "FM", "211",
                                              "GU20C0090", "1", 2020, 10, 1,
                                              8, 12, 6, 568000000
                 );
                 break;
             case "Valid File Location Code 3 Digits 2":
-                verifyValuesOfMappedResponse(responseMap, "CP", "005",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CP", "005",
                                              "13605371-AB", "20", 2020, 9, 10,
                                              13, 18, 39, 768000000
                 );
@@ -131,47 +119,67 @@ public class TestFileNameParser {
         "Valid File Name Case Reference Hyphenated 2,"
             + "IA-HU-15010-2019-HU-15014-2019-HU-15015-2019_2020-10-22-13.43.14.176-UTC_99",
         "Valid File Name Case Reference Hyphenated Lower Case,"
-            + "ia-hu-15010-2019-hu-15014-2019-hu-15015-2019_2020-10-22-13.43.14.176-UTC_0"},
+            + "ia-hu-15010-2019-hu-15014-2019-hu-15015-2019_2020-10-22-13.43.14.176-UTC_255"},
         nullValues = "NIL")
     public void test_positive_case_reference_based_input_for_tribunals(final String inputKey, final String inputValue)
         throws Exception {
 
-        Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
+        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
-                verifyValuesOfMappedResponse(responseMap, "IA", null, "0127-HU-02785-2020",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "IA", null, "0127-HU-02785-2020",
                                              "0", 2020, 7, 16, 10,
                                              7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Hyphenated":
-                verifyValuesOfMappedResponse(responseMap, "ia", null, "0127-hu-02785-2020",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "ia", null, "0127-hu-02785-2020",
                                              "0", 2020, 7, 16, 10,
                                              7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Capital Case":
-                verifyValuesOfMappedResponse(responseMap, "IA", null, "HU-01234-2018",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "IA", null, "HU-01234-2018",
                                              "12", 2020, 9, 19, 10,
                                              50, 20, 150000000
                 );
                 break;
             case "Valid File Name Case Reference Hyphenated 1":
-                verifyValuesOfMappedResponse(responseMap, "IA", null, "EA-04983-2019-EA-05166-2019",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "IA", null, "EA-04983-2019-EA-05166-2019",
                                              "0", 2020, 10, 1, 11,
                                              25, 25, 976000000
                 );
                 break;
             case "Valid File Name Case Reference Hyphenated 2":
-                verifyValuesOfMappedResponse(responseMap, "IA", null, "HU-15010-2019-HU-15014-2019-HU-15015-2019",
-                                             "99", 2020, 10, 22, 13,
-                                             43, 14, 176000000
+                verifyValuesOfMappedResponse(
+                    hrsFilenameParsedDataDTO,
+                    "IA",
+                    null,
+                    "HU-15010-2019-HU-15014-2019-HU-15015-2019",
+                    "99",
+                    2020,
+                    10,
+                    22,
+                    13,
+                    43,
+                    14,
+                    176000000
                 );
                 break;
             case "Valid File Name Case Reference Hyphenated Lower Case":
-                verifyValuesOfMappedResponse(responseMap, "ia", null, "hu-15010-2019-hu-15014-2019-hu-15015-2019",
-                                             "0", 2020, 10, 22, 13,
-                                             43, 14, 176000000
+                verifyValuesOfMappedResponse(
+                    hrsFilenameParsedDataDTO,
+                    "ia",
+                    null,
+                    "hu-15010-2019-hu-15014-2019-hu-15015-2019",
+                    "255",
+                    2020,
+                    10,
+                    22,
+                    13,
+                    43,
+                    14,
+                    176000000
                 );
                 break;
             default:
@@ -183,29 +191,29 @@ public class TestFileNameParser {
     @ParameterizedTest(name = "Positive tests for Royal courts of Justice Location based : {0} --> {1}")
     @CsvSource(value = {
         "Valid File Name All Capital Case Location Code 0372,CV-0372-HU-02785-2020_2020-07-16-10.07.31.680-UTC_0",
-        "Valid File Name All Lower Case Location Code 0266,bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0",
+        "Valid File Name All Lower Case Location Code 0266,Cv-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_100",
         "Valid File Name All Lower Case Location Code 0372,cv-0372-074mc866_2020-09-10-10.21.54.116-UTC_76"},
         nullValues = "NIL")
     public void test_positive_location_code_based_input_for_royal_courts_of_justice(final String inputKey,
                                                                                     final String inputValue)
         throws Exception {
 
-        Map<String, Object> responseMap = FileNameParser.parseFileName(inputValue);
+        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Location Code 0372":
-                verifyValuesOfMappedResponse(responseMap, "CV", "372",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "372",
                                              "HU-02785-2020", "0", 2020, 7, 16,
                                              10, 7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Location Code 0266":
-                verifyValuesOfMappedResponse(responseMap, "bp", "266",
-                                             "hu-02785-2020", "0", 2020, 7, 16,
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "Cv", "266",
+                                             "hu-02785-2020", "100", 2020, 7, 16,
                                              10, 7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Location Code 0372":
-                verifyValuesOfMappedResponse(responseMap, "cv", "372",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "cv", "372",
                                              "074mc866", "76", 2020, 9, 10,
                                              10, 21, 54, 116000000
                 );
@@ -225,43 +233,43 @@ public class TestFileNameParser {
         "Valid File Name All Lower Case Hyphenated Lower Case,qb-0164-co-2020-01425_2020-10-23-13.02.08.818-UTC_100"},
         nullValues = "NIL")
     public void test_positive_non_location_code_based_input_for_royal_courts_of_justice(final String inputKey,
-                                                                                        final String inputvalue)
+                                                                                        final String inputValue)
         throws Exception {
 
-        Map<String, Object> responseMap = FileNameParser.parseFileName(inputvalue);
+        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
-                verifyValuesOfMappedResponse(responseMap, "QB", null, "CO-2020-01430",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "QB", null, "CO-2020-01430",
                                              "0", 2020, 9, 12, 15,
                                              0, 12, 765000000
                 );
                 break;
             case "Valid File Name No Location Code":
-                verifyValuesOfMappedResponse(responseMap, "QB", null, "QB-2017-002538",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "QB", null, "QB-2017-002538",
                                              "25", 2020, 10, 6, 15,
                                              20, 16, 562000000
                 );
                 break;
             case "Valid File Name With Case Reference Lower Case":
-                verifyValuesOfMappedResponse(responseMap, "QB", null, "QB-blahblahTest",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "QB", null, "QB-blahblahTest",
                                              "0", 2020, 9, 22, 10,
                                              22, 53, 511000000
                 );
                 break;
             case "Valid File Name All Capital Case":
-                verifyValuesOfMappedResponse(responseMap, "HF", null, "FD20P00625",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "HF", null, "FD20P00625",
                                              "99", 2020, 10, 20, 9,
                                              28, 9, 765000000
                 );
                 break;
             case "Valid File Name Case Reference Hyphenated":
-                verifyValuesOfMappedResponse(responseMap, "GR", null, "PR-2020-0016-1008",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "GR", null, "PR-2020-0016-1008",
                                              "0", 2020, 9, 21, 9,
                                              8, 26, 413000000
                 );
                 break;
             case "Valid File Name All Lower Case Hyphenated Lower Case":
-                verifyValuesOfMappedResponse(responseMap, "qb", null, "0164-co-2020-01425",
+                verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "qb", null, "0164-co-2020-01425",
                                              "100", 2020, 10, 23, 13,
                                              2, 8, 818000000
                 );
@@ -272,59 +280,8 @@ public class TestFileNameParser {
 
     }
 
-    private void verifyValuesOfMappedResponse(final Map<String, Object> responseMap,
-                                              final String jurisdictionCode,
-                                              final String jurisdictionMatch,
-                                              final String locationCode,
-                                              final String locationMatch,
-                                              final String caseReference) {
 
-        log.debug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        log.debug("Input Jurisdiction Code " + jurisdictionCode);
-        log.debug("Input Location Code " + locationCode);
-        log.debug("Input Case Reference " + caseReference);
-
-        if ((Objects.nonNull(jurisdictionMatch) && !jurisdictionMatch.isEmpty() && !jurisdictionMatch.isBlank() &&
-            jurisdictionMatch.equalsIgnoreCase("Yes"))
-            && (Objects.nonNull(locationMatch) && !locationMatch.isEmpty() && !locationMatch.isBlank() &&
-            locationMatch.equalsIgnoreCase("Yes"))) {
-
-            log.debug("The Complete Scenario");
-            log.debug("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
-            log.debug("The value of the Mapped Location Code" + responseMap.get("LocationCode").toString());
-            log.debug("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
-
-            assertTrue(responseMap.size() == 5);
-            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
-            assertTrue(locationCode.equalsIgnoreCase(responseMap.get("LocationCode").toString().trim()));
-
-            assertTrue((caseReference == null ? "" : caseReference)
-                           .equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
-
-        } else if (
-            (Objects.nonNull(jurisdictionMatch) && !jurisdictionMatch.isEmpty() && !jurisdictionMatch.isBlank() &&
-                jurisdictionMatch.equalsIgnoreCase("Yes"))
-                && (Objects.nonNull(locationMatch) && !locationMatch.isEmpty() && !locationMatch.isBlank() &&
-                !locationMatch.equalsIgnoreCase("Yes"))) {
-
-            log.debug("The No Location Code Scenario");
-            log.debug("The value of the Mapped Jurisdiction Code" + responseMap.get("Jurisdiction").toString());
-            log.debug("The value of the Mapped Case ID" + responseMap.get("CaseID").toString());
-
-            assertTrue(responseMap.size() == 4);
-            assertTrue(jurisdictionCode.equalsIgnoreCase(responseMap.get("Jurisdiction").toString().trim()));
-            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
-
-        } else {
-            log.debug("The Only Case ID Scenario");
-            assertTrue(responseMap.size() == 1);
-            assertTrue(caseReference.equalsIgnoreCase(responseMap.get("CaseID").toString().trim()));
-        }
-
-        log.debug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    }
-
-    private void verifyValuesOfMappedResponse(final Map<String, Object> responseMap,
+    private void verifyValuesOfMappedResponse(final HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO,
                                               final String jurisdictionCode,
                                               final String locationCode,
                                               final String caseReference,
@@ -332,15 +289,14 @@ public class TestFileNameParser {
                                               final int year, final int month,
                                               final int day, final int hour,
                                               final int minute, final int second, final int nano) {
-        assertTrue(responseMap.size() == 5 || responseMap.size() == 4);
-        assertEquals(jurisdictionCode, responseMap.get("Jurisdiction").toString());
-        if (responseMap.size() == 5 && responseMap.get("LocationCode") != null) {
-            assertEquals(locationCode, responseMap.get("LocationCode").toString().trim());
+        assertEquals(jurisdictionCode, hrsFilenameParsedDataDTO.getJurisdiction());
+        if (hrsFilenameParsedDataDTO.getLocationCode() != null) {
+            assertEquals(locationCode, hrsFilenameParsedDataDTO.getLocationCode().trim());
         }
-        assertEquals(caseReference, responseMap.get("CaseID").toString().trim());
-        assertEquals(segment, responseMap.get("Segment").toString().trim());
+        assertEquals(caseReference, hrsFilenameParsedDataDTO.getCaseID());
+        assertEquals(segment, hrsFilenameParsedDataDTO.getSegment());
 
-        LocalDateTime localDateTime = (LocalDateTime) responseMap.get("RecordingDateTime");
+        LocalDateTime localDateTime = hrsFilenameParsedDataDTO.getRecordingDateTime();
         log.debug("The value of the Returned Date Time" + localDateTime);
         assertEquals(year, localDateTime.getYear());
         assertEquals(month, localDateTime.getMonth().getValue());
