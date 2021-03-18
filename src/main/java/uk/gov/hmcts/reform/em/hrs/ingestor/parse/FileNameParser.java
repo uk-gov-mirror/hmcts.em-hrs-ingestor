@@ -26,16 +26,16 @@ import java.util.regex.Pattern;
 public class FileNameParser {
 
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX
-        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String CIVIL_AND_FAMILY_FILE_FORMAT_REGEX
-        = "^(CV|FM|CP)-(([0-9]){3}|([0-9]){4})-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CV|FM|CP)-([0-9]{3,4})-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String TRIBUNALS_FILE_FORMAT_REGEX
-        = "^(EE|ES|GR|HE|IA|PC|SE|TC|WP|EA|AU|IU|LU|TU)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(EE|ES|GR|HE|IA|PC|SE|TC|WP|EA|AU|IU|LU|TU)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
-        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static List<CourtDTO> courtDTOs;
 
@@ -84,7 +84,7 @@ public class FileNameParser {
         } else if (civilAndFamilyBasedMatcher.matches()) {
             log.debug("This is a Civil and Family based match");
             return Collections
-                .unmodifiableMap(processLocationBasedMatcher(civilAndFamilyBasedMatcher));
+                .unmodifiableMap(processLocationBasedMatcherForCivilAndFamilies(civilAndFamilyBasedMatcher));
         } else if (royalCourtsOfJusticeWithoutLocationBasedMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Without Locations based match");
             return Collections
@@ -99,7 +99,7 @@ public class FileNameParser {
         }
     }
 
-    private static final Map<String, Object> processLocationBasedMatcher(final Matcher locationBasedMatcher)
+    private static final Map<String, Object> processLocationBasedMatcherForCivilAndFamilies(final Matcher locationBasedMatcher)
         throws Exception {
 
         Map<String, Object> responseMap = new HashMap<String, Object>();
@@ -110,10 +110,10 @@ public class FileNameParser {
         if (checkCourtLocationCode(locationCode)) {
             responseMap.put("LocationCode", locationCode);
         }
-        responseMap.put("CaseID", locationBasedMatcher.group(5));
+        responseMap.put("CaseID", locationBasedMatcher.group(3));
         responseMap
-            .put("RecordingDateTime", processRawDatePart(locationBasedMatcher.group(6), locationBasedMatcher.group(7)));
-        responseMap.put("Segment", locationBasedMatcher.group(8));
+            .put("RecordingDateTime", processRawDatePart(locationBasedMatcher.group(4), locationBasedMatcher.group(5)));
+        responseMap.put("Segment", locationBasedMatcher.group(6));
         return responseMap;
     }
 
