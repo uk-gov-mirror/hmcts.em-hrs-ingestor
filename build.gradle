@@ -119,8 +119,6 @@ def coverageExclusionList = [
   '**uk/gov/hmcts/reform/em/hrs/ingestor/config/**',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/domain/**',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/exception/**',
-//  '**uk/gov/hmcts/reform/em/hrs/ingestor/repository/**',
-//  '**uk/gov/hmcts/reform/em/hrs/ingestor/service/**',
 ]
 
 jacocoTestReport {
