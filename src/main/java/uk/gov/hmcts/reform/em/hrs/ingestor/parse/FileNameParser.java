@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ResourceUtils;
-import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HRSFilenameParsedDataDTO;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,115 +31,118 @@ public class FileNameParser {
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
-    public static final HRSFilenameParsedDataDTO parseFileName(final String fileName) throws Exception {
+    public static final HrsFilenameParsedDataDto parseFileName(final String fileName) throws Exception {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
             throw new IllegalArgumentException("The argument passed is not valid");
         }
-        Matcher royalCourtsOfJusticeWithLocationBasedMatcher
+        Matcher royalCourtsOfJusticeWithLocationMatcher
             = Pattern.compile(
             ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        Matcher civilAndFamilyBasedMatcher
+        Matcher civilAndFamilyMatcher
             = Pattern.compile(
             CIVIL_AND_FAMILY_FILE_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        Matcher tribunalsBasedMatcher
+        Matcher tribunalsMatcher
             = Pattern.compile(TRIBUNALS_FILE_FORMAT_REGEX, Pattern.CASE_INSENSITIVE).matcher(fileName);
-        Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher
+        Matcher royalCourtsOfJusticeWithoutLocationMatcher
             = Pattern.compile(
             ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
         return processMatcher(
             fileName,
-            civilAndFamilyBasedMatcher,
-            tribunalsBasedMatcher,
-            royalCourtsOfJusticeWithLocationBasedMatcher,
-            royalCourtsOfJusticeWithoutLocationBasedMatcher
+            civilAndFamilyMatcher,
+            tribunalsMatcher,
+            royalCourtsOfJusticeWithLocationMatcher,
+            royalCourtsOfJusticeWithoutLocationMatcher
         );
     }
 
-    private static HRSFilenameParsedDataDTO processMatcher(final String fileName,
-                                                           final Matcher civilAndFamilyBasedMatcher,
-                                                           final Matcher tribunalsBasedMatcher,
-                                                           final Matcher royalCourtsOfJusticeWithLocationBasedMatcher,
-                                                           final Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher)
+    private static HrsFilenameParsedDataDto processMatcher(final String fileName,
+                                                           final Matcher civilAndFamilyMatcher,
+                                                           final Matcher tribunalsMatcher,
+                                                           final Matcher royalCourtsOfJusticeWithLocationMatcher,
+                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher)
         throws Exception {
 
-        if (royalCourtsOfJusticeWithLocationBasedMatcher.matches()) {
+        if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
-            return processLocationBasedMatcherForRoyalCourtsOfJustice(
-                royalCourtsOfJusticeWithLocationBasedMatcher);
-        } else if (civilAndFamilyBasedMatcher.matches()) {
+            return processLocationMatcherForRoyalCourtsOfJustice(
+                royalCourtsOfJusticeWithLocationMatcher);
+        } else if (civilAndFamilyMatcher.matches()) {
             log.debug("This is a Civil and Family based match");
-            return processLocationBasedMatcherForCivilAndFamilies(civilAndFamilyBasedMatcher);
-        } else if (royalCourtsOfJusticeWithoutLocationBasedMatcher.matches()) {
+            return processLocationMatcherForCivilAndFamilies(civilAndFamilyMatcher);
+        } else if (royalCourtsOfJusticeWithoutLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Without Locations based match");
-            return processNonLocationBasedMatcher(royalCourtsOfJusticeWithoutLocationBasedMatcher);
-        } else if (tribunalsBasedMatcher.matches()) {
+            return processNonLocationMatcher(royalCourtsOfJusticeWithoutLocationMatcher);
+        } else if (tribunalsMatcher.matches()) {
             log.debug("This is a Tribunals based match");
-            return processNonLocationBasedMatcher(tribunalsBasedMatcher);
+            return processNonLocationMatcher(tribunalsMatcher);
         } else {
             String[] values = fileName.split("_");
-            return HRSFilenameParsedDataDTO
+            return HrsFilenameParsedDataDto
                 .builder().caseID(values[0]).build();
         }
     }
 
-    private static final HRSFilenameParsedDataDTO processLocationBasedMatcherForCivilAndFamilies(
-        final Matcher locationBasedMatcher)
+    private static final HrsFilenameParsedDataDto processLocationMatcherForCivilAndFamilies(
+        final Matcher matcher)
         throws Exception {
 
-        return HRSFilenameParsedDataDTO
+        return HrsFilenameParsedDataDto
             .builder()
-            .jurisdiction(locationBasedMatcher.group(1))
-            .locationCode(locationBasedMatcher.group(2).trim().length() == 4 ?
-                              locationBasedMatcher.group(2).replaceFirst("^0*", "") : locationBasedMatcher.group(2))
-            .caseID(locationBasedMatcher.group(3))
-            .recordingDateTime(processRawDatePart(locationBasedMatcher.group(4), locationBasedMatcher.group(5)))
-            .segment(locationBasedMatcher.group(6))
-            .recordingUniquIdentifier(locationBasedMatcher.group(1) + "-" +
-                                          locationBasedMatcher.group(2) + "-" +
-                                          locationBasedMatcher.group(3) + "_" +
-                                          locationBasedMatcher.group(4) + "-" +
-                                          locationBasedMatcher.group(5)).build();
+            .jurisdiction(matcher.group(1))
+            .locationCode(
+                matcher.group(2).trim().length() == 4 ?
+                matcher.group(2).replaceFirst("^0*", "") :
+                matcher.group(2))
+            .caseID(matcher.group(3))
+            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
+            .segment(matcher.group(6))
+            .recordingUniquIdentifier(matcher.group(1)
+                                          + "-" + matcher.group(2)
+                                          + "-" + matcher.group(3)
+                                          + "_" + matcher.group(4)
+                                          + "-" + matcher.group(5)).build();
     }
 
-    private static final HRSFilenameParsedDataDTO processLocationBasedMatcherForRoyalCourtsOfJustice(
-        final Matcher locationBasedMatcher) {
+    private static final HrsFilenameParsedDataDto processLocationMatcherForRoyalCourtsOfJustice(
+        final Matcher matcher) {
 
-        return HRSFilenameParsedDataDTO
+        return HrsFilenameParsedDataDto
             .builder()
-            .jurisdiction(locationBasedMatcher.group(1))
-            .locationCode(locationBasedMatcher.group(2).trim().length() == 4 ?
-                              locationBasedMatcher.group(2).replaceFirst("^0*", "") : locationBasedMatcher.group(2))
-            .caseID(locationBasedMatcher.group(3))
-            .recordingDateTime(processRawDatePart(locationBasedMatcher.group(4), locationBasedMatcher.group(5)))
-            .segment(locationBasedMatcher.group(6))
-            .recordingUniquIdentifier(locationBasedMatcher.group(1) + "-" +
-                                          locationBasedMatcher.group(2) + "-" +
-                                          locationBasedMatcher.group(3) + "_" +
-                                          locationBasedMatcher.group(4) + "-" +
-                                          locationBasedMatcher.group(5)).build();
+            .jurisdiction(matcher.group(1))
+            .locationCode(matcher.group(2).trim().length() == 4 ?
+                          matcher.group(2).replaceFirst("^0*", "") :
+                          matcher.group(2))
+            .caseID(matcher.group(3))
+            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
+            .segment(matcher.group(6))
+            .recordingUniquIdentifier(matcher.group(1)
+                                          + "-" + matcher.group(2)
+                                          + "-" + matcher.group(3)
+                                          + "_" + matcher.group(4)
+                                          + "-" + matcher.group(5)).build();
 
     }
 
-    private static final HRSFilenameParsedDataDTO processNonLocationBasedMatcher(
-        final Matcher nonLocationBasedMatcher) {
-        return HRSFilenameParsedDataDTO
+    private static final HrsFilenameParsedDataDto processNonLocationMatcher(
+        final Matcher matcher) {
+        return HrsFilenameParsedDataDto
             .builder()
-            .jurisdiction(nonLocationBasedMatcher.group(1))
-            .caseID(nonLocationBasedMatcher.group(2))
-            .recordingDateTime(processRawDatePart(nonLocationBasedMatcher.group(3), nonLocationBasedMatcher.group(4)))
-            .segment(nonLocationBasedMatcher.group(5))
-            .recordingUniquIdentifier(nonLocationBasedMatcher.group(1) + "-" +
-                                          nonLocationBasedMatcher.group(2) + "_" +
-                                          nonLocationBasedMatcher.group(3) + "-" +
-                                          nonLocationBasedMatcher.group(4)).build();
+            .jurisdiction(matcher.group(1))
+            .caseID(matcher.group(2))
+            .recordingDateTime(processRawDatePart(matcher.group(3), matcher.group(4)))
+            .segment(matcher.group(5))
+            .recordingUniquIdentifier(matcher.group(1) + "-"
+                                          + matcher.group(2)
+                                          + "_" + matcher.group(3)
+                                          + "-" + matcher.group(4)).build();
 
     }
 

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HRSFilenameParsedDataDTO;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class TestFileNameParser {
         numLinesToSkip = 1)
     public void test_negative_wrong_format_file_name_input(final String inputKey, final String inputValue)
         throws Exception {
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         assertEquals(
             Arrays.stream(inputValue.split("_")).findFirst().get(),
             hrsFilenameParsedDataDTO.getCaseID().toString().trim()
@@ -54,7 +54,7 @@ public class TestFileNameParser {
     public void test_positive_location_code_based_input_for_civil_and_family(final String inputKey,
                                                                              final String inputValue) throws Exception {
 
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "150",
@@ -130,7 +130,7 @@ public class TestFileNameParser {
     public void test_positive_case_reference_based_input_for_tribunals(final String inputKey, final String inputValue)
         throws Exception {
 
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "IA", null, "0127-HU-02785-2020",
@@ -206,7 +206,7 @@ public class TestFileNameParser {
                                                                                     final String inputValue)
         throws Exception {
 
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Location Code 0372":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "CV", "372",
@@ -247,7 +247,7 @@ public class TestFileNameParser {
                                                                                         final String inputValue)
         throws Exception {
 
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDTO, "QB", null, "CO-2020-01430",
@@ -292,7 +292,7 @@ public class TestFileNameParser {
     }
 
 
-    private void verifyValuesOfMappedResponse(final HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO,
+    private void verifyValuesOfMappedResponse(final HrsFilenameParsedDataDto hrsFilenameParsedDataDTO,
                                               final String jurisdictionCode,
                                               final String locationCode,
                                               final String caseReference,

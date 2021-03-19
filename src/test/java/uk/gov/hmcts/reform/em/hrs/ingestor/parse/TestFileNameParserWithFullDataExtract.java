@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HRSFilenameParsedDataDTO;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
 
 import java.util.Objects;
 
@@ -24,7 +24,7 @@ public class TestFileNameParserWithFullDataExtract {
                                       final String locationMatch,
                                       final String caseID) throws Exception {
         String inputValue = fileName.substring(0, fileName.lastIndexOf('.'));
-        HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
+        HrsFilenameParsedDataDto hrsFilenameParsedDataDTO = FileNameParser.parseFileName(inputValue);
         verifyValuesOfMappedResponse(
             hrsFilenameParsedDataDTO,
             jurisdiction,
@@ -36,7 +36,7 @@ public class TestFileNameParserWithFullDataExtract {
     }
 
 
-    private void verifyValuesOfMappedResponse(final HRSFilenameParsedDataDTO hrsFilenameParsedDataDTO,
+    private void verifyValuesOfMappedResponse(final HrsFilenameParsedDataDto hrsFilenameParsedDataDTO,
                                               final String jurisdictionCode,
                                               final String jurisdictionMatch,
                                               final String locationCode,
