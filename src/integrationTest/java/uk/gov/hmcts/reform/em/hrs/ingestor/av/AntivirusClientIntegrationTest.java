@@ -19,7 +19,7 @@ import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants.INFECTED_
 
 @SpringBootTest(classes = {ClamAvConfig.class, AntivirusClientImpl.class})
 @ContextConfiguration(initializers = {ClamAvInitializer.class})
-class AntivirusClientImplTest {
+class AntivirusClientIntegrationTest {
 
     @Inject
     private AntivirusClientImpl underTest;

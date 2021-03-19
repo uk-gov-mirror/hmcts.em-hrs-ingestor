@@ -50,8 +50,7 @@ public class DefaultIngestorService implements IngestorService {
             final Set<CvpItem> filteredSet = getFilesToIngest(x);
             filteredSet.forEach(y -> {
                 if (isFileClean(y.getFilename())) {
-                    final Metadata metadata = metadataResolver.resolve(y);
-                    hrsApiClient.postFile(x, metadata);
+                    postToHrsApi(x, y);
                 }
             });
         });
@@ -76,7 +75,7 @@ public class DefaultIngestorService implements IngestorService {
             }
             return result == AvScanResult.CLEAN;
         } catch (Exception e) {
-            LOGGER.error("Error AV checking {}: ", file, e);
+            LOGGER.error("Error AV checking {}: ", file, e);  // TODO: covered by EM-3582
             return false;
         }
     }
@@ -92,4 +91,14 @@ public class DefaultIngestorService implements IngestorService {
             return output.getResult();
         }
     }
+
+    private void postToHrsApi(final String folderName, final CvpItem item) {
+        try {
+            final Metadata metadata = metadataResolver.resolve(item);
+            hrsApiClient.postFile(folderName, metadata);
+        } catch (IOException | HrsApiException e) {
+            LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+        }
+    }
+
 }

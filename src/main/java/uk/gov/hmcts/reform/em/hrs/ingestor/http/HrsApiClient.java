@@ -9,5 +9,5 @@ import java.io.IOException;
 public interface HrsApiClient {
     HrsFileSet getIngestedFiles(String folderName) throws HrsApiException, IOException;
 
-    void postFile(String folder, Metadata metadata);
+    void postFile(String folder, Metadata metadata) throws IOException, HrsApiException;
 }

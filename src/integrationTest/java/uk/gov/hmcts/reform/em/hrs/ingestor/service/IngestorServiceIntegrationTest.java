@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -80,7 +79,6 @@ class IngestorServiceIntegrationTest {
     }
 
     @Test
-    @Disabled
     void testShouldIngestCleanFiles() throws Exception {
         setupCvpBlobstore(CLEAN_FOLDER, CLEAN_FILE);
 

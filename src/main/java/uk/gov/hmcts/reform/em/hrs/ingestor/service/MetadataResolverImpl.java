@@ -13,7 +13,10 @@ import javax.inject.Named;
 public class MetadataResolverImpl implements MetadataResolver {
     @Override
     public Metadata resolve(final CvpItem item) {
-        final Map<String, Object> objectMap = FileNameParser.parseFileName(item.getFilename());
+        final String filename = Optional.ofNullable(item.getFilename())
+            .map(this::stripFolder)
+            .orElse(item.getFilename());
+        final Map<String, Object> objectMap = FileNameParser.parseFileName(filename);
 
         return new Metadata(
             item.getFileUri(),
@@ -26,5 +29,10 @@ public class MetadataResolverImpl implements MetadataResolver {
             null,
             Integer.parseInt((String) objectMap.get("Segment"))
         );
+    }
+
+    private String stripFolder(final String input) {
+        final int separatorIndex = input.lastIndexOf("/");
+        return input.substring(separatorIndex + 1);
     }
 }
