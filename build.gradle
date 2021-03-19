@@ -5,9 +5,10 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.3.4.RELEASE'
-  id 'uk.gov.hmcts.java' version '0.12.5'
-  id 'com.github.ben-manes.versions' version '0.38.0'
+  id 'com.github.ben-manes.versions' version '0.36.0'// NOTE version 0.38 is suspected to be the cause of
+                                                     // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '3.1.1'
+  id 'uk.gov.hmcts.java' version '0.12.5'
 }
 
 group = 'uk.gov.hmcts.reform.em.hrs'
@@ -161,7 +162,7 @@ configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
       if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '9.0.40'
+        details.useVersion '9.0.43'
       }
     }
   }
@@ -241,10 +242,9 @@ dependencyManagement {
 
 repositories {
   maven { url "https://dl.bintray.com/hmcts/hmcts-maven" }
-  //TODO confirm this should be the primary maven repo (it is in dm store and em stictching)
-  mavenLocal()
-  jcenter()
   mavenCentral()
+  jcenter()
+
 }
 
 def versions = [
