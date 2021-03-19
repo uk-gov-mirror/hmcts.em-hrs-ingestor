@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Builder
-public class HRSFilenameParsedDataDTO {
+public class HrsFilenameParsedDataDto {
 
     public String jurisdiction;
 
