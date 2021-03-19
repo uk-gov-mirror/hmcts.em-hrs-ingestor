@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
@@ -11,12 +12,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
+@Disabled ("This Test class is disabled as it executes close to 18000 Test "
+    + "and may not be helpfull for this to be executed in the pipleine")
 public class TestFileNameParserWithFullDataExtract {
 
 
     @ParameterizedTest(name = "Self Evaluation File : {0} --> {1}")
     @CsvFileSource(resources
-        = "/uk/gov/hmcts/reform/em/hrs/hrs/ingestor/data/All_report_size_2020-11-06T16_32_41+0000- Analysis_With_Filename.csv",
+        = "/uk/gov/hmcts/reform/em/hrs/hrs/ingestor/data/"
+        + "All_report_size_2020-11-06T16_32_41+0000- Analysis_With_Filename.csv",
         numLinesToSkip = 1)
     public void test_input_file_input(final String fileName,
                                       final String jurisdiction,
