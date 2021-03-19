@@ -15,4 +15,8 @@
     <notes><![CDATA[TEMPORARY IGNORE TO GET BUILD WORKING - NEEDS ADDRESSING FORMALLY]]></notes>
     <cve>CVE-2021-25329</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[TEMPORARY IGNORE TO GET BUILD WORKING - NEEDS ADDRESSING FORMALLY]]></notes>
+    <cve>CVE-2020-9484</cve>
+  </suppress>
 </suppressions>

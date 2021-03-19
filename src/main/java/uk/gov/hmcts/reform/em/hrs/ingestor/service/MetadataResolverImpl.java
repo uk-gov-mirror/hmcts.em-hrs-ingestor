@@ -19,13 +19,12 @@ public class MetadataResolverImpl implements MetadataResolver {
             item.getFileUri(),
             item.getMd5Hash(),
             null,
-            Optional.ofNullable(objectMap.get("CaseID")).map(Object::toString).orElse(null),
-            Optional.ofNullable(objectMap.get("RecordingDateTime")).map(x -> LocalDateTime.parse(x.toString()))
-                .orElse(null),
-            Optional.ofNullable(objectMap.get("Jurisdiction")).map(Object::toString).orElse(null),
-            Optional.ofNullable(objectMap.get("LocationCode")).map(Object::toString).orElse(null),
+            (String) Optional.ofNullable(objectMap.get("CaseID")).orElse(null),
+            (LocalDateTime) objectMap.get("RecordingDateTime"),
+            (String) Optional.ofNullable(objectMap.get("Jurisdiction")).orElse(null),
+            (String) Optional.ofNullable(objectMap.get("LocationCode")).orElse(null),
             null,
-            Optional.ofNullable(objectMap.get("Segment")).map(x -> Integer.parseInt(x.toString())).orElse(0)
+            Integer.parseInt((String) objectMap.get("Segment"))
         );
     }
 }
