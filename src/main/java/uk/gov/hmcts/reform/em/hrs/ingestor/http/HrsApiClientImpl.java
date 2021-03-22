@@ -3,17 +3,23 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Response;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
 public class HrsApiClientImpl implements HrsApiClient {
-    private static final String PATH = "/folders/%s/hearing-recording-file-names";
+    private static final Logger LOGGER = LoggerFactory.getLogger(HrsApiClientImpl.class);
+
     private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {
     };
 
@@ -27,33 +33,35 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public Set<String> getIngestedFiles(String folderName) throws HrsApiException, IOException {
-        final Response<ResponseBody> response = hrsHttpClient.getFiles(String.format(PATH, folderName))
+    public HrsFileSet getIngestedFiles(String folderName) throws IOException {
+        final Response<ResponseBody> response = hrsHttpClient.getFiles(folderName)
             .execute();
 
-        if (response.isSuccessful()) {
-            return parseBody(response.body());
-        } else {
-            final String errorMessage = parseErrorBody(response.code(), response.message(), response.errorBody());
-            throw new HrsApiException(errorMessage);
+        if (!response.isSuccessful()) {
+            parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
+            return new HrsFileSet(Collections.emptySet());
+        }
+
+        final Set<String> files = parseBody(response.body());
+        return new HrsFileSet(files);
+    }
+
+    @Override
+    public void postFile(final String folder, final Metadata metadata) throws IOException {
+        final Response<ResponseBody> response = hrsHttpClient.postFile(folder, metadata).execute();
+
+        if (!response.isSuccessful()) {
+            parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
         }
     }
 
-    private Set<String> parseBody(final ResponseBody body) throws HrsApiException, IOException {
-        if (body == null) {
-            throw new HrsApiException("Response error: response body is null");
-        } else {
-            return objectMapper.readValue(body.string(), TYPE_REFERENCE);
-        }
+    private Set<String> parseBody(final ResponseBody body) throws IOException {
+        return objectMapper.readValue(Objects.requireNonNull(body).string(), TYPE_REFERENCE);
     }
 
-    private String parseErrorBody(final int code,
-                                  final String message,
-                                  final ResponseBody body) throws HrsApiException, IOException {
-        if (body == null) {
-            throw new HrsApiException("Response error: " + code);
-        } else {
-            return "Response error: " + code + " => " + message + " => " + body.string();
-        }
+    private void parseErrorBody(final int code,
+                                final String message,
+                                final ResponseBody body) throws IOException {
+        LOGGER.warn("Response error: {} => {} => {}", code, message, body.string());
     }
 }

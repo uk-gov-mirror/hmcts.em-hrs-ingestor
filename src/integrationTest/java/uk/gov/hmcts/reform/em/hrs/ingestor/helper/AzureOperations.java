@@ -3,16 +3,21 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.helper;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.devskiller.jfairy.Fairy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
 public class AzureOperations {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureOperations.class);
+
     private final BlobContainerClient blobContainerClient;
     private final Fairy fairy;
 
@@ -22,20 +27,25 @@ public class AzureOperations {
         fairy = Fairy.create();
     }
 
-    public void uploadToContainer(final Set<String> filePaths) {
-        filePaths.forEach(this::uploadToContainer);
+    public void uploadToContainer(final Set<String> blobNames) {
+        blobNames.forEach(this::uploadToContainer);
     }
 
-    public void uploadToContainer(final String filePath) {
+    public void uploadToContainer(final String blobName) {
         final String content = fairy.textProducer().sentence();
-        uploadToContainer(filePath, content);
+        uploadToContainer(blobName, content);
     }
 
-    public void uploadToContainer(final String filePath, final String content) {
-        final InputStream data = new ByteArrayInputStream(content.getBytes());
+    public void uploadToContainer(final String blobName, final String content) {
+        uploadToContainer(blobName, content.getBytes(StandardCharsets.UTF_8));
+    }
 
-        final BlobClient blobClient = blobContainerClient.getBlobClient(filePath);
-        blobClient.upload(new BufferedInputStream(data), content.length());
+    public void uploadToContainer(final String blobName, final byte[] data) {
+        final InputStream inStream = new ByteArrayInputStream(data);
+
+        final BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
+        blobClient.upload(new BufferedInputStream(inStream), data.length);
+        LOGGER.info("Blob '{}' uploaded successfully", blobName);
     }
 
     public void clearContainer() {

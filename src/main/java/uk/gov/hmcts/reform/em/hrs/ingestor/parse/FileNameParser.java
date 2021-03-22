@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ResourceUtils;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +32,12 @@ public class FileNameParser {
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
-    public static final HrsFilenameParsedDataDto parseFileName(final String fileName) throws Exception {
+    public static final HrsFilenameParsedDataDto parseFileName(final String fileName) throws FileParsingException {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
-            throw new IllegalArgumentException("The argument passed is not valid");
+            throw new FileParsingException("Invalid Filename",
+                                           new IllegalArgumentException("The argument passed is not valid"));
         }
         Matcher royalCourtsOfJusticeWithLocationMatcher
             = Pattern.compile(
@@ -67,8 +69,7 @@ public class FileNameParser {
                                                            final Matcher civilAndFamilyMatcher,
                                                            final Matcher tribunalsMatcher,
                                                            final Matcher royalCourtsOfJusticeWithLocationMatcher,
-                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher)
-        throws Exception {
+                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher) {
 
         if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
@@ -91,8 +92,7 @@ public class FileNameParser {
     }
 
     private static final HrsFilenameParsedDataDto processLocationMatcherForCivilAndFamilies(
-        final Matcher matcher)
-        throws Exception {
+        final Matcher matcher) {
 
         return HrsFilenameParsedDataDto
             .builder()

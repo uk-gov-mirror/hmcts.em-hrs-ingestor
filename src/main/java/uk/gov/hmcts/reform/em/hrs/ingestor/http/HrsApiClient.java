@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.http;
 
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 
 import java.io.IOException;
-import java.util.Set;
 
 public interface HrsApiClient {
-    Set<String> getIngestedFiles(String folderName) throws HrsApiException, IOException;
+    HrsFileSet getIngestedFiles(String folderName) throws HrsApiException, IOException;
+
+    void postFile(String folder, Metadata metadata) throws IOException, HrsApiException;
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -16,14 +17,13 @@ public class TestFileNameParser {
 
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
     @CsvSource(value = {"Empty Value,''", "Spaced Value,' '", "Value Value,NIL"}, nullValues = "NIL")
-    public void test_negative_invalid_file_name_input(final String inputKey, final String inputValue)
-        throws Exception {
+    public void test_negative_invalid_file_name_input(final String inputKey, final String inputValue) {
         try {
             FileNameParser.parseFileName(inputValue);
-        } catch (IllegalArgumentException illegalArgumentException) {
+        } catch (FileParsingException parsingException) {
             assertEquals(
                 "The argument passed is not valid",
-                illegalArgumentException.getLocalizedMessage()
+                parsingException.getCause().getLocalizedMessage()
             );
         }
 
@@ -108,14 +108,14 @@ public class TestFileNameParser {
             case "Valid File Location Code 3 Digits 1":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "FM", "211",
                                              "GU20C0090", "1",
-                                             "FM-211-GU20C0090_2020-10-01-08.12.06.568-UTC",2020, 10, 1,
+                                             "FM-211-GU20C0090_2020-10-01-08.12.06.568-UTC", 2020, 10, 1,
                                              8, 12, 6, 568000000
                 );
                 break;
             case "Valid File Location Code 3 Digits 2":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "CP", "005",
                                              "13605371-AB", "20",
-                                             "CP-005-13605371-AB_2020-09-10-13.18.39.768-UTC",2020, 9, 10,
+                                             "CP-005-13605371-AB_2020-09-10-13.18.39.768-UTC", 2020, 9, 10,
                                              13, 18, 39, 768000000
                 );
                 break;
@@ -143,19 +143,19 @@ public class TestFileNameParser {
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "IA", null, "0127-HU-02785-2020",
-                                             "0", "IA-0127-HU-02785-2020_2020-07-16-10.07.31.680-UTC",2020, 7, 16, 10,
+                                             "0", "IA-0127-HU-02785-2020_2020-07-16-10.07.31.680-UTC", 2020, 7, 16, 10,
                                              7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "ia", null, "0127-hu-02785-2020",
-                                             "0", "ia-0127-hu-02785-2020_2020-07-16-10.07.31.680-UTC",2020, 7, 16, 10,
+                                             "0", "ia-0127-hu-02785-2020_2020-07-16-10.07.31.680-UTC", 2020, 7, 16, 10,
                                              7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Capital Case":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "IA", null, "HU-01234-2018",
-                                             "12", "IA-HU-01234-2018_2020-09-19-10.50.20.150-UTC",2020, 9, 19, 10,
+                                             "12", "IA-HU-01234-2018_2020-09-19-10.50.20.150-UTC", 2020, 9, 19, 10,
                                              50, 20, 150000000
                 );
                 break;
@@ -222,21 +222,21 @@ public class TestFileNameParser {
             case "Valid File Name All Capital Case Location Code 0372":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "CV", "372",
                                              "HU-02785-2020", "0",
-                                             "CV-0372-HU-02785-2020_2020-07-16-10.07.31.680-UTC",2020, 7, 16,
+                                             "CV-0372-HU-02785-2020_2020-07-16-10.07.31.680-UTC", 2020, 7, 16,
                                              10, 7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Location Code 0266":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "Cv", "266",
                                              "hu-02785-2020", "100",
-                                             "Cv-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC",2020, 7, 16,
+                                             "Cv-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC", 2020, 7, 16,
                                              10, 7, 31, 680000000
                 );
                 break;
             case "Valid File Name All Lower Case Location Code 0372":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "cv", "372",
                                              "074mc866", "76",
-                                             "cv-0372-074mc866_2020-09-10-10.21.54.116-UTC",2020, 9, 10,
+                                             "cv-0372-074mc866_2020-09-10-10.21.54.116-UTC", 2020, 9, 10,
                                              10, 21, 54, 116000000
                 );
                 break;
@@ -262,31 +262,31 @@ public class TestFileNameParser {
         switch (inputKey) {
             case "Valid File Name All Capital Case Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "QB", null, "CO-2020-01430",
-                                             "0", "QB-CO-2020-01430_2020-09-12-15.00.12.765-UTC",2020, 9, 12, 15,
+                                             "0", "QB-CO-2020-01430_2020-09-12-15.00.12.765-UTC", 2020, 9, 12, 15,
                                              0, 12, 765000000
                 );
                 break;
             case "Valid File Name No Location Code":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "QB", null, "QB-2017-002538",
-                                             "25", "QB-QB-2017-002538_2020-10-06-15.20.16.562-UTC",2020, 10, 6, 15,
+                                             "25", "QB-QB-2017-002538_2020-10-06-15.20.16.562-UTC", 2020, 10, 6, 15,
                                              20, 16, 562000000
                 );
                 break;
             case "Valid File Name With Case Reference Lower Case":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "QB", null, "QB-blahblahTest",
-                                             "0", "QB-QB-blahblahTest_2020-09-22-10.22.53.511-UTC",2020, 9, 22, 10,
+                                             "0", "QB-QB-blahblahTest_2020-09-22-10.22.53.511-UTC", 2020, 9, 22, 10,
                                              22, 53, 511000000
                 );
                 break;
             case "Valid File Name All Capital Case":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "HF", null, "FD20P00625",
-                                             "99", "HF-FD20P00625_2020-10-20-09.28.09.765-UTC",2020, 10, 20, 9,
+                                             "99", "HF-FD20P00625_2020-10-20-09.28.09.765-UTC", 2020, 10, 20, 9,
                                              28, 9, 765000000
                 );
                 break;
             case "Valid File Name Case Reference Hyphenated":
                 verifyValuesOfMappedResponse(hrsFilenameParsedDataDto, "GR", null, "PR-2020-0016-1008",
-                                             "0", "GR-PR-2020-0016-1008_2020-09-21-09.08.26.413-UTC",2020, 9, 21, 9,
+                                             "0", "GR-PR-2020-0016-1008_2020-09-21-09.08.26.413-UTC", 2020, 9, 21, 9,
                                              8, 26, 413000000
                 );
                 break;
