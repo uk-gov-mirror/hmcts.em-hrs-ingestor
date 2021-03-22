@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -17,13 +18,13 @@ public class TestFileNameParser {
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
     @CsvSource(value = {"Empty Value,''", "Spaced Value,' '", "Value Value,NIL"}, nullValues = "NIL")
     public void test_negative_invalid_file_name_input(final String inputKey, final String inputValue)
-        throws Exception {
+        {
         try {
             FileNameParser.parseFileName(inputValue);
-        } catch (IllegalArgumentException illegalArgumentException) {
+        } catch (FileParsingException parsingException) {
             assertEquals(
                 "The argument passed is not valid",
-                illegalArgumentException.getLocalizedMessage()
+                parsingException.getCause().getLocalizedMessage()
             );
         }
 

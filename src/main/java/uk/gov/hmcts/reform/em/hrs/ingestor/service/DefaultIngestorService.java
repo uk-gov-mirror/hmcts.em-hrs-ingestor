@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
@@ -98,6 +99,9 @@ public class DefaultIngestorService implements IngestorService {
             hrsApiClient.postFile(folderName, metadata);
         } catch (IOException | HrsApiException e) {
             LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+        } catch (FileParsingException e) {
+            LOGGER.error("Error Parsing FileName:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+
         }
     }
 

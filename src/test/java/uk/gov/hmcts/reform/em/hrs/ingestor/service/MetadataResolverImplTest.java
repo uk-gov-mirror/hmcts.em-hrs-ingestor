@@ -3,11 +3,13 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class MetadataResolverImplTest {
@@ -21,7 +23,7 @@ class MetadataResolverImplTest {
     );
 
     @Test
-    void testShouldResolveMetadataFromFilename() {
+    void testShouldResolveMetadataFromFilename() throws FileParsingException {
         final Metadata metadata = underTest.resolve(CVP_ITEM);
 
         assertThat(metadata).satisfies(x -> {
@@ -32,15 +34,21 @@ class MetadataResolverImplTest {
 
     @Test
     void testShouldResolveMetadataFromFilenameWhenFilenameIsEmpty() {
-        assertThatIllegalArgumentException().isThrownBy(() -> underTest.resolve(
-            new CvpItem("", null, null)
-        ));
+        assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
+                underTest.resolve(
+                    new CvpItem("", null, null)
+                );
+
+        });
     }
 
     @Test
     void testShouldResolveMetadataFromFilenameWhenFilenameIsNull() {
-        assertThatIllegalArgumentException().isThrownBy(() -> underTest.resolve(
-            new CvpItem(null, null, null)
-        ));
+        assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
+                underTest.resolve(
+                    new CvpItem(null, null, null)
+                );
+
+        });
     }
 }

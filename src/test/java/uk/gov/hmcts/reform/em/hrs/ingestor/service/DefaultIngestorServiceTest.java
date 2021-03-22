@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
@@ -77,7 +78,11 @@ class DefaultIngestorServiceTest {
         doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
-        doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
+        try {
+            doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
         // THEN
         // Filename parsing happen here
         // AND
@@ -91,7 +96,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        verify(metadataResolver, times(1)).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, times(1)).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -102,7 +111,11 @@ class DefaultIngestorServiceTest {
         doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
-        doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
+        try {
+            doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
         // THEN
         // Filename parsing happen here
         // AND
@@ -116,7 +129,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(3)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(3)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(3)).scan(any(InputStream.class));
-        verify(metadataResolver, times(3)).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, times(3)).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -140,7 +157,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -157,7 +178,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
-        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -174,7 +199,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
-        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -194,7 +223,11 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        try {
+            verify(metadataResolver, never()).resolve(any(CvpItem.class));
+        } catch (FileParsingException e) {
+            e.printStackTrace();
+        }
     }
 
 }
