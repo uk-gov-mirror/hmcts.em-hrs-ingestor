@@ -3,13 +3,14 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ResourceUtils;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,115 +20,131 @@ import java.util.regex.Pattern;
 public class FileNameParser {
 
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX
-        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String CIVIL_AND_FAMILY_FILE_FORMAT_REGEX
-        = "^(CV|FM|CP)-(([0-9]){3}|([0-9]){4})-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CV|FM|CP)-([0-9]{3,4})-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String TRIBUNALS_FILE_FORMAT_REGEX
-        = "^(EE|ES|GR|HE|IA|PC|SE|TC|WP|EA|AU|IU|LU|TU)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(EE|ES|GR|HE|IA|PC|SE|TC|WP|EA|AU|IU|LU|TU)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
-        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9])$";
+        = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
-    public static final Map<String, Object> parseFileName(final String fileName) {
+    public static final HrsFilenameParsedDataDto parseFileName(final String fileName) throws Exception {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
             throw new IllegalArgumentException("The argument passed is not valid");
         }
-        Matcher royalCourtsOfJusticeWithLocationBasedMatcher
+        Matcher royalCourtsOfJusticeWithLocationMatcher
             = Pattern.compile(
             ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        Matcher civilAndFamilyBasedMatcher
+        Matcher civilAndFamilyMatcher
             = Pattern.compile(
             CIVIL_AND_FAMILY_FILE_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        Matcher tribunalsBasedMatcher
+        Matcher tribunalsMatcher
             = Pattern.compile(TRIBUNALS_FILE_FORMAT_REGEX, Pattern.CASE_INSENSITIVE).matcher(fileName);
-        Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher
+        Matcher royalCourtsOfJusticeWithoutLocationMatcher
             = Pattern.compile(
             ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
-        return processMatcher(fileName,
-                              civilAndFamilyBasedMatcher,
-                              tribunalsBasedMatcher,
-                              royalCourtsOfJusticeWithLocationBasedMatcher,
-                              royalCourtsOfJusticeWithoutLocationBasedMatcher
+        return processMatcher(
+            fileName,
+            civilAndFamilyMatcher,
+            tribunalsMatcher,
+            royalCourtsOfJusticeWithLocationMatcher,
+            royalCourtsOfJusticeWithoutLocationMatcher
         );
     }
 
-    private static Map<String, Object> processMatcher(final String fileName, final Matcher civilAndFamilyBasedMatcher,
-                                                      final Matcher tribunalsBasedMatcher,
-                                                      final Matcher royalCourtsOfJusticeWithLocationBasedMatcher,
-                                                      final Matcher royalCourtsOfJusticeWithoutLocationBasedMatcher) {
+    private static HrsFilenameParsedDataDto processMatcher(final String fileName,
+                                                           final Matcher civilAndFamilyMatcher,
+                                                           final Matcher tribunalsMatcher,
+                                                           final Matcher royalCourtsOfJusticeWithLocationMatcher,
+                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher)
+        throws Exception {
 
-        if (royalCourtsOfJusticeWithLocationBasedMatcher.matches()) {
+        if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
-            return Collections
-                .unmodifiableMap(processLocationBasedMatcherForRoyalCourtsOfJustice(
-                    royalCourtsOfJusticeWithLocationBasedMatcher));
-        } else if (civilAndFamilyBasedMatcher.matches()) {
+            return processLocationMatcherForRoyalCourtsOfJustice(
+                royalCourtsOfJusticeWithLocationMatcher);
+        } else if (civilAndFamilyMatcher.matches()) {
             log.debug("This is a Civil and Family based match");
-            return Collections
-                .unmodifiableMap(processLocationBasedMatcher(civilAndFamilyBasedMatcher));
-        } else if (royalCourtsOfJusticeWithoutLocationBasedMatcher.matches()) {
+            return processLocationMatcherForCivilAndFamilies(civilAndFamilyMatcher);
+        } else if (royalCourtsOfJusticeWithoutLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Without Locations based match");
-            return Collections
-                .unmodifiableMap(processNonLocationBasedMatcher(royalCourtsOfJusticeWithoutLocationBasedMatcher));
-        } else if (tribunalsBasedMatcher.matches()) {
+            return processNonLocationMatcher(royalCourtsOfJusticeWithoutLocationMatcher);
+        } else if (tribunalsMatcher.matches()) {
             log.debug("This is a Tribunals based match");
-            return Collections
-                .unmodifiableMap(processNonLocationBasedMatcher(tribunalsBasedMatcher));
+            return processNonLocationMatcher(tribunalsMatcher);
         } else {
             String[] values = fileName.split("_");
-            return Map.of("CaseID", values[0]);
+            return HrsFilenameParsedDataDto
+                .builder().caseID(values[0]).build();
         }
     }
 
-    private static final Map<String, Object> processLocationBasedMatcher(final Matcher locationBasedMatcher) {
-        Map<String, Object> responseMap = new HashMap<String, Object>();
-        responseMap.put("Jurisdiction", locationBasedMatcher.group(1));
-        final String locationCode = locationBasedMatcher.group(2);
-        responseMap.put("LocationCode", locationCode.trim().length() == 4
-            ? locationCode.replaceFirst("^0*", "") : locationCode);
-        responseMap.put("CaseID", locationBasedMatcher.group(5));
-        responseMap
-            .put("RecordingDateTime", processRawDatePart(locationBasedMatcher.group(6), locationBasedMatcher.group(7)));
-        responseMap.put("Segment", locationBasedMatcher.group(8));
-        return responseMap;
+    private static final HrsFilenameParsedDataDto processLocationMatcherForCivilAndFamilies(
+        final Matcher matcher)
+        throws Exception {
+
+        return HrsFilenameParsedDataDto
+            .builder()
+            .jurisdiction(matcher.group(1))
+            .locationCode(
+                matcher.group(2).trim().length() == 4 ?
+                matcher.group(2).replaceFirst("^0*", "") :
+                matcher.group(2))
+            .caseID(matcher.group(3))
+            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
+            .segment(matcher.group(6))
+            .recordingUniquIdentifier(matcher.group(1)
+                                          + "-" + matcher.group(2)
+                                          + "-" + matcher.group(3)
+                                          + "_" + matcher.group(4)
+                                          + "-" + matcher.group(5)).build();
     }
 
-    private static final Map<String, Object> processLocationBasedMatcherForRoyalCourtsOfJustice(
-        final Matcher locationBasedMatcher) {
-        Map<String, Object> responseMap = new HashMap<String, Object>();
-        responseMap.put("Jurisdiction", locationBasedMatcher.group(1));
-        final String locationCode = locationBasedMatcher.group(2);
-        responseMap.put("LocationCode", locationCode.trim().length() == 4 ?
-            locationCode.replaceFirst("^0*", "") : locationCode);
-        responseMap.put("CaseID", locationBasedMatcher.group(3));
-        responseMap
-            .put("RecordingDateTime", processRawDatePart(locationBasedMatcher.group(4), locationBasedMatcher.group(5)));
-        responseMap.put("Segment", locationBasedMatcher.group(6));
-        return responseMap;
+    private static final HrsFilenameParsedDataDto processLocationMatcherForRoyalCourtsOfJustice(
+        final Matcher matcher) {
+
+        return HrsFilenameParsedDataDto
+            .builder()
+            .jurisdiction(matcher.group(1))
+            .locationCode(matcher.group(2).trim().length() == 4 ?
+                          matcher.group(2).replaceFirst("^0*", "") :
+                          matcher.group(2))
+            .caseID(matcher.group(3))
+            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
+            .segment(matcher.group(6))
+            .recordingUniquIdentifier(matcher.group(1)
+                                          + "-" + matcher.group(2)
+                                          + "-" + matcher.group(3)
+                                          + "_" + matcher.group(4)
+                                          + "-" + matcher.group(5)).build();
+
     }
 
-    private static final Map<String, Object> processNonLocationBasedMatcher(final Matcher nonLocationBasedMatcher) {
-        Map<String, Object> responseMap = new HashMap<String, Object>();
-        responseMap.put("Jurisdiction", nonLocationBasedMatcher.group(1));
-        responseMap.put("CaseID", nonLocationBasedMatcher.group(2));
-        responseMap.put(
-            "RecordingDateTime",
-            processRawDatePart(nonLocationBasedMatcher.group(3), nonLocationBasedMatcher.group(4))
-        );
-        responseMap.put("Segment", nonLocationBasedMatcher.group(5));
-        return responseMap;
-    }
+    private static final HrsFilenameParsedDataDto processNonLocationMatcher(
+        final Matcher matcher) {
+        return HrsFilenameParsedDataDto
+            .builder()
+            .jurisdiction(matcher.group(1))
+            .caseID(matcher.group(2))
+            .recordingDateTime(processRawDatePart(matcher.group(3), matcher.group(4)))
+            .segment(matcher.group(5))
+            .recordingUniquIdentifier(matcher.group(1) + "-"
+                                          + matcher.group(2)
+                                          + "_" + matcher.group(3)
+                                          + "-" + matcher.group(4)).build();
 
+    }
 
     private static LocalDateTime processRawDatePart(final String rawDatePart, final String timeZone) {
 
@@ -140,5 +157,13 @@ public class FileNameParser {
 
         log.debug("The value of the Formatted Date Time Object" + dateTimeObject);
         return dateTimeObject;
+    }
+
+    private static File getFile(final String path) throws IOException {
+
+        File file = ResourceUtils.getFile("classpath:" + path);
+        //File is found
+        log.debug("File Found : " + file.exists());
+        return file;
     }
 }
