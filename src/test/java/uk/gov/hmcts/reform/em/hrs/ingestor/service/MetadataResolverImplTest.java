@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class MetadataResolverImplTest {
     private final MetadataResolver underTest = new MetadataResolverImpl();
@@ -35,9 +34,9 @@ class MetadataResolverImplTest {
     @Test
     void testShouldResolveMetadataFromFilenameWhenFilenameIsEmpty() {
         assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
-                underTest.resolve(
-                    new CvpItem("", null, null)
-                );
+            underTest.resolve(
+                new CvpItem("", null, null)
+            );
 
         });
     }
@@ -45,9 +44,9 @@ class MetadataResolverImplTest {
     @Test
     void testShouldResolveMetadataFromFilenameWhenFilenameIsNull() {
         assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
-                underTest.resolve(
-                    new CvpItem(null, null, null)
-                );
+            underTest.resolve(
+                new CvpItem(null, null, null)
+            );
 
         });
     }

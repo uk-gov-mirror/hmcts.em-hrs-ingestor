@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.config.AppConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestOkHttpClientConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIOException;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @SpringBootTest(classes = {TestOkHttpClientConfig.class, AppConfig.class, HrsApiClientImpl.class})

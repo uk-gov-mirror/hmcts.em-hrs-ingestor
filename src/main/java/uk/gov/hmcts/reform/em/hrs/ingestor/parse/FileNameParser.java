@@ -36,7 +36,8 @@ public class FileNameParser {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
-            throw new FileParsingException("Invalid Filename",new IllegalArgumentException("The argument passed is not valid"));
+            throw new FileParsingException("Invalid Filename",
+                                           new IllegalArgumentException("The argument passed is not valid"));
         }
         Matcher royalCourtsOfJusticeWithLocationMatcher
             = Pattern.compile(
@@ -68,8 +69,7 @@ public class FileNameParser {
                                                            final Matcher civilAndFamilyMatcher,
                                                            final Matcher tribunalsMatcher,
                                                            final Matcher royalCourtsOfJusticeWithLocationMatcher,
-                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher)
-         {
+                                                           final Matcher royalCourtsOfJusticeWithoutLocationMatcher) {
 
         if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
@@ -92,8 +92,7 @@ public class FileNameParser {
     }
 
     private static final HrsFilenameParsedDataDto processLocationMatcherForCivilAndFamilies(
-        final Matcher matcher)
-         {
+        final Matcher matcher) {
 
         return HrsFilenameParsedDataDto
             .builder()
