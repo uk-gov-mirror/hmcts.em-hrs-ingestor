@@ -157,11 +157,8 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, never()).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+
     }
 
     @Test
@@ -178,11 +175,8 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, never()).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+
     }
 
     @Test
@@ -199,11 +193,8 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, never()).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, never()).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+
     }
 
     @Test
@@ -223,11 +214,8 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, never()).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, never()).resolve(any(CvpItem.class));
+
     }
 
 }
