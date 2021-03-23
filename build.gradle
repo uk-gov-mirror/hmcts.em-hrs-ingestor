@@ -301,7 +301,7 @@ dependencies {
   implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
   implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.1'
   implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.7.2'
-  implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.7.2'
+  implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.9.0'
 
   // antivirus client
   implementation group: 'fi.solita.clamav', name: 'clamav-client', version: '1.0.1'
