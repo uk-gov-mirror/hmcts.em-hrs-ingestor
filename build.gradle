@@ -10,6 +10,7 @@ plugins {
   id 'org.sonarqube' version '3.1.1'
   id "io.freefair.lombok" version "5.3.0"
   id 'uk.gov.hmcts.java' version '0.12.5'
+  id 'au.com.dius.pact' version '4.0.10'
 }
 
 group = 'uk.gov.hmcts.reform.em.hrs'
@@ -41,6 +42,15 @@ sourceSets {
       srcDir file('src/integrationTest/java')
     }
     resources.srcDir file('src/integrationTest/resources')
+  }
+
+  contractTest {
+    java {
+      compileClasspath += main.output
+      runtimeClasspath += main.output
+      srcDir file('src/contractTest/java')
+    }
+    resources.srcDir file('src/contractTest/resources')
   }
 
   smokeTest {
@@ -88,11 +98,31 @@ task integration(type: Test) {
   failFast = true
 }
 
+task contract(type: Test) {
+  description = "Runs contract tests"
+  group = "Verification"
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+  include "uk/gov/hmcts/reform/em/hrs/consumer/**"
+  systemProperty 'pact.rootDir', "pacts"
+  environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
+  failFast = true
+}
+
 task smoke(type: Test) {
   description = "Runs Smoke Tests"
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
+
+task runAndPublishConsumerPactTests(type: Test) {
+  logger.lifecycle("Runs pact Tests")
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+}
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
+
 
 /***********************************************************************************************************************
  * Code Checks
@@ -245,7 +275,8 @@ def versions = [
   reformLogging   : '5.1.5',
   springBoot      : springBoot.class.package.implementationVersion,
   springfoxSwagger: '2.9.2',
-
+  pact_version    : '3.6.15',
+  restAssured     : '4.2.0',
   serenity           : '2.3.12',
   serenityRestAssured: '2.3.4',
   serenityreporter   : '2.3.12',
@@ -344,6 +375,32 @@ dependencies {
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-single-page-report', version: versions.serenityreporter
   smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
+  contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    exclude group: 'com.vaadin.external.google', module: 'android-json'
+  }
+  contractTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
+  contractTestImplementation group: 'io.rest-assured', name: 'json-schema-validator', version: versions.restAssured
+  contractTestImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
+  contractTestImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
+  contractTestImplementation group: 'au.com.dius', name: 'pact-jvm-consumer-junit5_2.12', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius', name: 'pact-jvm-consumer-java8_2.12', version: versions.pact_version
+  contractTestCompile group: 'au.com.dius', name: 'pact-jvm-provider-junit5', version: '4.0.10'
+  contractTestCompile group: 'au.com.dius', name: 'pact-jvm-provider-gradle', version: '4.0.10'
+
+  contractTestImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
+  contractTestImplementation "org.junit.vintage:junit-vintage-engine:5.6.2"
+  contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.6.2")
+  contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+  contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.2.0'
+
+  contractTestCompileOnly 'org.projectlombok:lombok:1.18.12'
+  contractTestImplementation "ch.qos.logback:logback-classic:1.2.3"
+
+  contractTestImplementation sourceSets.main.runtimeClasspath
+  contractTestImplementation sourceSets.test.runtimeClasspath
+
 /***********************************************************************************************************************
  * TEST SOURCE SETS
  **********************************************************************************************************************/
@@ -376,3 +433,30 @@ bootJar {
 wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
+
+project.ext {
+  pactVersion = getCheckedOutGitCommitHash()
+}
+
+def getCheckedOutGitCommitHash() {
+  'git rev-parse --verify --short HEAD'.execute().text.trim()
+}
+
+pact {
+
+  reports {
+    defaultReports() // adds the standard console output
+
+    markdown // report in markdown format
+    json // report in json format
+  }
+
+  publish {
+    pactDirectory = 'pacts'
+    pactBrokerUrl = System.getProperty("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
+    version = project.pactVersion
+  }
+}
+
+
