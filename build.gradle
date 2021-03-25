@@ -6,7 +6,7 @@ plugins {
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.3.4.RELEASE'
   id 'com.github.ben-manes.versions' version '0.36.0'// NOTE version 0.38 is suspected to be the cause of
-                                                     // the intermittant failure with module metadata. TO BE CONFIRMED!!
+  // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '3.1.1'
   id "io.freefair.lombok" version "5.3.0"
   id 'uk.gov.hmcts.java' version '0.12.5'
@@ -26,6 +26,7 @@ allprojects {
  **********************************************************************************************************************/
 
 sourceSets {
+
   functionalTest {
     java {
       compileClasspath += main.output
@@ -270,13 +271,13 @@ repositories {
 }
 
 def versions = [
-  junit           : '5.7.1',
-  junitPlatform   : '1.7.1',
-  reformLogging   : '5.1.5',
-  springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2',
-  pact_version    : '3.6.15',
-  restAssured     : '4.2.0',
+  junit              : '5.7.1',
+  junitPlatform      : '1.7.1',
+  reformLogging      : '5.1.5',
+  springBoot         : springBoot.class.package.implementationVersion,
+  springfoxSwagger   : '2.9.2',
+  pact_version       : '3.6.15',
+  restAssured        : '4.2.0',
   serenity           : '2.3.12',
   serenityRestAssured: '2.3.4',
   serenityreporter   : '2.3.12',
