@@ -26,6 +26,7 @@ allprojects {
  **********************************************************************************************************************/
 
 sourceSets {
+
   functionalTest {
     java {
       compileClasspath += main.output
@@ -270,13 +271,13 @@ repositories {
 }
 
 def versions = [
-  junit           : '5.7.1',
-  junitPlatform   : '1.7.1',
-  reformLogging   : '5.1.5',
-  springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2',
-  pact_version    : '3.6.15',
-  restAssured     : '4.2.0',
+  junit              : '5.7.1',
+  junitPlatform      : '1.7.1',
+  reformLogging      : '5.1.5',
+  springBoot         : springBoot.class.package.implementationVersion,
+  springfoxSwagger   : '2.9.2',
+  pact_version       : '3.6.15',
+  restAssured        : '4.2.0',
   serenity           : '2.3.12',
   serenityRestAssured: '2.3.4',
   serenityreporter   : '2.3.12',
