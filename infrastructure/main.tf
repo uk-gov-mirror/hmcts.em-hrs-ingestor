@@ -47,7 +47,7 @@ data "azurerm_key_vault_secret" "s2s_key" {
 }
 
 resource "azurerm_key_vault_secret" "local_s2s_key" {
-  name         = "microservicekey-em-hrs-api"
+  name         = "microservicekey-em-hrs-ingestor"
   value        = data.azurerm_key_vault_secret.s2s_key.value
   key_vault_id = module.key-vault.key_vault_id
 }
