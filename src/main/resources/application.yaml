@@ -28,3 +28,9 @@ clamav:
   host: ${HRS_CLAM_AV_HOST:localhost}
   port: ${HRS_CLAM_AV_PORT:3310}
   timeout: 60000
+
+idam:
+  s2s-auth:
+    url: ${S2S_BASE_URI:http://localhost:4502}
+    totp_secret: ${S2S_KEY:AAAAAAAAAAAAAAAA}
+    microservice: em_hrs_ingestor
