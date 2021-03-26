@@ -3,11 +3,13 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsHttpClient;
 
 @Configuration
@@ -36,4 +38,6 @@ public class AppConfig {
         return retrofit.create(HrsHttpClient.class);
     }
 
+    @Autowired
+    private AuthTokenGenerator authTokenGenerator;
 }
