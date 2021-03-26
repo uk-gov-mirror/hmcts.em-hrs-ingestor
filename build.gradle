@@ -304,6 +304,7 @@ def withoutStuff = {
 
 dependencies {
   compileOnly group: 'javax.inject', name: 'javax.inject', version: '1'
+  annotationProcessor 'org.projectlombok:lombok:1.18.18'
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -322,7 +323,8 @@ dependencies {
 
   implementation group: 'com.opencsv', name: 'opencsv', version: '5.3'
 
-
+  compileOnly 'org.projectlombok:lombok:1.18.18'
+  implementation "ch.qos.logback:logback-classic:1.2.3"
   implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
   implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
 
@@ -341,7 +343,9 @@ dependencies {
   implementation group: 'net.sf.jsignature.io-tools', name: 'easystream', version: '1.2.15'
 
   //test implementation
-
+  testAnnotationProcessor 'org.projectlombok:lombok:1.18.18'
+  testCompileOnly 'org.projectlombok:lombok:1.18.18'
+  testImplementation "ch.qos.logback:logback-classic:1.2.3"
   testImplementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
   testImplementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
 
@@ -396,8 +400,8 @@ dependencies {
   contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.6.2")
   contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.2.0'
 
-  contractTestCompileOnly 'org.projectlombok:lombok:1.18.12'
-  contractTestImplementation "ch.qos.logback:logback-classic:1.2.3"
+  /*contractTestCompileOnly 'org.projectlombok:lombok:1.18.12'
+  contractTestImplementation "ch.qos.logback:logback-classic:1.2.3"*/
 
   contractTestImplementation sourceSets.main.runtimeClasspath
   contractTestImplementation sourceSets.test.runtimeClasspath
