@@ -3,4 +3,9 @@ java:
   image: 'hmctspublic.azurecr.io/em/hrs-ingestor:latest'
   ingressHost: em-hrs-ingestor-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: em
+  keyVaults:
+    em-hrs-ingestor:
+      resourceGroup: em-hrs-ingestor
+      secrets:
+        - microservicekey-em-hrs-ingestor
   environment:
