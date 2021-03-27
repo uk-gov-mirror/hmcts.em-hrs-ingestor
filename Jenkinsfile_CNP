@@ -50,12 +50,13 @@ def vaultOverrides = [
 ]
 
 withPipeline(type, product, component) {
-  onPR {
-    enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
-  }
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
+
   after('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
+  enablePactAs([
+    AppPipelineDsl.PactRoles.CONSUMER
+  ])
 }
