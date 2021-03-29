@@ -12,7 +12,6 @@ properties([
 ])
 
 @Library("Infrastructure")
-import java.lang.Object
 
 def type = "java"
 def product = "em"
