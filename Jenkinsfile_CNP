@@ -12,6 +12,7 @@ properties([
 ])
 
 @Library("Infrastructure")
+import java.lang.Object
 
 def type = "java"
 def product = "em"
@@ -59,11 +60,13 @@ withPipeline(type, product, component) {
             sh ./publish-swagger-docs.sh
              '''
     }
-    enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
-    ])
+
   }
   after('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
+
+  enablePactAs([
+    AppPipelineDsl.PactRoles.CONSUMER
+  ])
 }

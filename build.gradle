@@ -121,6 +121,7 @@ task runAndPublishConsumerPactTests(type: Test) {
   classpath = sourceSets.contractTest.runtimeClasspath
 }
 
+runAndPublishConsumerPactTests.dependsOn contract
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 
