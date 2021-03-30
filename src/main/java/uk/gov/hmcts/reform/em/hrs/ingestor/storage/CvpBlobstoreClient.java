@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.storage;
 
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
 import java.io.OutputStream;
 import java.util.Set;

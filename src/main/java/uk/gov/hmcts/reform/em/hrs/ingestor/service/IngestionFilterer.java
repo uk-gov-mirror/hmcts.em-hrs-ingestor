@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
 
 import java.util.Set;
 

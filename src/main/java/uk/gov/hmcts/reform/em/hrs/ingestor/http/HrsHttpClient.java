@@ -6,12 +6,12 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 public interface HrsHttpClient {
-    @GET("/folders/{folder}/hearing-recording-file-names")
+    @GET("/folders/{folder}")
     Call<ResponseBody> getFiles(@Path("folder") String folderName);
 
-    @POST("/folders/{folder}/hearing-recording")
-    Call<ResponseBody> postFile(@Path("folder") String folderName, @Body Metadata metadata);
+    @POST("/segments")
+    Call<ResponseBody> postFile(@Body Metadata metadata);
 }

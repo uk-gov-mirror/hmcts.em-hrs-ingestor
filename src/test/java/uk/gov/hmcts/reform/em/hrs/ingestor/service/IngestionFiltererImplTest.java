@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
 
 import java.util.Collections;
 import java.util.Set;
@@ -14,11 +14,11 @@ class IngestionFiltererImplTest {
 
     private final IngestionFilterer underTest = new IngestionFiltererImpl();
 
-    private static final CvpItem ITEM_1 = new CvpItem("f1.mp4", "uri1", "hash1");
+    private static final CvpItem ITEM_1 = new CvpItem("f1.mp4", "uri1", "hash1", 1L);
     private static final Set<CvpItem> CVP_ITEMS = Set.of(
         ITEM_1,
-        new CvpItem("f2.mp4", "uri2", "hash2"),
-        new CvpItem("f3.mp4", "uri3", "hash3")
+        new CvpItem("f2.mp4", "uri2", "hash2", 1L),
+        new CvpItem("f3.mp4", "uri3", "hash3", 1L)
     );
     private static final CvpItemSet CVP_FILE_SET = new CvpItemSet(CVP_ITEMS);
 

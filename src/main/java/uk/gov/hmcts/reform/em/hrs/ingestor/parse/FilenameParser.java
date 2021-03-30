@@ -85,7 +85,9 @@ public final class FilenameParser {
         } else {
             String[] values = fileName.split("_");
             return ParsedFilenameDto
-                .builder().caseID(values[0]).build();
+                .builder()
+                .caseID(values[0])
+                .build();
         }
     }
 
@@ -104,7 +106,8 @@ public final class FilenameParser {
                                   + "-" + matcher.group(2)
                                   + "-" + matcher.group(3)
                                   + "_" + matcher.group(4)
-                                  + "-" + matcher.group(5)).build();
+                                  + "-" + matcher.group(5))
+            .build();
     }
 
     private static ParsedFilenameDto processLocationMatcherForRoyalCourtsOfJustice(
@@ -123,7 +126,8 @@ public final class FilenameParser {
                                   + "-" + matcher.group(2)
                                   + "-" + matcher.group(3)
                                   + "_" + matcher.group(4)
-                                  + "-" + matcher.group(5)).build();
+                                  + "-" + matcher.group(5))
+            .build();
 
     }
 
@@ -138,7 +142,8 @@ public final class FilenameParser {
             .uniqueIdentifier(matcher.group(1) + "-"
                                   + matcher.group(2)
                                   + "_" + matcher.group(3)
-                                  + "-" + matcher.group(4)).build();
+                                  + "-" + matcher.group(4))
+            .build();
 
     }
 

@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
 import java.io.InputStream;
 import java.io.PipedInputStream;

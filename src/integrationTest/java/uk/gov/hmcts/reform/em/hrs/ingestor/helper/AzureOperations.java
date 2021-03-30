@@ -48,6 +48,7 @@ public class AzureOperations {
         LOGGER.info("Blob '{}' uploaded successfully", blobName);
     }
 
+    //  Azure blobstore API doesn't support 'deleteBlob'.  We can only mark a blob for deletion
     public void clearContainer() {
         blobContainerClient.listBlobs()
             .forEach(x -> x.setDeleted(true));
