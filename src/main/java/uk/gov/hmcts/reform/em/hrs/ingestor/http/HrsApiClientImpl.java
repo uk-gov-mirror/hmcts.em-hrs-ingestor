@@ -62,6 +62,7 @@ public class HrsApiClientImpl implements HrsApiClient {
     private void parseErrorBody(final int code,
                                 final String message,
                                 final ResponseBody body) throws IOException {
-        LOGGER.warn("Response error: {} => {} => {}", code, message, body.string());
+        final String errorBodyMessage = body.string();
+        LOGGER.warn("Response error: {} => {} => {}", code, message, errorBodyMessage);
     }
 }

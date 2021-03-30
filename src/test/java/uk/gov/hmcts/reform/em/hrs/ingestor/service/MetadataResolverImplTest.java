@@ -26,8 +26,8 @@ class MetadataResolverImplTest {
         final Metadata metadata = underTest.resolve(CVP_ITEM);
 
         assertThat(metadata).satisfies(x -> {
-            assertThat(x.getRecordingDate()).isEqualTo(LocalDateTime.parse("2020-07-16-10.07.31.680", FORMATTER));
-            assertThat(x.getRecordingSegment()).isEqualTo(0);
+            assertThat(x.getRecordingDateTime()).isEqualTo(LocalDateTime.parse("2020-07-16-10.07.31.680", FORMATTER));
+            assertThat(x.getRecordingSegment()).isZero();
         });
     }
 

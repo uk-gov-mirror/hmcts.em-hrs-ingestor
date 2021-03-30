@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
-import uk.gov.hmcts.reform.em.hrs.ingestor.dto.HrsFilenameParsedDataDto;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
-import uk.gov.hmcts.reform.em.hrs.ingestor.parse.FileNameParser;
+import uk.gov.hmcts.reform.em.hrs.ingestor.parse.FilenameParser;
 
 import java.util.Optional;
 import javax.inject.Named;
@@ -16,7 +16,7 @@ public class MetadataResolverImpl implements MetadataResolver {
         final String filename = Optional.ofNullable(item.getFilename())
             .map(this::stripFolder)
             .orElse(item.getFilename());
-        HrsFilenameParsedDataDto parsedDataDto = FileNameParser.parseFileName(filename);
+        ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(filename);
 
         return new Metadata(
             item.getFileUri(),
@@ -26,8 +26,8 @@ public class MetadataResolverImpl implements MetadataResolver {
             parsedDataDto.recordingDateTime,
             parsedDataDto.jurisdiction,
             parsedDataDto.locationCode,
-            parsedDataDto.recordingUniquIdentifier,
-            Integer.valueOf(parsedDataDto.segment)
+            parsedDataDto.uniqueIdentifier,
+            Integer.parseInt(parsedDataDto.segment)
         );
     }
 

@@ -12,10 +12,10 @@ public class Metadata {
     private final String checkSum;
     private final String hearingSource = "CVP";
     private String hearingLocation;  // folderName (possibly parsed)
-    private final String caseRef;  // CaseID
-    private final LocalDateTime recordingDate; // RecordingDateTime
-    private final String jurisdictionCode; // Jurisdiction
-    private final String courtLocationCode; // LocationCode
-    private String recordingReference;  // missing
-    private final int recordingSegment;  // Segment
+    private final String caseRef;
+    private final LocalDateTime recordingDateTime;
+    private final String jurisdictionCode;
+    private final String courtLocationCode;
+    private final String recordingReference;
+    private final int recordingSegment;
 }
