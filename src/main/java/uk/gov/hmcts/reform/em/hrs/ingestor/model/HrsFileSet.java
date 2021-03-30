@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.em.hrs.ingestor.domain;
+package uk.gov.hmcts.reform.em.hrs.ingestor.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -7,13 +7,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 
 import java.io.IOException;
@@ -51,23 +50,26 @@ class DefaultIngestorServiceTest {
     private static final String FOLDER_ONE = "folder-1";
     private static final String FOLDER_TWO = "folder-2";
     private static final String FOLDER_THREE = "folder-3";
-    private static final CvpItem YET_TO_INGEST = new CvpItem("f3.mp4", "uri3", "hash3");
+    private static final CvpItem YET_TO_INGEST = new CvpItem("f3.mp4", "uri3", "hash3", 1L);
     private static final CvpItemSet CVP_FILE_SET = new CvpItemSet(Set.of(
-        new CvpItem("f1.mp4", "uri1", "hash1"),
-        new CvpItem("f2.mp4", "uri2", "hash2"),
+        new CvpItem("f1.mp4", "uri1", "hash1", 1L),
+        new CvpItem("f2.mp4", "uri2", "hash2", 1L),
         YET_TO_INGEST
     ));
     private static final HrsFileSet HRS_FILE_SET = new HrsFileSet(Set.of("f1.mp4", "f2.mp4"));
     private static final Metadata METADATA = new Metadata(
-        "recording-uri",
+        "recording-file-name",
+        "recording-cvp-uri",
+        1L,
         "I2foA30B==",
         null,
-        "xyz",
+        0,
+        "mp4",
         LocalDateTime.now(),
+        "xyz",
+        222,
         "AB",
-        "222",
-        null,
-        0
+        null
     );
 
     @Test
@@ -78,11 +80,7 @@ class DefaultIngestorServiceTest {
         doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
-        try {
-            doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
         // THEN
         // Filename parsing happen here
         // AND
@@ -96,11 +94,7 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, times(1)).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, times(1)).resolve(any(CvpItem.class));
     }
 
     @Test
@@ -111,11 +105,7 @@ class DefaultIngestorServiceTest {
         doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
-        try {
-            doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
         // THEN
         // Filename parsing happen here
         // AND
@@ -129,11 +119,7 @@ class DefaultIngestorServiceTest {
         verify(ingestionFilterer, times(3)).filter(CVP_FILE_SET, HRS_FILE_SET);
         verify(cvpBlobstoreClient, times(3)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(3)).scan(any(InputStream.class));
-        try {
-            verify(metadataResolver, times(3)).resolve(any(CvpItem.class));
-        } catch (FileParsingException e) {
-            e.printStackTrace();
-        }
+        verify(metadataResolver, times(3)).resolve(any(CvpItem.class));
     }
 
     @Test
@@ -158,7 +144,6 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
         verify(metadataResolver, never()).resolve(any(CvpItem.class));
-
     }
 
     @Test
@@ -176,7 +161,6 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
         verify(metadataResolver, never()).resolve(any(CvpItem.class));
-
     }
 
     @Test
@@ -194,7 +178,6 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, never()).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, never()).scan(any(InputStream.class));
         verify(metadataResolver, never()).resolve(any(CvpItem.class));
-
     }
 
     @Test
@@ -215,7 +198,6 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
         verify(metadataResolver, never()).resolve(any(CvpItem.class));
-
     }
 
 }

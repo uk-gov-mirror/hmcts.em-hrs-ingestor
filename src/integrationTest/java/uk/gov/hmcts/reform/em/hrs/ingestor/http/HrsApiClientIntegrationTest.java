@@ -9,9 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.AppConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestOkHttpClientConfig;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 import java.time.LocalDateTime;
 import javax.inject.Inject;
@@ -31,18 +31,21 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 class HrsApiClientIntegrationTest {
     private static final String TEST_FILE = "file.mp4";
     private static final String TEST_FOLDER = "folder-1";
-    private static final String GET_PATH = String.format("/folders/%s/hearing-recording-file-names", TEST_FOLDER);
-    private static final String POST_PATH = String.format("/folders/%s/hearing-recording", TEST_FOLDER);
+    private static final String GET_PATH = String.format("/folders/%s", TEST_FOLDER);
+    private static final String POST_PATH = "/segments";
     private static final Metadata METADATA = new Metadata(
-        "recording-uri",
+        "recording-file-name",
+        "recording-cvp-uri",
+        1L,
         "I2foA30B==",
         null,
-        "xyz",
+        0,
+        "mp4",
         LocalDateTime.now(),
+        "xyz",
+        222,
         "AB",
-        "222",
-        null,
-        0
+        null
     );
 
     @Inject
@@ -152,9 +155,9 @@ class HrsApiClientIntegrationTest {
                                 .withStatus(202))
         );
 
-        underTest.postFile(TEST_FOLDER, METADATA);
+        underTest.postFile(METADATA);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(String.format(POST_PATH, TEST_FOLDER))));
+        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(POST_PATH)));
     }
 
     @Test
@@ -165,9 +168,9 @@ class HrsApiClientIntegrationTest {
                                 .withStatus(404))
         );
 
-        underTest.postFile(TEST_FOLDER, METADATA);
+        underTest.postFile(METADATA);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(String.format(POST_PATH, TEST_FOLDER))));
+        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(POST_PATH)));
     }
 
     @Test
@@ -179,7 +182,7 @@ class HrsApiClientIntegrationTest {
                                 .withStatus(202))
         );
 
-        assertThatIOException().isThrownBy(() -> underTest.postFile(TEST_FOLDER, METADATA));
+        assertThatIOException().isThrownBy(() -> underTest.postFile(METADATA));
     }
 
     @Test
@@ -190,7 +193,7 @@ class HrsApiClientIntegrationTest {
                                 .withFault(Fault.CONNECTION_RESET_BY_PEER))
         );
 
-        assertThatIOException().isThrownBy(() -> underTest.postFile(TEST_FOLDER, METADATA));
+        assertThatIOException().isThrownBy(() -> underTest.postFile(METADATA));
     }
 
     @Test
@@ -202,7 +205,7 @@ class HrsApiClientIntegrationTest {
                                 .withStatus(403))
         );
 
-        assertThatIOException().isThrownBy(() -> underTest.postFile(TEST_FOLDER, METADATA));
+        assertThatIOException().isThrownBy(() -> underTest.postFile(METADATA));
     }
 
 }

@@ -5,13 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItemSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class DefaultIngestorService implements IngestorService {
             final Set<CvpItem> filteredSet = getFilesToIngest(x);
             filteredSet.forEach(y -> {
                 if (isFileClean(y.getFilename())) {
-                    postToHrsApi(x, y);
+                    postToHrsApi(y);
                 }
             });
         });
@@ -93,10 +93,10 @@ public class DefaultIngestorService implements IngestorService {
         }
     }
 
-    private void postToHrsApi(final String folderName, final CvpItem item) {
+    private void postToHrsApi(final CvpItem item) {
         try {
             final Metadata metadata = metadataResolver.resolve(item);
-            hrsApiClient.postFile(folderName, metadata);
+            hrsApiClient.postFile(metadata);
         } catch (IOException | HrsApiException e) {
             LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
         } catch (FileParsingException e) {

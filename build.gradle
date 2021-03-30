@@ -148,7 +148,7 @@ pmd {
 def coverageExclusionList = [
   '**uk/gov/hmcts/reform/em/hrs/ingestor/Application*',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/config/**',
-  '**uk/gov/hmcts/reform/em/hrs/ingestor/domain/**',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/model/**',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/exception/**',
 ]
 
@@ -305,7 +305,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
   implementation group: "uk.gov.hmcts.reform", name: "service-auth-provider-client", version: "3.1.4"
-  
+
   implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging

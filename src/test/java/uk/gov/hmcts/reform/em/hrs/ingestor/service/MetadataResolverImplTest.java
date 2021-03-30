@@ -1,24 +1,27 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.CvpItem;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import reactor.util.function.Tuple3;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.service.MetadataResolverImpl.FRAGMENT;
 
 class MetadataResolverImplTest {
     private final MetadataResolver underTest = new MetadataResolverImpl();
 
+    private static final String FILENAME = "audiostream12/bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0.mp4";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss.SSS");
     private static final CvpItem CVP_ITEM = new CvpItem(
-        "folder-1/bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0",
+        FILENAME,
         "file-uri",
-        "a2B4=="
+        "a2B4==",
+        123L
     );
 
     @Test
@@ -26,28 +29,33 @@ class MetadataResolverImplTest {
         final Metadata metadata = underTest.resolve(CVP_ITEM);
 
         assertThat(metadata).satisfies(x -> {
-            assertThat(x.getRecordingDate()).isEqualTo(LocalDateTime.parse("2020-07-16-10.07.31.680", FORMATTER));
-            assertThat(x.getRecordingSegment()).isEqualTo(0);
+            assertThat(x.getRecordingDateTime()).isEqualTo(LocalDateTime.parse("2020-07-16-10.07.31.680", FORMATTER));
+            assertThat(x.getSegment()).isZero();
         });
     }
 
     @Test
-    void testShouldResolveMetadataFromFilenameWhenFilenameIsEmpty() {
-        assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
-            underTest.resolve(
-                new CvpItem("", null, null)
-            );
+    void testShouldReturnRoomReference() {
+        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
 
-        });
+        assertThat(fragments.getT1()).isEqualTo(12);
     }
 
     @Test
-    void testShouldResolveMetadataFromFilenameWhenFilenameIsNull() {
-        assertThatExceptionOfType(FileParsingException.class).isThrownBy(() -> {
-            underTest.resolve(
-                new CvpItem(null, null, null)
-            );
+    void testShouldReturnRecordingReference() {
+        final String expectedString = "bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0";
 
-        });
+        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+
+        assertThat(fragments.getT2()).isEqualTo(expectedString);
+    }
+
+    @Test
+    void testShouldReturnFilenameExtension() {
+        final String expectedString = "mp4";
+
+        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+
+        assertThat(fragments.getT3()).isEqualTo(expectedString);
     }
 }

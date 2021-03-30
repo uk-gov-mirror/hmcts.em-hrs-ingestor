@@ -6,8 +6,8 @@ import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Response;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.HrsFileSet;
-import uk.gov.hmcts.reform.em.hrs.ingestor.domain.Metadata;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
+import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -47,8 +47,8 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public void postFile(final String folder, final Metadata metadata) throws IOException {
-        final Response<ResponseBody> response = hrsHttpClient.postFile(folder, metadata).execute();
+    public void postFile(final Metadata metadata) throws IOException {
+        final Response<ResponseBody> response = hrsHttpClient.postFile(metadata).execute();
 
         if (!response.isSuccessful()) {
             parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
@@ -62,6 +62,7 @@ public class HrsApiClientImpl implements HrsApiClient {
     private void parseErrorBody(final int code,
                                 final String message,
                                 final ResponseBody body) throws IOException {
-        LOGGER.warn("Response error: {} => {} => {}", code, message, body.string());
+        final String errorBodyMessage = body.string();
+        LOGGER.warn("Response error: {} => {} => {}", code, message, errorBodyMessage);
     }
 }
