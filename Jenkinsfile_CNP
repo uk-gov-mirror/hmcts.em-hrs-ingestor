@@ -127,6 +127,30 @@ withPipeline(type, product, component) {
     enablePactAs([
       AppPipelineDsl.PactRoles.CONSUMER
     ])
+
+    after('contractTest:aat') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/contract",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor Contract Test Report"
+      ]
+    }
+
+    after('functionalTest:aat') {
+
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/functional",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor API Functional Test Report"
+      ]
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
   }
 
   after('test') {
@@ -201,19 +225,7 @@ withPipeline(type, product, component) {
     ]
   }
 
-  after('contractTest:preview') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/tests/contract",
-      reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Contract Test Report"
-    ]
-  }
-
   after('functionalTest:preview') {
-
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -224,5 +236,4 @@ withPipeline(type, product, component) {
     ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
-
 }
