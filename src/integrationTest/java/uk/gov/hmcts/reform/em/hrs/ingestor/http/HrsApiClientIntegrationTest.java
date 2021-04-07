@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import javax.inject.Inject;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -25,6 +26,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIOException;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.convertObjectToJsonString;
 
 @SpringBootTest(classes = {TestOkHttpClientConfig.class, AppConfig.class, HrsApiClientImpl.class})
 @ContextConfiguration(initializers = {WireMockInitializer.class})
@@ -38,14 +40,14 @@ class HrsApiClientIntegrationTest {
         "recording-cvp-uri",
         1L,
         "I2foA30B==",
-        null,
+        "recording-ref",
         0,
         "mp4",
         LocalDateTime.now(),
         "xyz",
         222,
         "AB",
-        null
+        "C3"
     );
 
     @Inject
@@ -149,6 +151,7 @@ class HrsApiClientIntegrationTest {
 
     @Test
     void testShouldPostDataSuccessfully() throws Exception {
+        final String expectedPayload = convertObjectToJsonString(METADATA);
         wireMockServer.stubFor(
             WireMock.post(urlPathEqualTo(POST_PATH))
                 .willReturn(aResponse()
@@ -157,7 +160,8 @@ class HrsApiClientIntegrationTest {
 
         underTest.postFile(METADATA);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(POST_PATH)));
+        wireMockServer.verify(exactly(1), postRequestedFor(urlEqualTo(POST_PATH))
+            .withRequestBody(equalTo(expectedPayload)));
     }
 
     @Test

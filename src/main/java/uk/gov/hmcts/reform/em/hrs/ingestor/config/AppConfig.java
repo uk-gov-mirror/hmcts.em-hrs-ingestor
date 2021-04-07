@@ -18,15 +18,18 @@ public class AppConfig {
 
     @Bean
     public ObjectMapper provideObjectMapper() {
-        return new ObjectMapper()
+        final ObjectMapper objectMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.findAndRegisterModules();
+
+        return objectMapper;
     }
 
     @Bean
-    public Retrofit provideRetrofit(final OkHttpClient okHttpClient) {
+    public Retrofit provideRetrofit(final ObjectMapper objectMapper, final OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
             .baseUrl(hrsApiBaseUrl)
-            .addConverterFactory(JacksonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .client(okHttpClient)
             .build();
     }
