@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.config.ClamAvConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestOkHttpClientConfig;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
-import uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants;
+import uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClientImpl;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClientImpl;
@@ -28,10 +28,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants.CLEAN_FILE;
-import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants.CLEAN_FOLDER;
-import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants.INFECTED_FILE;
-import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestConstants.INFECTED_FOLDER;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.CLEAN_FILE;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.CLEAN_FOLDER;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FILE;
+import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FOLDER;
 
 @SpringBootTest(classes = {
     TestOkHttpClientConfig.class,
@@ -104,7 +104,7 @@ class IngestorServiceIntegrationTest {
     }
 
     private void setupCvpBlobstore(final String folder, final String file) throws Exception {
-        final byte[] data = TestConstants.getFileContent(file);
+        final byte[] data = TestUtil.getFileContent(file);
         azureOperations.uploadToContainer(folder + "/" + file, data);
     }
 
