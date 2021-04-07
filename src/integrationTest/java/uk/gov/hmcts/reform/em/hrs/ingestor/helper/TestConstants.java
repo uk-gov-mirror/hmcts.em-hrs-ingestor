@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,5 +22,11 @@ public interface TestConstants {
         final File file = Paths.get(Objects.requireNonNull(resource).toURI()).toFile();
 
         return Files.readAllBytes(file.toPath());
+    }
+
+    static String convertObjectToJsonString(Object object) throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        return objectMapper.writeValueAsString(object);
     }
 }
