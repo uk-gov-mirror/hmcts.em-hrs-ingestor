@@ -25,4 +25,6 @@ class RootUrlControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertThat(responseEntity.getBody()).contains(expectedMessage);
     }
+
+
 }

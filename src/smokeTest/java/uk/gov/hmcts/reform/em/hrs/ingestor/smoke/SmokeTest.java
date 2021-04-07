@@ -8,7 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Smoke")})
 public class SmokeTest {
+
+    @MockBean
+    private DefaultIngestorService DIS;
 
     private static final String MESSAGE = "Welcome to Hearing Recordings Ingestor";
 
@@ -39,5 +44,10 @@ public class SmokeTest {
 
 
         assertEquals(MESSAGE, response, "");
+    }
+
+    @Test
+    void test_ingest() {
+        DIS.ingest();
     }
 }
