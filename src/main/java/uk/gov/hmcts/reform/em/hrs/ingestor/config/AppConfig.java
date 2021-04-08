@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ public class AppConfig {
         final ObjectMapper objectMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.findAndRegisterModules();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
 
         return objectMapper;
     }
