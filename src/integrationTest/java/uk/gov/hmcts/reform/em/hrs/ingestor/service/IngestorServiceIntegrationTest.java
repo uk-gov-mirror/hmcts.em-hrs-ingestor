@@ -48,7 +48,7 @@ import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FOLDE
 })
 @ContextConfiguration(initializers = {WireMockInitializer.class, ClamAvInitializer.class})
 class IngestorServiceIntegrationTest {
-    private static final String GET_PATH = "/folders/([a-zA-Z0-9_.-]*)";
+    private static final String GET_FOLDERS_PATH = "/folders/([a-zA-Z0-9_.-]*)";
     private static final String POST_PATH = "/segments";
 
     @Inject
@@ -58,17 +58,20 @@ class IngestorServiceIntegrationTest {
     @Inject
     private DefaultIngestorService underTest;
 
+    private static String DUMMY_FOLDER = "dummy-folder";
+
+
+
     @BeforeEach
     public void prepare() {
         azureOperations.clearContainer();
         wireMockServer.resetAll();
-
         wireMockServer.stubFor(
-            get(urlMatching(GET_PATH))
+            get(urlMatching(GET_FOLDERS_PATH))
                 .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                .withBody("[]"))
+                                .withBody("{\"folder-name\":\"" + DUMMY_FOLDER + "\",\"filenames\":[]}"))
         );
 
         wireMockServer.stubFor(

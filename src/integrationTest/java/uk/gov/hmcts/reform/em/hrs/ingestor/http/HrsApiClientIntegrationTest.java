@@ -67,7 +67,7 @@ class HrsApiClientIntegrationTest {
             WireMock.get(urlPathEqualTo(GET_PATH))
                 .willReturn(aResponse()
                                 .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                .withBody("[\"file.mp4\"]"))
+                                .withBody("{\"folder-name\":\"" + TEST_FOLDER + "\",\"filenames\":[\"file.mp4\"]}"))
         );
 
         final HrsFileSet ingestedFiles = underTest.getIngestedFiles(TEST_FOLDER);
