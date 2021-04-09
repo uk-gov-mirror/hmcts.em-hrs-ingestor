@@ -101,6 +101,8 @@ public class DefaultIngestorService implements IngestorService {
             LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
         } catch (FileParsingException e) {
             LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+        } catch (NumberFormatException e) {
+            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
         } catch (Exception e) {
             LOGGER.error("Unhandled Exception parsing/posting file {}:: ",
                          item.getFilename(),

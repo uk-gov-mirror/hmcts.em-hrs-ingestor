@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Response;
+import uk.gov.hmcts.reform.em.hrs.ingestor.dto.RecordingFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
@@ -20,7 +21,7 @@ import javax.inject.Named;
 public class HrsApiClientImpl implements HrsApiClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(HrsApiClientImpl.class);
 
-    private static final TypeReference<Set<String>> TYPE_REFERENCE = new TypeReference<>() {
+    private static final TypeReference<RecordingFilenameDto> TYPE_REFERENCE = new TypeReference<>() {
     };
 
     private final HrsHttpClient hrsHttpClient;
@@ -42,7 +43,9 @@ public class HrsApiClientImpl implements HrsApiClient {
             return new HrsFileSet(Collections.emptySet());
         }
 
-        final Set<String> files = parseBody(response.body());
+        final RecordingFilenameDto body = parseBody(response.body());
+        final Set<String> files = body.getFilenames();
+
         return new HrsFileSet(files);
     }
 
@@ -55,7 +58,7 @@ public class HrsApiClientImpl implements HrsApiClient {
         }
     }
 
-    private Set<String> parseBody(final ResponseBody body) throws IOException {
+    private RecordingFilenameDto parseBody(final ResponseBody body) throws IOException {
         return objectMapper.readValue(Objects.requireNonNull(body).string(), TYPE_REFERENCE);
     }
 

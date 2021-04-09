@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
 
 management:
   endpoint:
@@ -17,7 +17,7 @@ spring:
 
 azure:
   storage:
-    connection-string: ${STORAGEACCOUNT_PRIMARY_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
+    connection-string: ${STORAGEACCOUNT_PRIMARY_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:20000/devstoreaccount1}
     cvp-blob-container-reference: ${STORAGE_CONTAINER_CVP_CONTAINER_NAME:emhrstestcvpcontainer}
     enabled: true
 

@@ -19,7 +19,6 @@ public class AntivirusClientImpl implements AntivirusClient {
     @Override
     public AvScanResult scan(final InputStream input) throws IOException {
         final byte[] result = clamavClient.scan(input);
-
         return ClamAVClient.isCleanReply(result) ? AvScanResult.CLEAN : AvScanResult.INFECTED;
     }
 

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.em.hrs.dto;
+package uk.gov.hmcts.reform.em.hrs.ingestor.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
