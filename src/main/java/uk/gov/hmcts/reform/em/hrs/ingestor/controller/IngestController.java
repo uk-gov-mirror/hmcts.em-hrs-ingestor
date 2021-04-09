@@ -12,15 +12,13 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class IngestController {
+
     @Inject
-    DefaultIngestorService service;
+    DefaultIngestorService defaultIngestorService;
 
     @GetMapping(value = "/ingest", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<String> welcome()
-
-
-    {
-        service.ingest();
+    public ResponseEntity<String> ingest() {
+        defaultIngestorService.ingest();
         return ok("Ingestion Initiated");
     }
 }
