@@ -10,6 +10,7 @@ plugins {
   id 'org.sonarqube' version '3.1.1'
   id 'uk.gov.hmcts.java' version '0.12.8'
   id 'au.com.dius.pact' version '4.0.10'
+  id "info.solidsoft.pitest" version '1.6.0'
 }
 
 group = 'uk.gov.hmcts.reform.em.hrs'
@@ -184,6 +185,9 @@ sonarqube {
     property "sonar.exclusions", coverageExclusionList.join(", ")
     property "sonar.coverage.exclusions", coverageExclusionList.join(", ")
     property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.host.url", "https://sonar.reform.hmcts.net/"
+    property "sonar.pitest.mode", "reuseReport"
+    property "sonar.pitest.reportsDirectory", "build/reports/pitest"
   }
 }
 
@@ -374,6 +378,9 @@ dependencies {
   }
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2'
   testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+  testImplementation group :'info.solidsoft.gradle.pitest', name : 'gradle-pitest-plugin',version: '1.6.0'
+  testImplementation group: 'org.pitest', name: 'pitest', version: '1.6.4'
+  testImplementation group:'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: '0.5'
 
 
   //smokeTest implementation
@@ -481,4 +488,26 @@ pact {
   }
 }
 
+pitest {
+  targetClasses = ['uk.gov.hmcts.reform.em.hrs.ingestor.*']
+  targetTests = ['uk.gov.hmcts.reform.em.hrs.ingestor.*']
+  //excludedClasses = ['uk.gov.hmcts.reform.em.hrs.service.SecurityServiceImplTest']
+  //targetClasses = ['uk.gov.hmcts.reform.em.hrs.util.*']
+  //targetTests = ['uk.gov.hmcts.reform.em.hrs.util.*']
+  enableDefaultIncrementalAnalysis = true
+  historyInputLocation = 'build/reports/pitest/fastermutationtesting'
+  historyOutputLocation = 'build/reports/pitest/fastermutationtestingoutput'
+  threads = 15
+  testSourceSets = [sourceSets.test, sourceSets.integrationTest]
+  mainSourceSets = [sourceSets.main]
+  fileExtensionsToFilter.addAll('xml', 'json')
+  outputFormats = ['XML', 'HTML', 'CSV']
+  mutationThreshold = 0
+  coverageThreshold = 0
+  maxMutationsPerClass = 15
+  jvmArgs = ['-Xms1G', '-Xmx3G']
+  timestampedReports = false
+  failWhenNoMutations = false
+  detectInlinedCode = true
+}
 
