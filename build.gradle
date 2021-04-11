@@ -153,7 +153,7 @@ pmd {
 }
 
 def coverageExclusionList = [
-  '**uk/gov/hmcts/reform/em/hrs/ingestor/Application',
+  '**uk/gov/hmcts/reform/em/hrs/ingestor/Application*',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/listener/**',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/config/**',
   '**uk/gov/hmcts/reform/em/hrs/ingestor/model/**',
@@ -439,7 +439,7 @@ dependencies {
  * Adhoc
  **********************************************************************************************************************/
 
-mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
+//mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
 
 bootJar {
   getArchiveFileName().set(provider {

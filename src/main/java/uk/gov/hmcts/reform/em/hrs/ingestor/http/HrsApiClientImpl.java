@@ -3,24 +3,20 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import retrofit2.Response;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.RecordingFilenameDto;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
 @Component
 public class HrsApiClientImpl implements HrsApiClient {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HrsApiClientImpl.class);
-
     private static final TypeReference<RecordingFilenameDto> TYPE_REFERENCE = new TypeReference<>() {
     };
 
@@ -34,13 +30,16 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public HrsFileSet getIngestedFiles(String folderName) throws IOException {
+    public HrsFileSet getIngestedFiles(String folderName) throws IOException, HrsApiException {
         final Response<ResponseBody> response = hrsHttpClient.getFiles(folderName)
             .execute();
 
         if (!response.isSuccessful()) {
-            parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
-            return new HrsFileSet(Collections.emptySet());
+            throw new HrsApiException(
+                response.code(),
+                response.message(),
+                Objects.requireNonNull(response.errorBody())
+            );
         }
 
         final RecordingFilenameDto body = parseBody(response.body());
@@ -50,24 +49,22 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public boolean postFile(final Metadata metadata) throws IOException {
+    public void postFile(final Metadata metadata) throws IOException, HrsApiException {
         final Response<ResponseBody> response = hrsHttpClient.postFile(metadata).execute();
-
         boolean isSuccessful = response.isSuccessful();
         if (!isSuccessful) {
-            parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
+            throw new HrsApiException(
+                response.code(),
+                response.message(),
+                Objects.requireNonNull(response.errorBody())
+            );
         }
-        return isSuccessful;
+
     }
 
     private RecordingFilenameDto parseBody(final ResponseBody body) throws IOException {
         return objectMapper.readValue(Objects.requireNonNull(body).string(), TYPE_REFERENCE);
     }
 
-    private void parseErrorBody(final int code,
-                                final String message,
-                                final ResponseBody body) throws IOException {
-        final String errorBodyMessage = body.string();
-        LOGGER.warn("Response error: {} => {} => {}", code, message, errorBodyMessage);
-    }
+
 }
