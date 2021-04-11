@@ -31,3 +31,8 @@ s2s:
     url: ${S2S_BASE_URI:http://localhost:4502}
     secret: ${FUNCTIONAL_TEST_CLIENT_S2S_TOKEN:AAAAAAAAAAAAAAAA}
     serviceName: ${S2S_SERVICE_NAME:em_gw}
+
+azure:
+  app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
+  application-insights:
+    instrumentation-key: ${APPINSIGHTS_INSTRUMENTATIONKEY:d04b52b1-20e5-473a-8ac4-3f6859ea113c}
