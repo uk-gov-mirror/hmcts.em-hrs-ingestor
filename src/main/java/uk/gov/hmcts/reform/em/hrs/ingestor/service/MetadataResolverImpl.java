@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
+import org.springframework.stereotype.Component;
 import reactor.util.function.Tuple3;
 import reactor.util.function.Tuples;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
@@ -9,9 +10,8 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.parse.FilenameParser;
 
 import java.util.function.Function;
-import javax.inject.Named;
 
-@Named
+@Component
 public class MetadataResolverImpl implements MetadataResolver {
     static Function<String, Tuple3<Integer, String, String>> FRAGMENT = x -> {
         final String folderPrefix = "^audiostream";

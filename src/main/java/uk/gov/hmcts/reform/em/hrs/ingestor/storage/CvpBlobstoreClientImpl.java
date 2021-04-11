@@ -7,6 +7,8 @@ import com.azure.storage.blob.models.BlobItemProperties;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
@@ -15,15 +17,13 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     private final BlobContainerClient blobContainerClient;
     private static final int BLOB_LIST_TIMEOUT = 30;
 
-    @Inject
+    @Autowired
     public CvpBlobstoreClientImpl(final BlobContainerClient blobContainerClient) {
         this.blobContainerClient = blobContainerClient;
     }

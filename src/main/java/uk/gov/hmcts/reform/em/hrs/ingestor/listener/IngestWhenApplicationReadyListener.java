@@ -1,20 +1,16 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.listener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 
 @Slf4j
 public class IngestWhenApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Inject
+    @Autowired
     DefaultIngestorService defaultIngestorService;
 
     @Override

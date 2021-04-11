@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import retrofit2.Response;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.RecordingFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
@@ -14,10 +16,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class HrsApiClientImpl implements HrsApiClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(HrsApiClientImpl.class);
 
@@ -27,7 +27,7 @@ public class HrsApiClientImpl implements HrsApiClient {
     private final HrsHttpClient hrsHttpClient;
     private final ObjectMapper objectMapper;
 
-    @Inject
+    @Autowired
     public HrsApiClientImpl(final HrsHttpClient hrsHttpClient, final ObjectMapper objectMapper) {
         this.hrsHttpClient = hrsHttpClient;
         this.objectMapper = objectMapper;

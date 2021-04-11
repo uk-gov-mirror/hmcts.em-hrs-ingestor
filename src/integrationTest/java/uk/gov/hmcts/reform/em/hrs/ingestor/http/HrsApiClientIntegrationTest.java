@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Fault;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.AppConfig;
@@ -14,7 +15,6 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
 import java.time.LocalDateTime;
-import javax.inject.Inject;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -50,10 +50,10 @@ class HrsApiClientIntegrationTest {
         "C3"
     );
 
-    @Inject
+    @Autowired
     private WireMockServer wireMockServer;
 
-    @Inject
+    @Autowired
     private HrsApiClientImpl underTest;
 
     @BeforeEach

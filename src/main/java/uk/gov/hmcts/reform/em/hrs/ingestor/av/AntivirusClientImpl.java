@@ -1,17 +1,17 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.av;
 
 import fi.solita.clamav.ClamAVClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class AntivirusClientImpl implements AntivirusClient {
     private final ClamAVClient clamavClient;
 
-    @Inject
+    @Autowired
     public AntivirusClientImpl(final ClamAVClient clamavClient) {
         this.clamavClient = clamavClient;
     }

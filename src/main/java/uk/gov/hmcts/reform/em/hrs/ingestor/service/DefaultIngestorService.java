@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 import com.gc.iotools.stream.os.OutputStreamToInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
@@ -18,10 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class DefaultIngestorService implements IngestorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIngestorService.class);
 
@@ -35,7 +35,7 @@ public class DefaultIngestorService implements IngestorService {
     private static int filesParsedOk;
     private static int filesSubmittedOk;
 
-    @Inject
+    @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
                                   final HrsApiClient hrsApiClient,
                                   final IngestionFilterer ingestionFilterer,

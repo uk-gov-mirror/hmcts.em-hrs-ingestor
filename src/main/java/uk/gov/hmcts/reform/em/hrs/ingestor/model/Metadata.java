@@ -1,7 +1,6 @@
 
 package uk.gov.hmcts.reform.em.hrs.ingestor.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

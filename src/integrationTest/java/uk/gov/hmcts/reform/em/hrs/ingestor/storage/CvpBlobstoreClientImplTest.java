@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.storage;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.em.hrs.ingestor.config.TestAzureStorageConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.helper.AzureOperations;
@@ -19,7 +20,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -30,9 +30,9 @@ import static org.awaitility.Awaitility.await;
     AzureOperations.class
 })
 class CvpBlobstoreClientImplTest {
-    @Inject
+    @Autowired
     private AzureOperations azureOperations;
-    @Inject
+    @Autowired
     private CvpBlobstoreClientImpl underTest;
 
     private static final String FOLDER_ONE = "folder-1";
