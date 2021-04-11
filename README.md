@@ -1,6 +1,13 @@
 =======
 # Hearing Recording Service - Ingestor
 
+# Overview
+
+- Lists folders in source azure storage bucket (CVP Blobstore)
+- Asks HRS-API which files it already has / is currently ingesting
+- Parses filenames of files to be ingested, to create metadata
+- Sends Metadata and filename source to HRS-API to ingest
+
 
 #Local Dev
 
@@ -10,22 +17,26 @@ You'll need to get sonarqube docker image if you do not have it already, and ini
 
 to fetch the latest image, run it and open the browser
 run:
-make sonarqube-fetch-sonarqube-latest
-make report-sonarqube
+- make sonarqube-fetch-and-run-sonarqube-latest-with-password-as-admin
+- make report-sonarqube
 
 in the browser, log in as admin (password=admin), go to http://localhost:9000/account/security/ and change password to adminnew
 
 
 ##Subsequent Builds (these must all pass before raising a PR)
 
-checks:
+This will run all the major checks, and open the jacoco test report in your browser:
+
 - make check-all
 
+
+To show the sonarcube analysis (master branch only?)
 sonarqube:
 - make sonarqube-run-local-sonarqube-server
-- sonarqube-run-tests-with-password-as-adminnew
+- make sonarqube-run-tests-with-password-as-adminnew
 
-smoketest:
+
+#Smoketest:
 
 for first time use you will need to be logged into the Azure Container repo's using these commands:
 
@@ -33,18 +44,39 @@ az login
 az acr login --name hmctspublic && az acr login --name hmctsprivate
 
 
-the get hrs-api running, from root of hrs-api project, run:
-./docker/dependencies/start-local-environment.sh
-./gradlew bootRun
+You need to have HRS-API running (and its dependencies!) before running this application
 
-then get the ingestor dependencies running, from the root of this project run:
+#HRS-API
 
-docker/dependencies/start-local-environment.sh
-./gradlew bootRun
+Please fully read the HRS-API readme and work through it, and validate you can run a smoke test.
+
+For convenience, the basic steps are listed here for reference when you are familiar with them
+
+Open a new terminal..
+go to the root of hrs-api project,
+- cd ../em-hrs-api
+then get hrs-api dependencies running
+- ./docker/dependencies/start-local-environment.sh
+then when the dependencies are showing "ccd-data-store-api_1    | 2021-04-11T10:54:38.861 INFO  [main] o.s.d.r.c.DeferredRepositoryInitializationListener Spring Data repositories initialized"
+- make app-run
+then prime the CCD via the functional tests with
+- make test-functional
+finally, smoke test it with:
+- make app-smoke-test
+
+#HRS-Ingestor
+Now then in this terminal, get the ingestor dependencies running
+
+This will fire up depencies AND prime the CVP blbo store with a file
+- ./docker/dependencies/start-local-environment.sh
+
+running the appliction will immediately invoke the ingest method, so will attempt to send the file
+to hrs api
+
+- make app-run
 
 
-then smoke test with
-./gradlew smokeTest
+
 
 #Idea Setup
 

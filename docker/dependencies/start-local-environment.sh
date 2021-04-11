@@ -22,3 +22,5 @@ az storage blob upload -f README.md -c emhrstestcvpcontainer -n audiostream99999
 docker-compose ${COMPOSE_FILE} up -d clamav
 
 echo "LOCAL ENVIRONMENT SUCCESSFULLY STARTED"
+
+docker-compose ${COMPOSE_FILE} logs -f

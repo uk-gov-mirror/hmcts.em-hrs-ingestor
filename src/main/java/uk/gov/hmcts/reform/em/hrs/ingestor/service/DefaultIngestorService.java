@@ -31,6 +31,10 @@ public class DefaultIngestorService implements IngestorService {
     private final AntivirusClient antivirusClient;
     private final MetadataResolver metadataResolver;
 
+    private static int filesAttempted;
+    private static int filesParsedOk;
+    private static int filesSubmittedOk;
+
     @Inject
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
                                   final HrsApiClient hrsApiClient,
@@ -42,26 +46,50 @@ public class DefaultIngestorService implements IngestorService {
         this.ingestionFilterer = ingestionFilterer;
         this.antivirusClient = antivirusClient;
         this.metadataResolver = metadataResolver;
+
+        LOGGER.info("Constructing DefaultIngestorService");
     }
 
     @Override
     public void ingest() {
+        filesAttempted = 0;
+        filesParsedOk = 0;
+        filesSubmittedOk = 0;
+        LOGGER.info("Ingestion Started");
         final Set<String> folders = cvpBlobstoreClient.getFolders();
-        folders.forEach(x -> {
-            final Set<CvpItem> filteredSet = getFilesToIngest(x);
-            filteredSet.forEach(y -> {
-                if (isFileClean(y.getFilename())) {
-                    postToHrsApi(y);
+        folders.forEach(folder -> {
+            LOGGER.info("Inspecting folder: {}", folder);
+            final Set<CvpItem> filteredSet = getFilesToIngest(folder);
+            filteredSet.forEach(file -> {
+                filesAttempted++;
+                if (isFileClean(file.getFilename())) {
+                    postToHrsApi(file);
                 }
             });
+            LOGGER.info("Running Total of Files Attempted: {}", filesAttempted);
+
         });
+        LOGGER.info("Ingestion Complete");
+        LOGGER.info("Total filesAttempted: {}", filesAttempted);
+        LOGGER.info("Total filesParsedOk: {}", filesParsedOk);
+        LOGGER.info("Total filesSubmittedOk: {}", filesSubmittedOk);
+
     }
 
     private Set<CvpItem> getFilesToIngest(final String folder) {
         try {
             final CvpItemSet cvpItemSet = cvpBlobstoreClient.findByFolder(folder);
             final HrsFileSet hrsFileSet = hrsApiClient.getIngestedFiles(folder);
-            return ingestionFilterer.filter(cvpItemSet, hrsFileSet);
+            Set<CvpItem> filesToIngest = ingestionFilterer.filter(cvpItemSet, hrsFileSet);
+
+            int cvpFilesCount = cvpItemSet.getCvpItems().size();
+            int hrsFileCount = hrsFileSet.getHrsFiles().size();
+            int filesToIngestCount = filesToIngest.size();
+
+            LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}",
+                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount
+            );
+            return filesToIngest;
         } catch (HrsApiException | IOException e) {
             LOGGER.error("", e); // TODO: covered by EM-3582
             return Collections.emptySet();
@@ -94,19 +122,32 @@ public class DefaultIngestorService implements IngestorService {
     }
 
     private void postToHrsApi(final CvpItem item) {
+        Metadata metadata = null;
         try {
-            final Metadata metadata = metadataResolver.resolve(item);
-            hrsApiClient.postFile(metadata);
+            metadata = metadataResolver.resolve(item);
+            filesParsedOk++;
+        } catch (
+            FileParsingException e) {
+            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+            return;
+        }
+
+
+        try {
+            boolean successful = hrsApiClient.postFile(metadata);
+            if (successful) {
+                filesSubmittedOk++;
+            }
+
         } catch (IOException | HrsApiException e) {
             LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
-        } catch (FileParsingException e) {
-            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
         } catch (NumberFormatException e) {
             LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
         } catch (Exception e) {
-            LOGGER.error("Unhandled Exception parsing/posting file {}:: ",
-                         item.getFilename(),
-                         e
+            LOGGER.error(
+                "Unhandled Exception parsing/posting file {}:: ",
+                item.getFilename(),
+                e
             );  // TODO: covered by EM-3582
         }
     }

@@ -50,12 +50,14 @@ public class HrsApiClientImpl implements HrsApiClient {
     }
 
     @Override
-    public void postFile(final Metadata metadata) throws IOException {
+    public boolean postFile(final Metadata metadata) throws IOException {
         final Response<ResponseBody> response = hrsHttpClient.postFile(metadata).execute();
 
-        if (!response.isSuccessful()) {
+        boolean isSuccessful = response.isSuccessful();
+        if (!isSuccessful) {
             parseErrorBody(response.code(), response.message(), Objects.requireNonNull(response.errorBody()));
         }
+        return isSuccessful;
     }
 
     private RecordingFilenameDto parseBody(final ResponseBody body) throws IOException {

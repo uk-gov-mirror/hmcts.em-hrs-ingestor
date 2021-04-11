@@ -9,7 +9,7 @@
 # It includes
 #  Docker builds
 #  Gradle builds
-#  Sonar Cube
+#  Sonar qube
 #  Code Coverage Checks (Gradle)
 #  Reports
 #
@@ -81,10 +81,13 @@ check-all:
 	./gradlew test integration check dependencyCheckAggregate jacocoTestCoverageVerification jacocoTestReport && open	build/reports/jacoco/test/html/index.html
 
 
-
-#convenience first time download and run of sonarcube with default username/password of admin/admin
+#convenience first time download and run of sonarqube with default username/password of admin/admin
 sonarqube-fetch-and-run-sonarqube-latest-with-password-as-admin:
 	docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
+
+sonarqube-run-tests-with-password-as-adminnew:
+	./gradlew sonarqube -Dsonar.login="admin" -Dsonar.password="adminnew" -i && open http://localhost:9000/
+
 
 
 #Note this fails if there is already a container running.
@@ -92,21 +95,9 @@ sonarqube-run-local-sonarqube-server:
 	docker start sonarqube
 
 
-# First time run sonarqube containers have a default password of admin
-sonarqube-run-tests-with-password-as-admin:
-	./gradlew sonarqube -Dsonar.login="admin" -Dsonar.password="admin" -i
-
-
-sonarqube-run-tests-with-password-as-adminnew:
-	./gradlew sonarqube -Dsonar.login="admin" -Dsonar.password="adminnew" -i && open http://localhost:9000/
-
-
-
-
-
 #convenenience links for all generated reports
 
-report-sonarcube:
+report-sonarqube:
 	open http://localhost:9000/
 
 report-checkstyle:
