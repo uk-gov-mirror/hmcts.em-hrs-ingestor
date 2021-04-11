@@ -114,9 +114,10 @@ task contract(type: Test) {
 
 task smoke(type: Test) {
   description = "Runs Smoke Tests"
+  group = 'Delivery pipeline'
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
-  include "uk/gov/hmcts/reform/em/hrs/ingestor/smoke/**"
+//TODO do we need to sepcify paths if tags are used? include "uk/gov/hmcts/reform/em/hrs/ingestor/smoke/**"
   environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
   failFast = true
 }
