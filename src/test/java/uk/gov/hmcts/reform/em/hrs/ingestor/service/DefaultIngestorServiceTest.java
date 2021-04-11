@@ -34,20 +34,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultIngestorServiceTest {
-    @Mock
-    private CvpBlobstoreClient cvpBlobstoreClient;
-    @Mock
-    private HrsApiClient hrsApiClient;
-    @Mock
-    private IngestionFilterer ingestionFilterer;
-    @Mock
-    private AntivirusClient antivirusClient;
-    @Mock
-    private MetadataResolver metadataResolver;
-
-    @InjectMocks
-    private DefaultIngestorService underTest;
-
     private static final String FOLDER_ONE = "folder-1";
     private static final String FOLDER_TWO = "folder-2";
     private static final String FOLDER_THREE = "folder-3";
@@ -72,6 +58,18 @@ class DefaultIngestorServiceTest {
         "AB",
         null
     );
+    @Mock
+    private CvpBlobstoreClient cvpBlobstoreClient;
+    @Mock
+    private HrsApiClient hrsApiClient;
+    @Mock
+    private IngestionFilterer ingestionFilterer;
+    @Mock
+    private AntivirusClient antivirusClient;
+    @Mock
+    private MetadataResolver metadataResolver;
+    @InjectMocks
+    private DefaultIngestorService underTest;
 
     @Test
     void testShouldIngestOneFolder() throws Exception {

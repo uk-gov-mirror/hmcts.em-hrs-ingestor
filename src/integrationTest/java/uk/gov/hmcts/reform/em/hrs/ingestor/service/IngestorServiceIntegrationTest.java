@@ -49,17 +49,13 @@ import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FOLDE
 class IngestorServiceIntegrationTest {
     private static final String GET_FOLDERS_PATH = "/folders/([a-zA-Z0-9_.-]*)";
     private static final String POST_PATH = "/segments";
-
+    private static String DUMMY_FOLDER = "dummy-folder";
     @Autowired
     private WireMockServer wireMockServer;
     @Autowired
     private AzureOperations azureOperations;
     @Autowired
     private DefaultIngestorService underTest;
-
-    private static String DUMMY_FOLDER = "dummy-folder";
-
-
 
     @BeforeEach
     public void prepare() {

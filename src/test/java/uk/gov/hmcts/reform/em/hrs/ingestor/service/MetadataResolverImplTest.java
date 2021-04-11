@@ -13,8 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.em.hrs.ingestor.service.MetadataResolverImpl.FRAGMENT;
 
 class MetadataResolverImplTest {
-    private final MetadataResolver underTest = new MetadataResolverImpl();
-
     private static final String FILENAME = "audiostream12/bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0.mp4";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss.SSS");
     private static final CvpItem CVP_ITEM = new CvpItem(
@@ -23,6 +21,7 @@ class MetadataResolverImplTest {
         "a2B4==",
         123L
     );
+    private final MetadataResolver underTest = new MetadataResolverImpl();
 
     @Test
     void testShouldResolveMetadataFromFilename() throws FilenameParsingException {

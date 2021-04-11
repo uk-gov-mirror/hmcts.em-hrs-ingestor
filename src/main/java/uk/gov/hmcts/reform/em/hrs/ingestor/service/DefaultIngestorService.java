@@ -23,16 +23,14 @@ import java.util.Set;
 @Component
 public class DefaultIngestorService implements IngestorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIngestorService.class);
-
+    private static int filesAttempted;
+    private static int filesParsedOk;
+    private static int filesSubmittedOk;
     private final CvpBlobstoreClient cvpBlobstoreClient;
     private final HrsApiClient hrsApiClient;
     private final IngestionFilterer ingestionFilterer;
     private final AntivirusClient antivirusClient;
     private final MetadataResolver metadataResolver;
-
-    private static int filesAttempted;
-    private static int filesParsedOk;
-    private static int filesSubmittedOk;
 
     @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
@@ -139,7 +137,6 @@ public class DefaultIngestorService implements IngestorService {
             return output.getResult();
         }
     }
-
 
 
 }

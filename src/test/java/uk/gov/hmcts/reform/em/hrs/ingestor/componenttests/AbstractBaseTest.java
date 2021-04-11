@@ -17,24 +17,14 @@ import org.springframework.web.context.WebApplicationContext;
 @ExtendWith(MockitoExtension.class)
 public abstract class AbstractBaseTest {
 
+    protected MockMvc mockMvc;
+
     @Autowired
     private WebApplicationContext context;
 
-    //    @MockBean
-    //    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
-
-    protected MockMvc mockMvc;
-
-    //    @Mock
-    //    protected Authentication authentication;
-    //
-    //    @Mock
-    //    protected SecurityContext securityContext;
 
     @BeforeEach
     public void setupMocks() {
-        // doReturn(authentication).when(securityContext).getAuthentication();
-        // SecurityContextHolder.setContext(securityContext);
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 }

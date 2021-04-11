@@ -1,4 +1,3 @@
-
 package uk.gov.hmcts.reform.em.hrs.ingestor.model;
 
 import lombok.AllArgsConstructor;

@@ -30,11 +30,6 @@ import static org.awaitility.Awaitility.await;
     AzureOperations.class
 })
 class CvpBlobstoreClientImplTest {
-    @Autowired
-    private AzureOperations azureOperations;
-    @Autowired
-    private CvpBlobstoreClientImpl underTest;
-
     private static final String FOLDER_ONE = "folder-1";
     private static final String FOLDER_TWO = "folder-2";
     private static final String FOLDER_THREE = "folder-3";
@@ -42,6 +37,10 @@ class CvpBlobstoreClientImplTest {
     private static final String ONE_ITEM_FOLDER = "one-item-folder";
     private static final String MANY_ITEMS_FOLDER = "many-items-folder";
     private static final String TEST_DATA = "Hello World!";
+    @Autowired
+    private AzureOperations azureOperations;
+    @Autowired
+    private CvpBlobstoreClientImpl underTest;
 
     @BeforeEach
     void setup() {

@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
-    private final BlobContainerClient blobContainerClient;
     private static final int BLOB_LIST_TIMEOUT = 30;
+    private final BlobContainerClient blobContainerClient;
 
     @Autowired
     public CvpBlobstoreClientImpl(final BlobContainerClient blobContainerClient) {

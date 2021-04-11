@@ -12,8 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class IngestionFiltererImplTest {
 
-    private final IngestionFilterer underTest = new IngestionFiltererImpl();
-
     private static final CvpItem ITEM_1 = new CvpItem("f1.mp4", "uri1", "hash1", 1L);
     private static final Set<CvpItem> CVP_ITEMS = Set.of(
         ITEM_1,
@@ -21,6 +19,7 @@ class IngestionFiltererImplTest {
         new CvpItem("f3.mp4", "uri3", "hash3", 1L)
     );
     private static final CvpItemSet CVP_FILE_SET = new CvpItemSet(CVP_ITEMS);
+    private final IngestionFilterer underTest = new IngestionFiltererImpl();
 
     @Test
     void testShouldReturnCvpFileSetWhenNoHrsFiles() {
