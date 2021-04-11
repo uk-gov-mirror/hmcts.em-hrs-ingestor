@@ -124,9 +124,9 @@ withPipeline(type, product, component) {
         reportName           : "HRS Ingestor Smoke Test Report"
       ]
     }
-    enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
-    ])
+//    enablePactAs([
+//      AppPipelineDsl.PactRoles.CONSUMER
+//    ])
 
     after('contractTest:aat') {
       publishHTML target: [
@@ -210,9 +210,9 @@ withPipeline(type, product, component) {
 
   }
 
-  enablePactAs([
-    AppPipelineDsl.PactRoles.CONSUMER
-  ])
+//  enablePactAs([
+//    AppPipelineDsl.PactRoles.CONSUMER
+//  ])
 
   after('smoketest:preview') {
     publishHTML target: [
