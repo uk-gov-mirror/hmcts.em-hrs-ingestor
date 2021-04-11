@@ -25,8 +25,8 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             log.info("Application Shutting Down");
         } catch (Exception e) {
             log.error("FATAL Error {}", e.getLocalizedMessage());
-            System.exit(1);
+//            System.exit(1); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
         }
-        System.exit(0);
+//        System.exit(0); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
     }
 }
