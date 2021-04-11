@@ -22,7 +22,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             boolean isServiceNull = defaultIngestorService == null;
             log.info("isServiceNull {}", isServiceNull);
             defaultIngestorService.ingest();
-            log.info("Application Shutting Down");
+//            log.info("Application Shutting Down");DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
         } catch (Exception e) {
             log.error("FATAL Error {}", e.getLocalizedMessage());
 //            System.exit(1); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
