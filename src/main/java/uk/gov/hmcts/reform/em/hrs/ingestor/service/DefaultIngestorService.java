@@ -46,8 +46,6 @@ public class DefaultIngestorService implements IngestorService {
         this.ingestionFilterer = ingestionFilterer;
         this.antivirusClient = antivirusClient;
         this.metadataResolver = metadataResolver;
-
-        LOGGER.info("Constructing DefaultIngestorService");
     }
 
     @Override
