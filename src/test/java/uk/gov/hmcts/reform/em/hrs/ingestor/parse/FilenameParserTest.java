@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ class FilenameParserTest {
     void test_negative_invalid_file_name_input(final String inputKey, final String inputValue) {
         try {
             FilenameParser.parseFileName(inputValue);
-        } catch (FileParsingException parsingException) {
+        } catch (FilenameParsingException parsingException) {
             assertEquals(
                 "The argument passed is not valid",
                 parsingException.getCause().getLocalizedMessage()

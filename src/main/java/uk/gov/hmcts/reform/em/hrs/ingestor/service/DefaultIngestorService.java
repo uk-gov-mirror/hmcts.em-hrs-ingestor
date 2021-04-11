@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -61,7 +62,8 @@ public class DefaultIngestorService implements IngestorService {
             filteredSet.forEach(file -> {
                 filesAttempted++;
                 if (isFileClean(file.getFilename())) {
-                    postToHrsApi(file);
+                    Optional<Metadata> metaData = parseFilename(file);
+                    metaData.ifPresent(md -> postToHrsApi(md));
                 }
             });
             LOGGER.info("Running Total of Files Attempted: {}", filesAttempted);
@@ -119,16 +121,24 @@ public class DefaultIngestorService implements IngestorService {
         }
     }
 
-    private void postToHrsApi(final CvpItem item) {
+
+    private Optional<Metadata> parseFilename(final CvpItem item) {
+
         Metadata metadata = null;
         try {
             metadata = metadataResolver.resolve(item);
-            filesParsedOk++;
-        } catch (
-            FileParsingException e) {
+        } catch (FilenameParsingException e) {
             LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
-            return;
+
+        } catch (Exception e) {
+            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+
         }
+        return Optional.ofNullable(metadata);
+    }
+
+
+    private void postToHrsApi(final Metadata metadata) {
 
 
         try {
@@ -138,13 +148,11 @@ public class DefaultIngestorService implements IngestorService {
             }
 
         } catch (IOException | HrsApiException e) {
-            LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
-        } catch (NumberFormatException e) {
-            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
+            LOGGER.error("Error posting {} to em-hrs-api:: ", metadata.getFilename(), e);  // TODO: covered by EM-3582
         } catch (Exception e) {
             LOGGER.error(
                 "Unhandled Exception parsing/posting file {}:: ",
-                item.getFilename(),
+                metadata.getFilename(),
                 e
             );  // TODO: covered by EM-3582
         }

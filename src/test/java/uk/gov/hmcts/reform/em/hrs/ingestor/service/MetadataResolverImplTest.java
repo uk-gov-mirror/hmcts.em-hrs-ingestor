@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.junit.jupiter.api.Test;
 import reactor.util.function.Tuple3;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 
@@ -25,7 +25,7 @@ class MetadataResolverImplTest {
     );
 
     @Test
-    void testShouldResolveMetadataFromFilename() throws FileParsingException {
+    void testShouldResolveMetadataFromFilename() throws FilenameParsingException {
         final Metadata metadata = underTest.resolve(CVP_ITEM);
 
         assertThat(metadata).satisfies(x -> {

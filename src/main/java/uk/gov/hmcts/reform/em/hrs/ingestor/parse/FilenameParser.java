@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,11 +28,11 @@ public final class FilenameParser {
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
-    public static ParsedFilenameDto parseFileName(final String fileName) throws FileParsingException {
+    public static ParsedFilenameDto parseFileName(final String fileName) throws FilenameParsingException {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
-            throw new FileParsingException(
+            throw new FilenameParsingException(
                 "Invalid Filename",
                 new IllegalArgumentException("The argument passed is not valid")
             );

@@ -16,7 +16,6 @@ public class Metadata {
     private final String recordingRef;
     private final int segment;
     private final String filenameExtension;
-//    @JsonFormat(pattern = "yyyy-MM-dd-HH.mm.ss.SSS")
     private final LocalDateTime recordingDateTime;
     private final String caseRef;
     private final String recordingSource = "CVP";

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import reactor.util.function.Tuple3;
 import reactor.util.function.Tuples;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
 import uk.gov.hmcts.reform.em.hrs.ingestor.parse.FilenameParser;
@@ -28,7 +28,7 @@ public class MetadataResolverImpl implements MetadataResolver {
     };
 
     @Override
-    public Metadata resolve(final CvpItem item) throws FileParsingException {
+    public Metadata resolve(final CvpItem item) throws FilenameParsingException {
         final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(item.getFilename());
         final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT2());
 
