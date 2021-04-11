@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
@@ -33,20 +34,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultIngestorServiceTest {
-    @Mock
-    private CvpBlobstoreClient cvpBlobstoreClient;
-    @Mock
-    private HrsApiClient hrsApiClient;
-    @Mock
-    private IngestionFilterer ingestionFilterer;
-    @Mock
-    private AntivirusClient antivirusClient;
-    @Mock
-    private MetadataResolver metadataResolver;
-
-    @InjectMocks
-    private DefaultIngestorService underTest;
-
     private static final String FOLDER_ONE = "folder-1";
     private static final String FOLDER_TWO = "folder-2";
     private static final String FOLDER_THREE = "folder-3";
@@ -71,6 +58,18 @@ class DefaultIngestorServiceTest {
         "AB",
         null
     );
+    @Mock
+    private CvpBlobstoreClient cvpBlobstoreClient;
+    @Mock
+    private HrsApiClient hrsApiClient;
+    @Mock
+    private IngestionFilterer ingestionFilterer;
+    @Mock
+    private AntivirusClient antivirusClient;
+    @Mock
+    private MetadataResolver metadataResolver;
+    @InjectMocks
+    private DefaultIngestorService underTest;
 
     @Test
     void testShouldIngestOneFolder() throws Exception {
@@ -106,10 +105,6 @@ class DefaultIngestorServiceTest {
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
         doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
-        // THEN
-        // Filename parsing happen here
-        // AND
-        // call HRS to copy, create record in CCD and update databases
 
         underTest.ingest();
 
@@ -130,10 +125,6 @@ class DefaultIngestorServiceTest {
         doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
         doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         doReturn(AvScanResult.INFECTED).when(antivirusClient).scan(any(InputStream.class));
-        // THEN
-        // Filename parsing happen here
-        // AND
-        // call HRS to copy, create record in CCD and update databases
 
         underTest.ingest();
 
@@ -164,7 +155,8 @@ class DefaultIngestorServiceTest {
     }
 
     @Test
-    void testShouldRefuseIngestionWhenGettingFilesFromHrsApiRaisesHrsApiException() throws Exception {
+    void testShouldRefuseIngestionWhenGettingFilesFromHrsApiRaisesHrsApiException()
+        throws Exception {
         doReturn(Set.of(FOLDER_ONE)).when(cvpBlobstoreClient).getFolders();
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
         doThrow(HrsApiException.class).when(hrsApiClient).getIngestedFiles(anyString());
@@ -181,7 +173,7 @@ class DefaultIngestorServiceTest {
     }
 
     @Test
-    void testShouldRefuseIngestionWhenVirusCheckingRaisesException() throws Exception {
+    void testShouldRefuseIngestionWhenVirusCheckingRaisesIOException() throws Exception {
         doReturn(Set.of(FOLDER_ONE)).when(cvpBlobstoreClient).getFolders();
         doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
         doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(anyString());
@@ -198,6 +190,51 @@ class DefaultIngestorServiceTest {
         verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
         verify(antivirusClient, times(1)).scan(any(InputStream.class));
         verify(metadataResolver, never()).resolve(any(CvpItem.class));
+    }
+
+
+    @Test
+    void testShouldRefuseIngestionWhenPostingFileToHrsRaiseHrsApiException() throws Exception {
+        doReturn(Set.of(FOLDER_ONE)).when(cvpBlobstoreClient).getFolders();
+        doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
+        doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(anyString());
+        doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
+        doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
+        doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
+        doThrow(HrsApiException.class).when(hrsApiClient).postFile(any(Metadata.class));
+
+        underTest.ingest();
+
+        verify(cvpBlobstoreClient, times(1)).getFolders();
+        verify(cvpBlobstoreClient, times(1)).findByFolder(anyString());
+        verify(hrsApiClient, times(1)).getIngestedFiles(anyString());
+        verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
+        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
+        verify(antivirusClient, times(1)).scan(any(InputStream.class));
+        verify(metadataResolver, times(1)).resolve(any(CvpItem.class));
+    }
+
+
+    @Test
+    void testShouldRefuseIngestionWhenParsingFileNameRaisesFileParsingException() throws Exception {
+        doReturn(Set.of(FOLDER_ONE)).when(cvpBlobstoreClient).getFolders();
+        doReturn(CVP_FILE_SET).when(cvpBlobstoreClient).findByFolder(anyString());
+        doReturn(HRS_FILE_SET).when(hrsApiClient).getIngestedFiles(anyString());
+        doReturn(Set.of(YET_TO_INGEST)).when(ingestionFilterer).filter(CVP_FILE_SET, HRS_FILE_SET);
+        doNothing().when(cvpBlobstoreClient).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
+        doReturn(AvScanResult.CLEAN).when(antivirusClient).scan(any(InputStream.class));
+        doThrow(FilenameParsingException.class).when(metadataResolver).resolve(any(CvpItem.class));
+
+        underTest.ingest();
+
+        verify(cvpBlobstoreClient, times(1)).getFolders();
+        verify(cvpBlobstoreClient, times(1)).findByFolder(anyString());
+        verify(hrsApiClient, times(1)).getIngestedFiles(anyString());
+        verify(ingestionFilterer, times(1)).filter(CVP_FILE_SET, HRS_FILE_SET);
+        verify(cvpBlobstoreClient, times(1)).downloadFile(eq(YET_TO_INGEST.getFilename()), any(OutputStream.class));
+        verify(antivirusClient, times(1)).scan(any(InputStream.class));
+        verify(hrsApiClient, never()).postFile(any(Metadata.class));
     }
 
 }

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@Disabled ("This Test class is disabled as it executes close to 18000 Test "
+@Disabled("This Test class is disabled as it executes close to 18000 Test "
     + "and may not be helpful for this to be executed in the pipeline")
 class FilenameParserWithFullDataExtractTest {
 
@@ -23,11 +23,11 @@ class FilenameParserWithFullDataExtractTest {
         + "All_report_size_2020-11-06T16_32_41+0000- Analysis_With_Filename.csv",
         numLinesToSkip = 1)
     void test_input_file_input(final String fileName,
-                                      final String jurisdiction,
-                                      final String jurisdictionMatch,
-                                      final String locationCode,
-                                      final String locationMatch,
-                                      final String caseID) throws Exception {
+                               final String jurisdiction,
+                               final String jurisdictionMatch,
+                               final String locationCode,
+                               final String locationMatch,
+                               final String caseID) throws Exception {
         String inputValue = fileName.substring(0, fileName.lastIndexOf('.'));
         ParsedFilenameDto parsedFilenameDto = FilenameParser.parseFileName(inputValue);
         verifyValuesOfMappedResponse(

@@ -67,7 +67,8 @@ public class IdamAPIConsumerTest {
                 "redirect_uri=http%3A%2F%2Fwww.dummy-pact-service.com%2Fcallback&client_id=pact"
                     + "&grant_type=password&username=emCaseOfficer%40email.net&password=Password123"
                     + "&client_secret=pactsecret&scope=openid profile roles",
-                "application/x-www-form-urlencoded")
+                "application/x-www-form-urlencoded"
+            )
             .willRespondWith()
             .status(HttpStatus.OK.value())
             .headers(responseheaders)

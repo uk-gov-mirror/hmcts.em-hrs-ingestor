@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.HrsFileSet;
@@ -9,9 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.inject.Named;
 
-@Named
+@Component
 public class IngestionFiltererImpl implements IngestionFilterer {
     private static final Function<Set<String>, Function<Set<String>, Set<String>>> FILTER = x -> y -> {
         Set<String> a = new HashSet<>(x);

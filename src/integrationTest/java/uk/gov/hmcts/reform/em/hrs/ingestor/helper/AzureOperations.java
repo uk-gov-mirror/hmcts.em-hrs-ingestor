@@ -5,23 +5,23 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.devskiller.jfairy.Fairy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class AzureOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureOperations.class);
 
     private final BlobContainerClient blobContainerClient;
     private final Fairy fairy;
 
-    @Inject
+    @Autowired
     public AzureOperations(BlobContainerClient blobContainerClient) {
         this.blobContainerClient = blobContainerClient;
         fairy = Fairy.create();

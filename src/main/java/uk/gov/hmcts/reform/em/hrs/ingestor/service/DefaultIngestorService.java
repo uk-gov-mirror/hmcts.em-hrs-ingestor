@@ -3,9 +3,10 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 import com.gc.iotools.stream.os.OutputStreamToInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
@@ -18,20 +19,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 
-@Named
+@Component
 public class DefaultIngestorService implements IngestorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIngestorService.class);
-
+    private static int filesAttempted;
+    private static int filesParsedOk;
+    private static int filesSubmittedOk;
     private final CvpBlobstoreClient cvpBlobstoreClient;
     private final HrsApiClient hrsApiClient;
     private final IngestionFilterer ingestionFilterer;
     private final AntivirusClient antivirusClient;
     private final MetadataResolver metadataResolver;
 
-    @Inject
+    @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
                                   final HrsApiClient hrsApiClient,
                                   final IngestionFilterer ingestionFilterer,
@@ -46,22 +47,66 @@ public class DefaultIngestorService implements IngestorService {
 
     @Override
     public void ingest() {
+        filesAttempted = 0;
+        filesParsedOk = 0;
+        filesSubmittedOk = 0;
+        LOGGER.info("Ingestion Started");
         final Set<String> folders = cvpBlobstoreClient.getFolders();
-        folders.forEach(x -> {
-            final Set<CvpItem> filteredSet = getFilesToIngest(x);
-            filteredSet.forEach(y -> {
-                if (isFileClean(y.getFilename())) {
-                    postToHrsApi(y);
+        folders.forEach(folder -> {
+            LOGGER.info("Inspecting folder: {}", folder);
+            final Set<CvpItem> filteredSet = getFilesToIngest(folder);
+            filteredSet.forEach(file -> {
+                filesAttempted++;
+                if (isFileClean(file.getFilename())) {
+                    try {
+                        Metadata metaData = metadataResolver.resolve(file);
+                        filesParsedOk++;
+                        hrsApiClient.postFile(metaData);
+                        filesSubmittedOk++;
+
+
+                    } catch (HrsApiException hrsApi) {
+                        LOGGER.error(
+                            "Response error: {} => {} => {}",
+                            hrsApi.getCode(),
+                            hrsApi.getMessage(),
+                            hrsApi.getBody()
+                        );
+
+                    } catch (Exception e) {
+                        LOGGER.error(
+                            "Exception processing file {}:: ",
+                            file.getFilename(),
+                            e
+                        ); // TODO: covered by EM-3582
+                    }
+
                 }
             });
+            LOGGER.info("Running Total of Files Attempted: {}", filesAttempted);
+
         });
+        LOGGER.info("Ingestion Complete");
+        LOGGER.info("Total filesAttempted: {}", filesAttempted);
+        LOGGER.info("Total filesParsedOk: {}", filesParsedOk);
+        LOGGER.info("Total filesSubmittedOk: {}", filesSubmittedOk);
+
     }
 
     private Set<CvpItem> getFilesToIngest(final String folder) {
         try {
             final CvpItemSet cvpItemSet = cvpBlobstoreClient.findByFolder(folder);
             final HrsFileSet hrsFileSet = hrsApiClient.getIngestedFiles(folder);
-            return ingestionFilterer.filter(cvpItemSet, hrsFileSet);
+            Set<CvpItem> filesToIngest = ingestionFilterer.filter(cvpItemSet, hrsFileSet);
+
+            int cvpFilesCount = cvpItemSet.getCvpItems().size();
+            int hrsFileCount = hrsFileSet.getHrsFiles().size();
+            int filesToIngestCount = filesToIngest.size();
+
+            LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}",
+                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount
+            );
+            return filesToIngest;
         } catch (HrsApiException | IOException e) {
             LOGGER.error("", e); // TODO: covered by EM-3582
             return Collections.emptySet();
@@ -76,7 +121,7 @@ public class DefaultIngestorService implements IngestorService {
             }
             return result == AvScanResult.CLEAN;
         } catch (Exception e) {
-            LOGGER.error("Error AV checking {}: ", file, e);  // TODO: covered by EM-3582
+            LOGGER.error("Error AV checking {}:", file, e);  // TODO: covered by EM-3582
             return false;
         }
     }
@@ -93,20 +138,5 @@ public class DefaultIngestorService implements IngestorService {
         }
     }
 
-    private void postToHrsApi(final CvpItem item) {
-        try {
-            final Metadata metadata = metadataResolver.resolve(item);
-            hrsApiClient.postFile(metadata);
-        } catch (IOException | HrsApiException e) {
-            LOGGER.error("Error posting {} to em-hrs-api:: ", item.getFilename(), e);  // TODO: covered by EM-3582
-        } catch (FileParsingException e) {
-            LOGGER.error("Error Parsing FileName {}:: ", item.getFilename(), e);  // TODO: covered by EM-3582
-        } catch (Exception e) {
-            LOGGER.error("Unhandled Exception parsing/posting file {}:: ",
-                         item.getFilename(),
-                         e
-            );  // TODO: covered by EM-3582
-        }
-    }
 
 }

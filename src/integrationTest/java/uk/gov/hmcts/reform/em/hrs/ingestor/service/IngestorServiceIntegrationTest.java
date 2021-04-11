@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClientImpl;
@@ -16,8 +17,6 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClientImpl;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.mock.WireMockInitializer;
 import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClientImpl;
-
-import javax.inject.Inject;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
@@ -48,27 +47,26 @@ import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FOLDE
 })
 @ContextConfiguration(initializers = {WireMockInitializer.class, ClamAvInitializer.class})
 class IngestorServiceIntegrationTest {
-    private static final String GET_PATH = "/folders/([a-zA-Z0-9_.-]*)";
+    private static final String GET_FOLDERS_PATH = "/folders/([a-zA-Z0-9_.-]*)";
     private static final String POST_PATH = "/segments";
-
-    @Inject
+    private static String DUMMY_FOLDER = "dummy-folder";
+    @Autowired
     private WireMockServer wireMockServer;
-    @Inject
+    @Autowired
     private AzureOperations azureOperations;
-    @Inject
+    @Autowired
     private DefaultIngestorService underTest;
 
     @BeforeEach
     public void prepare() {
         azureOperations.clearContainer();
         wireMockServer.resetAll();
-
         wireMockServer.stubFor(
-            get(urlMatching(GET_PATH))
+            get(urlMatching(GET_FOLDERS_PATH))
                 .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                .withBody("[]"))
+                                .withBody("{\"folder-name\":\"" + DUMMY_FOLDER + "\",\"filenames\":[]}"))
         );
 
         wireMockServer.stubFor(

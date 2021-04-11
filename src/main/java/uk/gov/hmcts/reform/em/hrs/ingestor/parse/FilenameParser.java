@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
-import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FileParsingException;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,26 +13,23 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public final class FilenameParser {
-    private FilenameParser() {
-    }
-
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX
         = "^(CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
-
     private static final String CIVIL_AND_FAMILY_FILE_FORMAT_REGEX
         = "^(CV|FM|CP)-([0-9]{3,4})-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
-
     private static final String TRIBUNALS_FILE_FORMAT_REGEX
         = "^(EE|ES|GR|HE|IA|PC|SE|TC|WP|EA|AU|IU|LU|TU)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
-
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
-    public static ParsedFilenameDto parseFileName(final String fileName) throws FileParsingException {
+    private FilenameParser() {
+    }
+
+    public static ParsedFilenameDto parseFileName(final String fileName) throws FilenameParsingException {
 
         log.debug("This input fileName : " + fileName);
         if (Objects.isNull(fileName) || fileName.isBlank() || fileName.isEmpty()) {
-            throw new FileParsingException(
+            throw new FilenameParsingException(
                 "Invalid Filename",
                 new IllegalArgumentException("The argument passed is not valid")
             );
@@ -97,8 +94,8 @@ public final class FilenameParser {
             .jurisdiction(matcher.group(1))
             .locationCode(
                 matcher.group(2).trim().length() == 4
-                    ? matcher.group(2).replaceFirst("^0*", "")
-                    : matcher.group(2))
+                ? matcher.group(2).replaceFirst("^0*", "")
+                : matcher.group(2))
             .caseID(matcher.group(3))
             .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
             .segment(matcher.group(6))
@@ -117,8 +114,8 @@ public final class FilenameParser {
             .builder()
             .jurisdiction(matcher.group(1))
             .locationCode(matcher.group(2).trim().length() == 4
-                              ? matcher.group(2).replaceFirst("^0*", "")
-                              : matcher.group(2))
+                          ? matcher.group(2).replaceFirst("^0*", "")
+                          : matcher.group(2))
             .caseID(matcher.group(3))
             .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
             .segment(matcher.group(6))

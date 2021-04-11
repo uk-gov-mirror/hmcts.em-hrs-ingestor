@@ -1,109 +1,127 @@
-# Spring Boot application template
+=======
+# Hearing Recording Service - Ingestor
 
-[![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
+# Overview
 
-## Purpose
-
-The purpose of this template is to speed up the creation of new Spring applications within HMCTS
-and help keep the same standards across multiple teams. If you need to create a new app, you can
-simply use this one as a starting point and build on top of it.
-
-## What's inside
-
-The template is a working application with a minimal setup. It contains:
- * application skeleton
- * setup script to prepare project
- * common plugins and libraries
- * docker setup
- * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
- * code quality tools already set up
- * integration with Travis CI
- * Hystrix circuit breaker enabled
- * MIT license and contribution information
- * Helm chart using chart-java.
-
-The application exposes health endpoint (http://localhost:4550/health) and metrics endpoint
-(http://localhost:4550/metrics).
-
-## Plugins
-
-The template contains the following plugins:
-
-  * checkstyle
-
-    https://docs.gradle.org/current/userguide/checkstyle_plugin.html
-
-    Performs code style checks on Java source files using Checkstyle and generates reports from these checks.
-    The checks are included in gradle's *check* task (you can run them by executing `./gradlew check` command).
-
-  * pmd
-
-    https://docs.gradle.org/current/userguide/pmd_plugin.html
-
-    Performs static code analysis to finds common programming flaws. Included in gradle `check` task.
+- Lists folders in source azure storage bucket (CVP Blobstore)
+- Asks HRS-API which files it already has / is currently ingesting
+- Parses filenames of files to be ingested, to create metadata
+- Sends Metadata and filename source to HRS-API to ingest
 
 
-  * jacoco
+#Local Dev
 
-    https://docs.gradle.org/current/userguide/jacoco_plugin.html
+##First Time Build (If you wish to use sonarqube)
 
-    Provides code coverage metrics for Java code via integration with JaCoCo.
-    You can create the report by running the following command:
+You'll need to get sonarqube docker image if you do not have it already, and initialise it and change the password to adminnew
 
-    ```bash
-      ./gradlew jacocoTestReport
-    ```
+to fetch the latest image, run it and open the browser
+run:
+- make sonarqube-fetch-and-run-sonarqube-latest-with-password-as-admin
+- make report-sonarqube
 
-    The report will be created in build/reports subdirectory in your project directory.
+in the browser, log in as admin (password=admin), go to http://localhost:9000/account/security/ and change password to adminnew
 
-  * io.spring.dependency-management
 
-    https://github.com/spring-gradle-plugins/dependency-management-plugin
+##Subsequent Builds (these must all pass before raising a PR)
 
-    Provides Maven-like dependency management. Allows you to declare dependency management
-    using `dependency 'groupId:artifactId:version'`
-    or `dependency group:'group', name:'name', version:version'`.
+This will run all the major checks, and open the jacoco test report in your browser:
 
-  * org.springframework.boot
+- make check-all
 
-    http://projects.spring.io/spring-boot/
 
-    Reduces the amount of work needed to create a Spring application
+To show the sonarcube analysis (master branch only?)
+sonarqube:
+- make sonarqube-run-local-sonarqube-server
+- make sonarqube-run-tests-with-password-as-adminnew
 
-  * org.owasp.dependencycheck
 
-    https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/index.html
+#Smoketest:
 
-    Provides monitoring of the project's dependent libraries and creating a report
-    of known vulnerable components that are included in the build. To run it
-    execute `gradle dependencyCheck` command.
+for first time use you will need to be logged into the Azure Container repo's using these commands:
 
-  * com.github.ben-manes.versions
+az login
+az acr login --name hmctspublic && az acr login --name hmctsprivate
 
-    https://github.com/ben-manes/gradle-versions-plugin
 
-    Provides a task to determine which dependencies have updates. Usage:
+You need to have HRS-API running (and its dependencies!) before running this application
 
-    ```bash
-      ./gradlew dependencyUpdates -Drevision=release
-    ```
+#HRS-API
+
+Please fully read the HRS-API readme and work through it, and validate you can run a smoke test.
+
+For convenience, the basic steps are listed here for reference when you are familiar with them
+
+Open a new terminal..
+go to the root of hrs-api project,
+- cd ../em-hrs-api
+then get hrs-api dependencies running
+- ./docker/dependencies/start-local-environment.sh
+then when the dependencies are showing "ccd-data-store-api_1    | 2021-04-11T10:54:38.861 INFO  [main] o.s.d.r.c.DeferredRepositoryInitializationListener Spring Data repositories initialized"
+- make app-run
+then prime the CCD via the functional tests with
+- make test-functional
+finally, smoke test it with:
+- make app-smoke-test
+
+#HRS-Ingestor
+Now then in this terminal, get the ingestor dependencies running
+
+This will fire up depencies AND prime the CVP blbo store with a file
+- ./docker/dependencies/start-local-environment.sh
+
+running the appliction will immediately invoke the ingest method, so will attempt to send the file
+to hrs api
+
+- make app-run
+
+
+
+
+#Idea Setup
+
+Increase import star to 200 to avoid conflicts with checkstyle
+https://intellij-support.jetbrains.com/hc/en-us/community/posts/206203659-Turn-off-Wildcard-imports-
+
+Auto import of non ambiguous imports
+https://mkyong.com/intellij/eclipse-ctrl-shift-o-in-intellij-idea/#:~:text=In%20Eclipse%2C%20you%20press%20CTRL,imports%2C%20never%20imports%20any%20package.
+
+Import the checkstyle code scheme into the java code settings
+
+Reverse the import layout settings / modify until the checkstyle passes
+Uncheck "Comment at first column"
+
+
+
+
+
+
+
+NOTE THE BELOW IS NOT YET TESTED!!!
+NOTE THE BELOW IS NOT YET TESTED!!!
+NOTE THE BELOW IS NOT YET TESTED!!!
+NOTE THE BELOW IS NOT YET TESTED!!!
+NOTE THE BELOW IS NOT YET TESTED!!!
+NOTE THE BELOW IS NOT YET TESTED!!!
+
+
+
+
+
+
+
 
 ## Setup
 
-Located in `./bin/init.sh`. Simply run and follow the explanation how to execute it.
+Simply run the following script to start all application dependencies.
 
-## Notes
-
-Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you will need to set `spring.main.allow-bean-definition-overriding` to `true`.
-
-JUnit 5 is now enabled by default in the project. Please refrain from using JUnit4 and use the next generation
+```bash
+  ./docker/dependencies/start-local-environment.sh
+```
 
 ## Building and deploying the application
 
 ### Building the application
-
-The project uses [Gradle](https://gradle.org) as a build tool. It already contains
-`./gradlew` wrapper script, so there's no need to install gradle.
 
 To build the project execute the following command:
 
@@ -125,20 +143,18 @@ Create docker image:
   docker-compose build
 ```
 
-Run the distribution (created in `build/install/spring-boot-template` directory)
-by executing the following command:
+Run the applicaiton in docker by executing the following command:
 
 ```bash
   docker-compose up
 ```
 
-This will start the API container exposing the application's port
-(set to `4550` in this template app).
+This will start the API container exposing the application's port [8090]
 
 In order to test if the application is up, you can call its health endpoint:
 
 ```bash
-  curl http://localhost:4550/health
+  curl http://localhost:8090/health
 ```
 
 You should get a response similar to this:
@@ -147,60 +163,6 @@ You should get a response similar to this:
   {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
 ```
 
-### Alternative script to run application
-
-To skip all the setting up and building, just execute the following command:
-
-```bash
-./bin/run-in-docker.sh
-```
-
-For more information:
-
-```bash
-./bin/run-in-docker.sh -h
-```
-
-Script includes bare minimum environment variables necessary to start api instance. Whenever any variable is changed or any other script regarding docker image/container build, the suggested way to ensure all is cleaned up properly is by this command:
-
-```bash
-docker-compose rm
-```
-
-It clears stopped containers correctly. Might consider removing clutter of images too, especially the ones fiddled with:
-
-```bash
-docker images
-
-docker image rm <image-id>
-```
-
-There is no need to remove postgres and java or similar core images.
-
-## Hystrix
-
-[Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
-between your application and other services by adding latency tolerance and fault tolerance logic. It does this
-by isolating points of access between the services, stopping cascading failures across them,
-and providing fallback options. We recommend you to use Hystrix in your application if it calls any services.
-
-### Hystrix circuit breaker
-
-This template API has [Hystrix Circuit Breaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker)
-already enabled. It monitors and manages all the`@HystrixCommand` or `HystrixObservableCommand` annotated methods
-inside `@Component` or `@Service` annotated classes.
-
-### Other
-
-Hystrix offers much more than Circuit Breaker pattern implementation or command monitoring.
-Here are some other functionalities it provides:
- * [Separate, per-dependency thread pools](https://github.com/Netflix/Hystrix/wiki/How-it-Works#isolation)
- * [Semaphores](https://github.com/Netflix/Hystrix/wiki/How-it-Works#semaphores), which you can use to limit
- the number of concurrent calls to any given dependency
- * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
- different code paths to execute Hystrix Commands without worrying about duplicating work
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-

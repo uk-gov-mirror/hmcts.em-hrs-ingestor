@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,7 +15,6 @@ public class Metadata {
     private final String recordingRef;
     private final int segment;
     private final String filenameExtension;
-    @JsonFormat(pattern = "yyyy-MM-dd-HH.mm.ss.SSS")
     private final LocalDateTime recordingDateTime;
     private final String caseRef;
     private final String recordingSource = "CVP";

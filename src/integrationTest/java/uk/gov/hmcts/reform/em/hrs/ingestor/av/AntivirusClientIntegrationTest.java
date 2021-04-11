@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.av;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.mock.ClamAvInitializer;
@@ -11,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.CLEAN_FILE;
@@ -21,7 +21,7 @@ import static uk.gov.hmcts.reform.em.hrs.ingestor.helper.TestUtil.INFECTED_FILE;
 @ContextConfiguration(initializers = {ClamAvInitializer.class})
 class AntivirusClientIntegrationTest {
 
-    @Inject
+    @Autowired
     private AntivirusClientImpl underTest;
 
     @Test
