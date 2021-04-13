@@ -73,28 +73,7 @@ public class DefaultIngestorService implements IngestorService {
                 }
                 filesAttempted++;
                 if (isFileClean(file.getFilename())) {
-                    try {
-                        Metadata metaData = metadataResolver.resolve(file);
-                        filesParsedOk++;
-                        hrsApiClient.postFile(metaData);
-                        filesSubmittedOk++;
-
-
-                    } catch (HrsApiException hrsApi) {
-                        LOGGER.error(
-                            "Response error: {} => {} => {}",
-                            hrsApi.getCode(),
-                            hrsApi.getMessage(),
-                            hrsApi.getBody()
-                        );
-
-                    } catch (Exception e) {
-                        LOGGER.error(
-                            "Exception processing file {}:: ",
-                            file.getFilename(),
-                            e
-                        ); // TODO: covered by EM-3582
-                    }
+                    resolveMetaDataAndPostFileToHrs(file);
 
                 }
             });
@@ -106,6 +85,31 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Total filesParsedOk: {}", filesParsedOk);
         LOGGER.info("Total filesSubmittedOk: {}", filesSubmittedOk);
 
+    }
+
+    private void resolveMetaDataAndPostFileToHrs(CvpItem file) {
+        try {
+            Metadata metaData = metadataResolver.resolve(file);
+            filesParsedOk++;
+            hrsApiClient.postFile(metaData);
+            filesSubmittedOk++;
+
+
+        } catch (HrsApiException hrsApi) {
+            LOGGER.error(
+                "Response error: {} => {} => {}",
+                hrsApi.getCode(),
+                hrsApi.getMessage(),
+                hrsApi.getBody()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error(
+                "Exception processing file {}:: ",
+                file.getFilename(),
+                e
+            ); // TODO: covered by EM-3582
+        }
     }
 
     private boolean batchProcessingLimitReached() {
