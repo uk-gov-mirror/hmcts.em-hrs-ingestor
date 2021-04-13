@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.config;
 
+import com.azure.identity.DefaultAzureCredential;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +19,18 @@ public class AzureStorageConfiguration {
 
     @Bean
     BlobContainerClient provideBlobContainerClient() {
-        return new BlobContainerClientBuilder()
-            .connectionString(connectionString)
-            .containerName(containerReference)
-            .buildClient();
-    }
 
+
+        BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
+            .connectionString(connectionString)
+            .containerName(containerReference);
+
+        //only local simulation storage uses http
+        if (connectionString.contains("https")) {
+            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
+            clientBuilder.credential(credential);
+        }
+
+        return clientBuilder.buildClient();
+    }
 }
