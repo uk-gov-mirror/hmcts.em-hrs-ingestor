@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
 @Configuration
 public class AzureStorageConfiguration {
@@ -27,8 +26,8 @@ public class AzureStorageConfiguration {
     @Bean
     BlobContainerClient provideBlobContainerClient() {
 
-        LOGGER.info("connection string starts with"+ StringUtils.left(connectionString, 5));
-        LOGGER.info("container name starts with"+StringUtils.left(containerReference,5));
+        LOGGER.info("connection string starts with " + StringUtils.left(connectionString, 5));
+        LOGGER.info("container name starts with" + StringUtils.left(containerReference, 5));
 
         BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
             .connectionString(connectionString)

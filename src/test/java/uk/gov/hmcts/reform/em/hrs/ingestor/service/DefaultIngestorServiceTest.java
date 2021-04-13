@@ -68,6 +68,7 @@ class DefaultIngestorServiceTest {
     private AntivirusClient antivirusClient;
     @Mock
     private MetadataResolver metadataResolver;
+
     @InjectMocks
     private DefaultIngestorService underTest;
 

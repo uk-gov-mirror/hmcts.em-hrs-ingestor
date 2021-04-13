@@ -34,7 +34,8 @@ public class DefaultIngestorService implements IngestorService {
     private final MetadataResolver metadataResolver;
 
     @Value("${ingestion.max-number-of-files-to-process-per-batch}")
-    private Integer maxNumberOfFilesToProcessPerBatch;
+    private final Integer maxNumberOfFilesToProcessPerBatch = 100;
+    //TODO this is set here, as was null in defaultIngestorServiceTest
 
     @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
@@ -43,7 +44,7 @@ public class DefaultIngestorService implements IngestorService {
                                   final AntivirusClient antivirusClient,
                                   final MetadataResolver metadataResolver
 
-                                  ) {
+    ) {
         this.cvpBlobstoreClient = cvpBlobstoreClient;
         this.hrsApiClient = hrsApiClient;
         this.ingestionFilterer = ingestionFilterer;
@@ -59,7 +60,7 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Ingestion Started");
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         folders.forEach(folder -> {
-            if (batchProcessingLimitReached()){
+            if (batchProcessingLimitReached()) {
                 LOGGER.info("BATCH PROCESSING LIMIT REACHED ", folder);
                 return;
             }
@@ -67,8 +68,9 @@ public class DefaultIngestorService implements IngestorService {
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
             filteredSet.forEach(file -> {
-                if (batchProcessingLimitReached())
+                if (batchProcessingLimitReached()) {
                     return;
+                }
                 filesAttempted++;
                 if (isFileClean(file.getFilename())) {
                     try {
