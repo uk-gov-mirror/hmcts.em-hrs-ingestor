@@ -7,5 +7,5 @@ spring:
       aliases:
         microservicekey-em-hrs-ingestor: S2S_KEY
         AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
-        CVPStorageConnectionString: CVP_STORAGEACCOUNT_CONNECTION_STRING
-        CVPContainerName: CVP_CONTAINER_NAME
+        cvp-storage-connection-string: CVP_STORAGE_CONNECTION_STRING
+        cvp-storage-container-name: CVP_STORAGE_CONTAINER_NAME

@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AzureStorageConfiguration {
 
-    @Value("${azure.storage.connection-string}")
+    @Value("${azure.storage.cvp-storage-connection-string}")
     private String connectionString;
 
-    @Value("${azure.storage.cvp-blob-container-reference}")
+    @Value("${azure.storage.cvp-storage-container-name}")
     private String containerReference;
 
     @Bean
