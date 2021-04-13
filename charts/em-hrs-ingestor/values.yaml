@@ -5,6 +5,8 @@ job:
   # Run once an hour at the beginning of the hour
   ingressHost: em-hrs-ingestor-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: em
+  suspend: true
+  concurrencyPolicy: Forbid
   keyVaults:
     em-hrs-ingestor:
       resourceGroup: em-hrs-ingestor
