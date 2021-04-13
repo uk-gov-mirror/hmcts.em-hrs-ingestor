@@ -22,10 +22,10 @@ public class CvpBlobStoreInspectorController {
     @GetMapping(value = "/inspect", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<String> inspect() {
         Set<String> folders = blobClient.getFolders();
-        String foldersMessage = "Folders: "+ (folders.isEmpty() ? "None" :String.join("\n ", folders));
+        String foldersMessage = "Folders: " + (folders.isEmpty() ? "None" : String.join("\n ", folders));
 
         log.info(foldersMessage);
 
-        return ok("CVP Blobstore Inspected<p>"+foldersMessage.replace("\n","<p>"));
+        return ok("CVP Blobstore Inspected<p>" + foldersMessage.replace("\n", "<p>"));
     }
 }
