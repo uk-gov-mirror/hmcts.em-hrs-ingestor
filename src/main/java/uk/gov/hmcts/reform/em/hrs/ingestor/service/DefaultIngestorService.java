@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import com.gc.iotools.stream.os.OutputStreamToInputStream;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,10 @@ public class DefaultIngestorService implements IngestorService {
     private final AntivirusClient antivirusClient;
     private final MetadataResolver metadataResolver;
 
+    @Setter
     @Value("${ingestion.max-number-of-files-to-process-per-batch}")
-    private final Integer maxNumberOfFilesToProcessPerBatch = 100;
-    //TODO this is set here, as was null in defaultIngestorServiceTest
+    private Integer maxNumberOfFilesToProcessPerBatch = 100;
+
 
     @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
@@ -50,6 +52,7 @@ public class DefaultIngestorService implements IngestorService {
         this.ingestionFilterer = ingestionFilterer;
         this.antivirusClient = antivirusClient;
         this.metadataResolver = metadataResolver;
+
     }
 
     @Override
