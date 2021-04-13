@@ -4,6 +4,7 @@ import com.gc.iotools.stream.os.OutputStreamToInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AntivirusClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.av.AvScanResult;
@@ -32,12 +33,17 @@ public class DefaultIngestorService implements IngestorService {
     private final AntivirusClient antivirusClient;
     private final MetadataResolver metadataResolver;
 
+    @Value("${ingestion.max-number-of-files-to-process-per-batch}")
+    private Integer maxNumberOfFilesToProcessPerBatch;
+
     @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
                                   final HrsApiClient hrsApiClient,
                                   final IngestionFilterer ingestionFilterer,
                                   final AntivirusClient antivirusClient,
-                                  final MetadataResolver metadataResolver) {
+                                  final MetadataResolver metadataResolver
+
+                                  ) {
         this.cvpBlobstoreClient = cvpBlobstoreClient;
         this.hrsApiClient = hrsApiClient;
         this.ingestionFilterer = ingestionFilterer;
@@ -53,9 +59,16 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Ingestion Started");
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         folders.forEach(folder -> {
+            if (batchProcessingLimitReached()){
+                LOGGER.info("BATCH PROCESSING LIMIT REACHED ", folder);
+                return;
+            }
+
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
             filteredSet.forEach(file -> {
+                if (batchProcessingLimitReached())
+                    return;
                 filesAttempted++;
                 if (isFileClean(file.getFilename())) {
                     try {
@@ -91,6 +104,10 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Total filesParsedOk: {}", filesParsedOk);
         LOGGER.info("Total filesSubmittedOk: {}", filesSubmittedOk);
 
+    }
+
+    private boolean batchProcessingLimitReached() {
+        return filesAttempted >= maxNumberOfFilesToProcessPerBatch;
     }
 
     private Set<CvpItem> getFilesToIngest(final String folder) {

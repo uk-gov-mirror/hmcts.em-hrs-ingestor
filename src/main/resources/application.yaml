@@ -15,6 +15,11 @@ spring:
   application:
     name: Hearing Recordings Ingestor
 
+ingestion:
+  max-number-of-files-to-process-per-batch: ${MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH:3}
+
+
+
 azure:
   app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
   application-insights:
