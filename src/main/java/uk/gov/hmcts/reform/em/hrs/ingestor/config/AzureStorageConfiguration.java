@@ -16,7 +16,6 @@ public class AzureStorageConfiguration {
 
     @Value("${azure.storage.cvp-blob-container-reference}")
     private String containerReference;
-    private BlobContainerClientBuilder client;
 
     @Bean
     BlobContainerClient provideBlobContainerClient() {
