@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.listener;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -8,9 +9,10 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
 
-@Slf4j
 @Component
 public class IngestWhenApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
+
+    private static final Logger log = LoggerFactory.getLogger(IngestWhenApplicationReadyListener.class);
 
     @Autowired
     DefaultIngestorService defaultIngestorService;

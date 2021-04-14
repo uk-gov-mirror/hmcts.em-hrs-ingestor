@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,9 @@ import java.util.Set;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@Slf4j
 public class CvpBlobStoreInspectorController {
+
+    private static final Logger log = LoggerFactory.getLogger(CvpBlobStoreInspectorController.class);
 
     @Autowired
     CvpBlobstoreClientImpl blobClient;

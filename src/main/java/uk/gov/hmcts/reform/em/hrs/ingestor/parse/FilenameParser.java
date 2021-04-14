@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
@@ -11,8 +12,10 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
 public final class FilenameParser {
+
+    private static final Logger log = LoggerFactory.getLogger(FilenameParser.class);
+
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITH_LOCATION_FORMAT_REGEX
         = "^(CV)-(0372|0266)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
     private static final String CIVIL_AND_FAMILY_FILE_FORMAT_REGEX
