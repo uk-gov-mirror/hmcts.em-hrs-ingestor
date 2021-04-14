@@ -64,7 +64,7 @@ public class DefaultIngestorService implements IngestorService {
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         folders.forEach(folder -> {
             if (batchProcessingLimitReached()) {
-                LOGGER.info("BATCH PROCESSING LIMIT REACHED ", folder);
+                LOGGER.info("BATCH PROCESSING LIMIT REACHED FOR FOLDER: {}", folder);
                 return;
             }
 

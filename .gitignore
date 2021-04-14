@@ -21,3 +21,4 @@ bin/main/application.yaml
 *.ipr
 
 .DS_Store
+/docker/volumes/em-hrs-docker-azure-blob-data/*
