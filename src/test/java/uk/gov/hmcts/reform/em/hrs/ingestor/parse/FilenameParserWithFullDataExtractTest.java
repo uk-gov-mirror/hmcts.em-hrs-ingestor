@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 
 import java.util.Objects;
@@ -11,11 +12,11 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Slf4j
 @Disabled("This Test class is disabled as it executes close to 18000 Test "
     + "and may not be helpful for this to be executed in the pipeline")
 class FilenameParserWithFullDataExtractTest {
 
+    private static final Logger log = LoggerFactory.getLogger(FilenameParserWithFullDataExtractTest.class);
 
     @ParameterizedTest(name = "Self Evaluation File : {0} --> {1}")
     @CsvFileSource(resources

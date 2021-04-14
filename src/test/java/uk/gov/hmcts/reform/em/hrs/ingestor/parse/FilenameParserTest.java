@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.parse;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
@@ -12,8 +13,9 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Slf4j
 class FilenameParserTest {
+
+    private static final Logger log = LoggerFactory.getLogger(FilenameParserTest.class);
 
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
     @CsvSource(value = {"Empty Value,''", "Spaced Value,' '", "Value Value,NIL"}, nullValues = "NIL")
