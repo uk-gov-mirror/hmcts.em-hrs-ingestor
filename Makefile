@@ -86,7 +86,7 @@ sonarqube-fetch-and-run-sonarqube-latest-with-password-as-admin:
 	docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 
 sonarqube-run-tests-with-password-as-adminnew:
-	./gradlew sonarqube -Dsonar.login="admin" -Dsonar.password="adminnew" -i && open http://localhost:9000/
+	./gradlew sonarqube -Dsonar.login="admin" -Dsonar.password="adminnew" -Dsonar.host.url="http://localhost:9000/" -i && open http://localhost:9000/
 
 
 

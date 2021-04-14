@@ -19,7 +19,7 @@ public class TestAzureStorageConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestAzureStorageConfiguration.class);
 
     private static final String AZURITE_IMAGE = "mcr.microsoft.com/azure-storage/azurite";
-    private static final int MAPPER_PORT = 20000;
+    private static final int MAPPER_PORT = 10000;
 
     private static final String ACCOUNT_NAME = "devstoreaccount1";
     private static final String ACCOUNT_KEY =
@@ -29,12 +29,12 @@ public class TestAzureStorageConfiguration {
         "DefaultEndpointsProtocol=http;AccountName=%s;AccountKey=%s;BlobEndpoint=%s;";
     private static final String CONTAINER_NAME = "hrs-test-container";
 
-    //docker run -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 20000
+    //docker run -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     private final GenericContainer<?> azuriteContainer = new GenericContainer<>(AZURITE_IMAGE)
         .withExposedPorts(MAPPER_PORT)
         .withLogConsumer(new Slf4jLogConsumer(LOGGER))
         .waitingFor(Wait.forListeningPort())
-        .withCommand("azurite-blob --blobHost 0.0.0.0 --blobPort 20000");
+        .withCommand("azurite-blob --blobHost 0.0.0.0 --blobPort 10000");
 
     @PostConstruct
     void init() {
