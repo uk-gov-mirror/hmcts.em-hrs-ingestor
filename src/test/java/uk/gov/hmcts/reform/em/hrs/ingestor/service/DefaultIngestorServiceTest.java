@@ -59,6 +59,7 @@ class DefaultIngestorServiceTest {
     private static final HrsFileSet HRS_FILESET_OF_0_FILES = new HrsFileSet(Collections.emptySet());
 
     private static final Metadata METADATA = new Metadata(
+        "audiostream222",
         "recording-file-name",
         "recording-cvp-uri",
         1L,
