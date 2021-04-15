@@ -26,15 +26,18 @@ public class AzureStorageConfiguration {
     @Bean
     BlobContainerClient provideBlobContainerClient() {
 
-        LOGGER.info("connection string starts with " + StringUtils.left(connectionString, 5));
-        LOGGER.info("container name starts with" + StringUtils.left(containerReference, 5));
-
         BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
             .connectionString(connectionString)
             .containerName(containerReference);
 
-        //only local simulation storage uses http
-        if (connectionString.contains("https")) {
+        //debugging connection string for cvp storage
+        if (connectionString.contains("cvprecordings")) {
+            LOGGER.info("****************************");
+            LOGGER.info("connection string: {}", connectionString);
+            LOGGER.info("container name: {}",containerReference);
+            LOGGER.info("****************************");
+
+
             DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
             clientBuilder.credential(credential);
         }

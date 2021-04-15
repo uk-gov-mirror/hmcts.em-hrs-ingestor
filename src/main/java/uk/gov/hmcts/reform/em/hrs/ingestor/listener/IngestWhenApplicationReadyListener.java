@@ -8,8 +8,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
-
-
 @Component
 public class IngestWhenApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
 
