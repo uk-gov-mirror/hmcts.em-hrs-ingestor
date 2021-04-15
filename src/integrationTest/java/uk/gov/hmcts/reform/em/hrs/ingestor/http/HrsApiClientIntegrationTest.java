@@ -38,6 +38,7 @@ class HrsApiClientIntegrationTest {
     private static final String GET_PATH = String.format("/folders/%s", TEST_FOLDER);
     private static final String POST_PATH = "/segments";
     private static final Metadata METADATA = new Metadata(
+        TEST_FOLDER,
         "recording-file-name",
         "recording-cvp-uri",
         1L,
