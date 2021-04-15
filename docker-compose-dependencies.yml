@@ -5,7 +5,7 @@ services:
   azure-storage-emulator-azurite-cvp:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
-      - 20000:10000
+      - 10000:10000
 #    network_mode: host
     command: "azurite-blob --blobHost 0.0.0.0 --loose"
     volumes:
