@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.junit.jupiter.api.Test;
-import reactor.util.function.Tuple3;
+import reactor.util.function.Tuple4;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
@@ -35,26 +35,33 @@ class MetadataResolverImplTest {
 
     @Test
     void testShouldReturnRoomReference() {
-        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+        final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
 
-        assertThat(fragments.getT1()).isEqualTo(12);
+        assertThat(fragments.getT2()).isEqualTo(12);
+    }
+
+    @Test
+    void testShouldReturnFolder() {
+        final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+
+        assertThat(fragments.getT1()).isEqualTo("audiostream12");
     }
 
     @Test
     void testShouldReturnRecordingReference() {
         final String expectedString = "bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0";
 
-        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+        final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
 
-        assertThat(fragments.getT2()).isEqualTo(expectedString);
+        assertThat(fragments.getT3()).isEqualTo(expectedString);
     }
 
     @Test
     void testShouldReturnFilenameExtension() {
         final String expectedString = "mp4";
 
-        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
+        final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(FILENAME);
 
-        assertThat(fragments.getT3()).isEqualTo(expectedString);
+        assertThat(fragments.getT4()).isEqualTo(expectedString);
     }
 }

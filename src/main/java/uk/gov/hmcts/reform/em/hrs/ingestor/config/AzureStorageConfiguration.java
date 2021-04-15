@@ -25,22 +25,32 @@ public class AzureStorageConfiguration {
 
     @Bean
     BlobContainerClient provideBlobContainerClient() {
+        LOGGER.info("****************************");
+        LOGGER.info("Starting Up");
+        LOGGER.info("****************************");
+        LOGGER.info("connection string: {}", connectionString);
 
-        BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
-            .connectionString(connectionString)
-            .containerName(containerReference);
+
 
         //debugging connection string for cvp storage
         if (connectionString.contains("cvprecordings")) {
             LOGGER.info("****************************");
             LOGGER.info("connection string: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
+            LOGGER.info("Building client with default credential builder (will attempt ManagedIdentityCredential");
             LOGGER.info("****************************");
-
+            BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
+                .endpoint(connectionString)
+                .containerName(containerReference);
 
             DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
             clientBuilder.credential(credential);
+            return clientBuilder.buildClient();
         }
+
+        BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
+            .connectionString(connectionString)
+            .containerName(containerReference);
 
         return clientBuilder.buildClient();
     }
