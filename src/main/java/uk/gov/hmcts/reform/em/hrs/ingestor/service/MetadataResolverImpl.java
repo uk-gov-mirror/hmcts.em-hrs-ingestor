@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.springframework.stereotype.Component;
-import reactor.util.function.Tuple3;
+import reactor.util.function.Tuple4;
 import reactor.util.function.Tuples;
 import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 @Component
 public class MetadataResolverImpl implements MetadataResolver {
-    static Function<String, Tuple3<Integer, String, String>> FRAGMENT = x -> {
+    static Function<String, Tuple4<String, Integer, String, String>> FRAGMENT = x -> {
         final String folderPrefix = "^audiostream";
         final String[] split = x.split("/");
         final String folder = split[0];
@@ -21,6 +21,7 @@ public class MetadataResolverImpl implements MetadataResolver {
         final int index = postfix.lastIndexOf(".");
 
         return Tuples.of(
+            folder,
             Integer.parseInt(folder.replaceFirst(folderPrefix, "")),
             postfix.substring(0, index),
             postfix.substring(index + 1)
@@ -29,20 +30,21 @@ public class MetadataResolverImpl implements MetadataResolver {
 
     @Override
     public Metadata resolve(final CvpItem item) throws FilenameParsingException {
-        final Tuple3<Integer, String, String> fragments = FRAGMENT.apply(item.getFilename());
-        final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT2());
+        final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(item.getFilename());
+        final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT3());
 
         return new Metadata(
+            fragments.getT1(),
             item.getFilename(),
             item.getFileUri(),
             item.getContentLength(),
             item.getMd5Hash(),
             parsedDataDto.getUniqueIdentifier(),
             Integer.parseInt(parsedDataDto.getSegment()),
-            fragments.getT3(),
+            fragments.getT4(),
             parsedDataDto.getRecordingDateTime(),
             parsedDataDto.getCaseID(),
-            fragments.getT1(),
+            fragments.getT2(),
             parsedDataDto.getJurisdiction(),
             parsedDataDto.getLocationCode()
         );
