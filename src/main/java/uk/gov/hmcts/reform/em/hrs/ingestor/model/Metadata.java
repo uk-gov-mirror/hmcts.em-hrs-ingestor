@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class Metadata {
+    private final String folder;
     private final String filename;
     private final String cvpFileUrl;
     private final long fileSize;
