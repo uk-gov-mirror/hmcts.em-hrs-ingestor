@@ -35,7 +35,7 @@ public class AzureStorageConfiguration {
         //debugging connection string for cvp storage
         if (connectionString.contains("cvprecordings")) {
             LOGGER.info("****************************");
-            LOGGER.info("connection string: {}", connectionString);
+            LOGGER.info("end point: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
             LOGGER.info("Building client with default credential builder (will attempt ManagedIdentityCredential");
             LOGGER.info("****************************");
