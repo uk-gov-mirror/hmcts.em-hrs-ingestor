@@ -9,11 +9,11 @@ services:
 #    network_mode: host
     command: "azurite-blob --blobHost 0.0.0.0 --loose"
     volumes:
-      - ./docker/volumes/azurite-keys-volume:/opt/keys
+      - em-hrs-docker-azure-blob-data:/opt/azurite/folder
   clamav:
     image: citizensadvice/clamav-mock
     ports:
       - 3310:3310
 
 volumes:
-  azurite-keys-volume:
+  em-hrs-docker-azure-blob-data:
