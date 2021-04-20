@@ -4,7 +4,6 @@ import com.azure.identity.DefaultAzureCredential;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,21 +29,19 @@ public class AzureStorageConfiguration {
         LOGGER.info("****************************");
         LOGGER.info("connection string: {}", connectionString);
 
-
-
         //debugging connection string for cvp storage
         if (connectionString.contains("cvprecordings")) {
             LOGGER.info("****************************");
             LOGGER.info("end point: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
-            LOGGER.info("Building client with default credential builder (will attempt ManagedIdentityCredential");
+            LOGGER.info("Building client with default credential builder (will use SAS endpoint instead of attempt ManagedIdentityCredential");
             LOGGER.info("****************************");
             BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
                 .endpoint(connectionString)
                 .containerName(containerReference);
 
-            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-            clientBuilder.credential(credential);
+//            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
+//            clientBuilder.credential(credential);
             return clientBuilder.buildClient();
         }
 

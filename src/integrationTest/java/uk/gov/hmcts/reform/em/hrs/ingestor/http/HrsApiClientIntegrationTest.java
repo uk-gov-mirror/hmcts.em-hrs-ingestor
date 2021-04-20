@@ -80,7 +80,7 @@ class HrsApiClientIntegrationTest {
     }
 
     @Test
-    void testShouldThrowHrsApiExceptionWhenNonSuccessStatusCodeIsReceived() throws Exception {
+    void testShouldThrowHrsApiExceptionWhenNonSuccessStatusCodeIsReceived() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(GET_PATH))
                 .willReturn(aResponse()
