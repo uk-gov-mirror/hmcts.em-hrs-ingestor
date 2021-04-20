@@ -80,14 +80,14 @@ class HrsApiClientIntegrationTest {
     }
 
     @Test
-    void testShouldThrowHrsApiExceptionWhenNonSuccessStatusCodeIsReceived() throws Exception {
+    void testShouldThrowHrsApiExceptionWhenNonSuccessStatusCodeIsReceived() {
         wireMockServer.stubFor(
             WireMock.get(urlPathEqualTo(GET_PATH))
                 .willReturn(aResponse()
                                 .withStatus(403))
         );
         assertThatExceptionOfType(HrsApiException.class).isThrownBy(() -> underTest.getIngestedFiles(TEST_FOLDER));
-        //wireMockServer.verify(exactly(1), getRequestedFor(urlEqualTo(String.format(GET_PATH, TEST_FOLDER))));
+        wireMockServer.verify(exactly(1), getRequestedFor(urlEqualTo(String.format(GET_PATH, TEST_FOLDER))));
     }
 
     @Test
