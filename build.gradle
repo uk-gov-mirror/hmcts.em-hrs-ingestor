@@ -9,9 +9,13 @@ plugins {
                                                      // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '3.1.1'
   id 'uk.gov.hmcts.java' version '0.12.8'
-  id 'au.com.dius.pact' version '4.0.10'
+  id 'au.com.dius.pact' version '4.1.8'
   id "info.solidsoft.pitest" version '1.6.0'
 }
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
 
 group = 'uk.gov.hmcts.reform.em.hrs'
 version = '0.0.1'
@@ -92,7 +96,14 @@ task functional(type: Test) {
   include "uk/gov/hmcts/reform/em/hrs/ingestor/functional/**"
   environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
   failFast = true
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
 }
+
+// Serenity Single page Reports
+functional.finalizedBy(aggregate)
 
 task integration(type: Test) {
   description = "Runs integration tests"
@@ -291,9 +302,9 @@ def versions = [
   springfoxSwagger   : '2.9.2',
   pact_version       : '3.6.15',
   restAssured        : '4.2.0',
-  serenity           : '2.3.12',
+  serenity           : '2.3.13',
   serenityRestAssured: '2.3.4',
-  serenityreporter   : '2.3.12',
+  serenityreporter   : '2.3.13',
 ]
 
 ext.libraries = [
