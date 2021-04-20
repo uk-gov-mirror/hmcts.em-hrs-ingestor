@@ -16,6 +16,10 @@ spring:
 test:
   url: ${TEST_URL:http://localhost:8090}
 
+hrs-api:
+  test:
+    url: ${HRS_TEST_URL:http://localhost:8080}
+
 idam:
   api:
     url: ${IDAM_API_BASE_URI:http://localhost:5000}
