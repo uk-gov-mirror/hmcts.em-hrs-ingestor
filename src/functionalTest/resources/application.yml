@@ -16,23 +16,14 @@ spring:
 test:
   url: ${TEST_URL:http://localhost:8090}
 
-idam:
-  api:
-    url: ${IDAM_API_BASE_URI:http://localhost:5000}
-  client:
-    id: ${OAUTH_CLIENT:webshow}
-    secret: ${FUNCTIONAL_TEST_CLIENT_OAUTH_SECRET:AAAAAAAAAAAAAAAA}
-    redirect_uri: ${IDAM_WEBSHOW_WHITELIST:http://localhost:8090/oauth2redirect}
-    grant_type: 'password'
-    scope: 'openid roles profile'
-
-s2s:
-  api:
-    url: ${S2S_BASE_URI:http://localhost:4502}
-    secret: ${FUNCTIONAL_TEST_CLIENT_S2S_TOKEN:AAAAAAAAAAAAAAAA}
-    serviceName: ${S2S_SERVICE_NAME:em_gw}
-
 azure:
   app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
   application-insights:
     instrumentation-key: ${APPINSIGHTS_INSTRUMENTATIONKEY:d04b52b1-20e5-473a-8ac4-3f6859ea113c}
+  storage:
+    hrs:
+      connection-string: ${STORAGEACCOUNT_PRIMARY_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
+      blob-container-reference: ${STORAGE_CONTAINER_DOCUMENT_CONTAINER_NAME:emhrstestcontainer}
+    cvp:
+      connection-string: ${STORAGEACCOUNT_PRIMARY_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
+      blob-container-reference: ${STORAGE_CONTAINER_DOCUMENT_CONTAINER_NAME:cvptestcontainer}
