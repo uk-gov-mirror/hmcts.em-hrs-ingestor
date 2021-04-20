@@ -12,5 +12,7 @@ def product = "em"
 def component = "hrs-ingestor"
 
 withNightlyPipeline(type, product, component) {
+  env.STORAGEACCOUNT_PRIMARY_CONNECTION_STRING = ''
+  env.STORAGE_CONTAINER_DOCUMENT_CONTAINER_NAME = ''
   enableMutationTest()
 }

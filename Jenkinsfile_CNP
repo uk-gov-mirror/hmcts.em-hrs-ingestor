@@ -43,6 +43,8 @@ env.OIDC_ISSUER_BASE_URI = 'https://forgerock-am.service.core-compute-idam-aat.i
 env.S2S_BASE_URI = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
 env.IDAM_WEBSHOW_WHITELIST = 'https://em-show-aat.service.core-compute-aat.internal/oauth2/callback'
 env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'
+env.STORAGEACCOUNT_PRIMARY_CONNECTION_STRING = ''
+env.STORAGE_CONTAINER_DOCUMENT_CONTAINER_NAME = ''
 
 def vaultOverrides = [
   'preview' : 'aat',
