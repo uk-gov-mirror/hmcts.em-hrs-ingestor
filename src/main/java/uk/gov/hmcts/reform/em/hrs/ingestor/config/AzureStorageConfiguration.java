@@ -34,14 +34,14 @@ public class AzureStorageConfiguration {
             LOGGER.info("****************************");
             LOGGER.info("end point: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
-            LOGGER.info("Building client with default credential builder (will attempt ManagedIdentityCredential");
+            LOGGER.info("Building client with default credential builder (will use SAS endpoint instead of attempt ManagedIdentityCredential");
             LOGGER.info("****************************");
             BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
                 .endpoint(connectionString)
                 .containerName(containerReference);
 
-            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-            clientBuilder.credential(credential);
+//            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
+//            clientBuilder.credential(credential);
             return clientBuilder.buildClient();
         }
 
