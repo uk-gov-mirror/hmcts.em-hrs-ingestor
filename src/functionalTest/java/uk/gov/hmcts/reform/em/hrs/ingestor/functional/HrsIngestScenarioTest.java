@@ -5,6 +5,7 @@ import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class HrsIngestScenarioTest {
 
     @Autowired
     private TestUtil testUtil;
+
+    @BeforeEach
+    public void setup() {
+        testUtil.clearHrsContainer();
+    }
 
     @AfterEach
     public void clear() {
