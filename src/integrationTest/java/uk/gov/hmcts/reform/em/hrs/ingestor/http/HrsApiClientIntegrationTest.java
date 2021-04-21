@@ -21,6 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.moreThanOrExactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -87,7 +88,7 @@ class HrsApiClientIntegrationTest {
                                 .withStatus(403))
         );
         assertThatExceptionOfType(HrsApiException.class).isThrownBy(() -> underTest.getIngestedFiles(TEST_FOLDER));
-        wireMockServer.verify(exactly(1), getRequestedFor(urlEqualTo(String.format(GET_PATH, TEST_FOLDER))));
+        wireMockServer.verify(moreThanOrExactly(1), getRequestedFor(urlEqualTo(String.format(GET_PATH, TEST_FOLDER))));
     }
 
     @Test
@@ -165,7 +166,7 @@ class HrsApiClientIntegrationTest {
     }
 
     @Test
-    void testShouldThrowHrsApiExceptionWhenPostReceivesNonSuccessStatusCode() throws Exception {
+    void testShouldThrowHrsApiExceptionWhenPostReceivesNonSuccessStatusCode() {
         wireMockServer.stubFor(
             WireMock.post(urlPathEqualTo(POST_PATH))
                 .willReturn(aResponse()
