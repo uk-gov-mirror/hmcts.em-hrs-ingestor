@@ -4,6 +4,7 @@ import com.azure.identity.DefaultAzureCredential;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class AzureStorageConfiguration {
         LOGGER.info("****************************");
         LOGGER.info("Starting Up");
         LOGGER.info("****************************");
-        LOGGER.info("connection string: {}", connectionString);
+        LOGGER.info("connection string: {}", StringUtils.left(connectionString,15));
 
         //debugging connection string for cvp storage
         if (connectionString.contains("cvprecordings")) {
@@ -40,8 +41,8 @@ public class AzureStorageConfiguration {
                 .endpoint(connectionString)
                 .containerName(containerReference);
 
-//            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
-//            clientBuilder.credential(credential);
+            DefaultAzureCredential credential = new DefaultAzureCredentialBuilder().build();
+            clientBuilder.credential(credential);
             return clientBuilder.buildClient();
         }
 
