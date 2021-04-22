@@ -24,10 +24,10 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             defaultIngestorService.ingest();
             //log.info("Application Shutting Down");DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
         } catch (Exception e) {
-            LOGGER.error("FATAL Error {}", e.getLocalizedMessage());
+            LOGGER.error("FATAL Error {}", e);
             //System.exit(1); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
         }
-        LOGGER.info("Application Finished...About to shutdown");
+//        LOGGER.info("Application Finished...About to shutdown");
         //System.exit(0); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
     }
 }
