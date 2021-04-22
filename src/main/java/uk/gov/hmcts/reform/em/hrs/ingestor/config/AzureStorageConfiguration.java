@@ -31,7 +31,7 @@ public class AzureStorageConfiguration {
         LOGGER.info("connection string: {}", StringUtils.left(connectionString,15));
 
         //debugging connection string for cvp storage
-        if (connectionString.contains("cvprecordings")) {
+        if (connectionString.contains("cvprecordings") && !connectionString.contains("AccountName")) {//if cvp endpoint url rather than sastoken or connectino string
             LOGGER.info("****************************");
             LOGGER.info("end point: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
