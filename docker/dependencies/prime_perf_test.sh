@@ -1,6 +1,7 @@
 #one off job to populate large files from pauls computer
 
-CONNSTRING="DefaultEndpointsProtocol=https;AccountName=emhrscvpaat;AccountKey=LINnVmlyh4Y1v3/kOQSPVJfa7lfVWH2okKdQvedGgJTXheOEmG1u+v49BMtbFiuabP0uWUWQMRi/qIvDTCBw7w==;EndpointSuffix=core.windows.net"
+source docker/dependencies/secret_envsettings.sh
+echo $CONNSTRING
 
 #200M
 #az storage blob upload -f ~/Desktop/audio_test-1hour-192kbs.mp4 -c recordings -n audiostream999000/FM-0111-testfile200M_2020-01-01-11.11.11.123-UTC_0.mp4 --connection-string "$CONNSTRING"
