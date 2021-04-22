@@ -36,3 +36,10 @@ azure:
   app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
   application-insights:
     instrumentation-key: ${APPINSIGHTS_INSTRUMENTATIONKEY:d04b52b1-20e5-473a-8ac4-3f6859ea113c}
+  storage:
+    hrs:
+      connection-string: ${AAT_HRS_STORAGEACCOUNT_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
+      blob-container-reference: ${AAT_HRS_STORAGE_CONTAINER_NAME:emhrstestcontainer}
+    cvp:
+      connection-string: ${CVP_STORAGE_CONNECTION_STRING:DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1}
+      blob-container-reference: ${CVP_STORAGE_CONTAINER_NAME:cvptestcontainer}
