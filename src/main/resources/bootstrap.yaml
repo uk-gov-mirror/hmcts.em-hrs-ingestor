@@ -2,10 +2,10 @@ spring:
   cloud:
     propertiesvolume:
       enabled: true
-      prefixed: true
-      paths: /mnt/secrets/em-hrs-ingestor,/mnt/secrets/em-hrs-api
+      prefixed: false
+      paths: /mnt/secrets/em-hrs-ingestor
       aliases:
-        em-hrs-ingestor.microservicekey-em-hrs-ingestor: S2S_KEY
-        em-hrs-ingestor.AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
-        em-hrs-api.cvp-storage-connection-string: CVP_STORAGE_CONNECTION_STRING
-        em-hrs-api.storage-account-primary-connection-string: AAT_HRS_STORAGEACCOUNT_CONNECTION_STRING
+        microservicekey-em-hrs-ingestor: S2S_KEY
+        AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
+        cvp-storage-connection-string: CVP_STORAGE_CONNECTION_STRING
+        cvp-storage-container-name: CVP_STORAGE_CONTAINER_NAME
