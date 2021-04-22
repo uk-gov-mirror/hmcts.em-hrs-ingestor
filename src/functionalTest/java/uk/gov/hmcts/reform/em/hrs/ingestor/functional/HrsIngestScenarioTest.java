@@ -54,7 +54,7 @@ public class HrsIngestScenarioTest {
             .given()
             .baseUri(testUrl)
             .get("/ingest")
-            .then().log().all()
+            .then()
             .assertThat()
             .statusCode(200);
 
