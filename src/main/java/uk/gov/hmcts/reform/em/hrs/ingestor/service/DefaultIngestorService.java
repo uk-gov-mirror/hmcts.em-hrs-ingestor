@@ -59,6 +59,7 @@ public class DefaultIngestorService implements IngestorService {
 
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
+            LOGGER.info("filterSet size: {}",filteredSet.size());
             filteredSet.forEach(file -> {
                 if (batchProcessingLimitReached()) {
                     return;
@@ -104,8 +105,11 @@ public class DefaultIngestorService implements IngestorService {
 
     private Set<CvpItem> getFilesToIngest(final String folder) {
         try {
+            LOGGER.info("Getting CVP files in folder");
             final CvpItemSet cvpItemSet = cvpBlobstoreClient.findByFolder(folder);
+            LOGGER.info("Getting HRS files already ingested");
             final HrsFileSet hrsFileSet = hrsApiClient.getIngestedFiles(folder);
+            LOGGER.info("Filtering out files not required from original cvp list");
             Set<CvpItem> filesToIngest = ingestionFilterer.filter(cvpItemSet, hrsFileSet);
 
             int cvpFilesCount = cvpItemSet.getCvpItems().size();
