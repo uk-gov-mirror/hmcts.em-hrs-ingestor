@@ -84,10 +84,14 @@ public final class FilenameParser {
             return processNonLocationMatcher(tribunalsMatcher);
         } else {
             String[] values = fileName.split("_");
-            return ParsedFilenameDto
+
+            ParsedFilenameDto defaultParsing = ParsedFilenameDto
                 .builder()
                 .caseID(values[0])
+                .segment(values[values.length - 1])
                 .build();
+
+            return defaultParsing;
         }
     }
 
