@@ -33,7 +33,7 @@ public class AzureStorageConfiguration {
         //debugging connection string for cvp storage
         boolean isACvpEndpointUrl =
             connectionString.contains("cvprecordings") && !connectionString.contains("AccountName");
-        
+
         if (isACvpEndpointUrl) {
             LOGGER.info("****************************");
             LOGGER.info("end point: {}", connectionString);

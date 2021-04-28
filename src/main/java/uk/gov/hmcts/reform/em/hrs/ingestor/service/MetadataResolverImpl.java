@@ -73,7 +73,7 @@ public class MetadataResolverImpl implements MetadataResolver {
 
         } catch (Exception e) {
             LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
-            e.printStackTrace();
+            LOGGER.error("Unhandled Exception",e);
             throw new FilenameParsingException(
                 "Unexpected Error parsing cvpItem: " + String.valueOf(e.getMessage()),
                 e
