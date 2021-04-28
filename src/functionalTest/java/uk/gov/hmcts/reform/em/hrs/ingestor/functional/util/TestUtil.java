@@ -6,7 +6,10 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class TestUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestUtil.class);
 
     private final BlobContainerClient hrsBlobContainerClient;
     private static final int BLOB_LIST_TIMEOUT = 5;
@@ -34,6 +39,9 @@ public class TestUtil {
             .setDetails(blobListDetails)
             .setPrefix(folder);
         final Duration duration = Duration.ofMinutes(BLOB_LIST_TIMEOUT);
+
+        LOGGER.info("Getting blobs from hrs blob client, for folder: {} ",folder);
+
         final PagedIterable<BlobItem> blobItems = hrsBlobContainerClient.listBlobs(options, duration);
 
         return blobItems.streamByPage()
@@ -42,6 +50,7 @@ public class TestUtil {
     }
 
     public void clearHrsContainer() {
+        LOGGER.info("Clearing HRS Container of all blobs");
         hrsBlobContainerClient.listBlobs()
             .stream()
             .filter(blobItem -> getListOfTestBlobs().contains(blobItem.getName()))
