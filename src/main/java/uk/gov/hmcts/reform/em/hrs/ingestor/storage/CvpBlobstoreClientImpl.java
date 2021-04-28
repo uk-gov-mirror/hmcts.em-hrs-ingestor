@@ -7,11 +7,11 @@ import com.azure.storage.blob.models.BlobItemProperties;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.em.hrs.ingestor.listener.IngestWhenApplicationReadyListener;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
@@ -45,24 +45,30 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
         final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
 
 
-
         return blobItems.streamByPage()
             .flatMap(pagedResponse -> pagedResponse.getValue().stream()
                 .map(blobItem -> {
                     LOGGER.info("Processing blobItem");
                     String filePath = blobItem.getName();
                     LOGGER.info("File Path {}", filePath);
-                    final int separatorIndex = filePath.indexOf("/");
-                    LOGGER.info("Separator Index {}",separatorIndex);
-                    if (separatorIndex==-1) {
-                        LOGGER.warn("Invalid Path for filepath {} ",filePath);
-                        return "";//TODO should not be returning anything if no folder is found, consider using directoryClient to get directories instead
-                    }
-                    String folder = filePath.substring(0, separatorIndex);
-                    LOGGER.info("folder {}",folder);
+                    String folder = parseFolderFromPath(filePath);
                     return folder;
                 }))
             .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @NotNull
+    String parseFolderFromPath(String filePath) {
+        final int separatorIndex = filePath.indexOf("/");
+        LOGGER.info("Separator Index {}", separatorIndex);
+        String folder = "";
+        if (separatorIndex == -1) {
+            LOGGER.warn("Invalid Path for filepath {} ", filePath);
+        } else {
+            folder = filePath.substring(0, separatorIndex);
+        }
+        LOGGER.info("folder {}", folder);
+        return folder;
     }
 
     @Override

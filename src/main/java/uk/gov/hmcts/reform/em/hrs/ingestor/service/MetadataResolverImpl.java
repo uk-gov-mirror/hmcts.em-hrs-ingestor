@@ -69,12 +69,15 @@ public class MetadataResolverImpl implements MetadataResolver {
 
         } catch (FilenameParsingException e) {
             LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
-            throw new FilenameParsingException(e.getMessage(),e);
+            throw new FilenameParsingException(e.getMessage(), e);
 
         } catch (Exception e) {
             LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
             e.printStackTrace();
-            throw new FilenameParsingException("Unexpected Error parsing cvpItem: "+String.valueOf(e.getMessage()), e);
+            throw new FilenameParsingException(
+                "Unexpected Error parsing cvpItem: " + String.valueOf(e.getMessage()),
+                e
+            );
         }
     }
 }
