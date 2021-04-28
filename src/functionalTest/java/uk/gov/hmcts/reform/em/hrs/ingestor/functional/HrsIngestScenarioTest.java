@@ -58,9 +58,9 @@ public class HrsIngestScenarioTest {
     public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() {
         Set<String> currentContents = testUtil.getHrsBlobsFrom("/");
 
-        LOGGER.info("Current Contents of HRS Folder: {}",String.join(",", currentContents));
+        LOGGER.warn("Current Contents of HRS Folder: {}",String.join(",", currentContents));
 
-        LOGGER.info("Waiting for folder to be empty");
+        LOGGER.warn("Waiting for folder to be empty");
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
@@ -69,10 +69,10 @@ public class HrsIngestScenarioTest {
 
 
         currentContents = testUtil.getHrsBlobsFrom("/");
-        LOGGER.info("Current Contents of HRS Folder: {}",String.join(",", currentContents));
+        LOGGER.warn("Current Contents of HRS Folder: {}",String.join(",", currentContents));
 
 
-        LOGGER.info("Ingesting");
+        LOGGER.warn("Ingesting");
         SerenityRest
             .given()
             .baseUri(testUrl)
@@ -82,7 +82,7 @@ public class HrsIngestScenarioTest {
             .statusCode(200);
 
 
-        LOGGER.info("Waiting 10 seconds");
+        LOGGER.warn("Waiting 10 seconds");
         try {
             Thread.sleep(10000L);
         } catch (InterruptedException e) {
@@ -90,10 +90,10 @@ public class HrsIngestScenarioTest {
         }
 
         currentContents = testUtil.getHrsBlobsFrom("/");
-        LOGGER.info("Current Contents of HRS Folder: {}",String.join(",", currentContents));
+        LOGGER.warn("Current Contents of HRS Folder: {}",String.join(",", currentContents));
 
 
-        LOGGER.info("Checking for folder 1 contents");
+        LOGGER.warn("Checking for folder 1 contents");
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))

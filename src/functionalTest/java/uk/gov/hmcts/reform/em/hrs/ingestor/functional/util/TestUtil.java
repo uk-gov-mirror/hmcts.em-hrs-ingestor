@@ -39,7 +39,7 @@ public class TestUtil {
             .setPrefix(folder);
         final Duration duration = Duration.ofMinutes(BLOB_LIST_TIMEOUT);
 
-        LOGGER.info("Getting blobs from hrs blob client, for folder: {} ", folder);
+        LOGGER.warn("Getting blobs from hrs blob client, for folder: {} ", folder);
 
         final PagedIterable<BlobItem> blobItems = hrsBlobContainerClient.listBlobs(options, duration);
 
@@ -49,7 +49,7 @@ public class TestUtil {
     }
 
     public void clearHrsContainer() {
-        LOGGER.info("Clearing HRS Container of all blobs");
+        LOGGER.warn("Clearing HRS Container of all blobs");
         hrsBlobContainerClient.listBlobs()
             .stream()
             .filter(blobItem -> getListOfTestBlobs().contains(blobItem.getName()))
