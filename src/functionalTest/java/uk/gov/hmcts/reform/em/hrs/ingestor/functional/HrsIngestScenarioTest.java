@@ -82,9 +82,9 @@ public class HrsIngestScenarioTest {
             .statusCode(200);
 
 
-        LOGGER.info("Waiting 10 seconds"));
+        LOGGER.info("Waiting 10 seconds");
         try {
-            Thread.sleep(10000l);
+            Thread.sleep(10000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
