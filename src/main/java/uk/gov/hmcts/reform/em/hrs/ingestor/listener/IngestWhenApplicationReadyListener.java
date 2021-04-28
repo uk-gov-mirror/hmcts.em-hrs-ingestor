@@ -15,6 +15,8 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     @Autowired
     private DefaultIngestorService defaultIngestorService;
 
+    boolean shouldShutDownAfterInitialIngestion = false;//DON'T shutdown UNTIL THIS IS RUNNING AS A CRON JOB
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         try {
@@ -22,12 +24,30 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             boolean isServiceNull = defaultIngestorService == null;
             LOGGER.info("isServiceNull {}", isServiceNull);
             defaultIngestorService.ingest();
-            //log.info("Application Shutting Down");DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
+
         } catch (Exception e) {
-            LOGGER.error("FATAL Error {}", e.getLocalizedMessage());
-            //System.exit(1); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
+            LOGGER.error("FATAL Error during Ingestion {}", e.getMessage());
+            e.printStackTrace();
         }
-        LOGGER.info("Application Finished...About to shutdown");
-        //System.exit(0); DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
+
+        if (shouldShutDownAfterInitialIngestion) {
+            LOGGER.info("Application Shutting Down");
+            shutDownGracefully();
+        }
+    }
+
+    private void shutDownGracefully() {
+        long minutesBeforeShutdownAfterInitialIngestion = 10;
+        long msBeforeShutdown = 1000 * 60 * minutesBeforeShutdownAfterInitialIngestion;
+        LOGGER.info("Application Finished...Waiting {} mins to shutdown to allow for functional tests",
+                    minutesBeforeShutdownAfterInitialIngestion);
+
+        try {
+            Thread.sleep(msBeforeShutdown);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info("Application Shutdown Delay completed, now exiting System.");
+        System.exit(0);
     }
 }
