@@ -16,7 +16,7 @@ spring:
     name: Hearing Recordings Ingestor
 
 ingestion:
-  max-number-of-files-to-process-per-batch: ${MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH:12}
+  max-number-of-files-to-process-per-batch: ${MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH:25}
 
 
 

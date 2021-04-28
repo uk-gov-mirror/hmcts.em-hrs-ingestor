@@ -9,11 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(classes = {
-    //    TestSecurityConfiguration.class,
-    //    TestAzureStorageConfig.class
-}
-)
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public abstract class AbstractBaseTest {
 
@@ -21,7 +17,6 @@ public abstract class AbstractBaseTest {
 
     @Autowired
     private WebApplicationContext context;
-
 
     @BeforeEach
     public void setupMocks() {

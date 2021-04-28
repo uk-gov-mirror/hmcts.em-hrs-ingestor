@@ -28,16 +28,14 @@ public class AzureStorageConfiguration {
         LOGGER.info("****************************");
         LOGGER.info("Starting Up");
         LOGGER.info("****************************");
-        LOGGER.info("connection string: {}", connectionString);
-
-
+        LOGGER.info("connection string: {}", StringUtils.left(connectionString,15));
 
         //debugging connection string for cvp storage
-        if (connectionString.contains("cvprecordings")) {
+        if (connectionString.contains("cvprecordings") && !connectionString.contains("AccountName")) {//if cvp endpoint url rather than sastoken or connectino string
             LOGGER.info("****************************");
-            LOGGER.info("connection string: {}", connectionString);
+            LOGGER.info("end point: {}", connectionString);
             LOGGER.info("container name: {}",containerReference);
-            LOGGER.info("Building client with default credential builder (will attempt ManagedIdentityCredential");
+            LOGGER.info("Building client with default credential builder (will use SAS endpoint instead of attempt ManagedIdentityCredential");
             LOGGER.info("****************************");
             BlobContainerClientBuilder clientBuilder = new BlobContainerClientBuilder()
                 .endpoint(connectionString)
