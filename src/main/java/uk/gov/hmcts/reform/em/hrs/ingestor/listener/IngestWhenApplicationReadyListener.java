@@ -30,6 +30,9 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
                 boolean isServiceNull = defaultIngestorService == null;
                 LOGGER.info("isServiceNull {}", isServiceNull);
                 defaultIngestorService.ingest();
+                Thread.sleep(30 *   // minutes to sleep
+                    60 *   // seconds to a minute
+                    1000); // milliseconds to a second
                 LOGGER.info("Application Shutting Down");//DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
             } catch (Exception e) {
                 LOGGER.error("FATAL Error {}", e.getLocalizedMessage());
