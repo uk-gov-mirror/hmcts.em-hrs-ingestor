@@ -62,18 +62,21 @@ public class HrsIngestScenarios {
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
+                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER1))
                 .size()
                 .isEqualTo(5));
 
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER2))
+                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER2))
                 .size()
                 .isEqualTo(3));
 
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER3))
+                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER3))
                 .size()
                 .isEqualTo(1));
     }
