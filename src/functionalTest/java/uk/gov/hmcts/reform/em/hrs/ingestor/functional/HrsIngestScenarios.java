@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.functional.config.AzureClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.functional.util.TestUtil;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -48,7 +49,7 @@ public class HrsIngestScenarios {
     }
 
     @Test
-    public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() {
+    public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() throws InterruptedException {
         SerenityRest
             .given()
             .relaxedHTTPSValidation()
@@ -58,6 +59,8 @@ public class HrsIngestScenarios {
             .assertThat()
             .statusCode(200);
 
+
+        TimeUnit.SECONDS.sleep(30);
 
         await()
             .atMost(THIRTY_SECONDS)
