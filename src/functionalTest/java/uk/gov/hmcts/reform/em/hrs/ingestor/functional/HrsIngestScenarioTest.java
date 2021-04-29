@@ -75,6 +75,7 @@ public class HrsIngestScenarioTest {
         LOGGER.warn("Ingesting");
         SerenityRest
             .given()
+            .relaxedHTTPSValidation()
             .baseUri(testUrl)
             .get("/ingest")
             .then()
