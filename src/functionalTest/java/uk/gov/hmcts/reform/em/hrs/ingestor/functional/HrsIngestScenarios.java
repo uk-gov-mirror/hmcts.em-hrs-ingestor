@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.functional.config.AzureClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.functional.util.TestUtil;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -60,26 +59,21 @@ public class HrsIngestScenarios {
             .statusCode(200);
 
 
-        TimeUnit.SECONDS.sleep(30);
-
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
-                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER1))
                 .size()
                 .isEqualTo(5));
 
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER2))
-                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER2))
                 .size()
                 .isEqualTo(3));
 
         await()
             .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER3))
-                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER3))
                 .size()
                 .isEqualTo(1));
     }
