@@ -66,11 +66,6 @@ public class TestUtil {
     public List<String> getListOfTestBlobs() {
         return new ArrayList<>() {
             {
-                add("audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_0.mp4");
-                add("audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_1.mp4");
-                add("audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_2.mp4");
-                add("audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_3.mp4");
-                add("audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_4.mp4");
                 add("audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_0.mp4");
                 add("audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_1.mp4");
                 add("audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_2.mp4");
@@ -81,15 +76,7 @@ public class TestUtil {
 
     public Map<String, List<String>> blobsMap() {
         return new HashMap<>() {{
-            put("audiostream999997", List.of(
-                "audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_0.mp4",
-                "audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_1.mp4",
-                "audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_2.mp4",
-                "audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_3.mp4",
-                "audiostream999997/FM-0123-BV20D01_2020-11-04-14.56.32.819-UTC_4.mp4"
-            ));
-            put("audiostream999998", List.of(
-                "audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_0.mp4",
+            put("audiostream999998", List.of("audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_0.mp4",
                 "audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_1.mp4",
                 "audiostream999998/FM-0456-CD30D01_2020-11-05-15.36.42.619-UTC_2.mp4"
             ));

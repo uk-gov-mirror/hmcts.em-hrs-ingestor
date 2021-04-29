@@ -27,7 +27,6 @@ import static org.awaitility.Awaitility.await;
 @WithTags({@WithTag("testType:Functional")})
 public class HrsIngestScenarios {
 
-    private static final String HRS_BLOBSTORE_FOLDER1 = "audiostream999997";
     private static final String HRS_BLOBSTORE_FOLDER2 = "audiostream999998";
     private static final String HRS_BLOBSTORE_FOLDER3 = "audiostream999999";
     private static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
@@ -61,13 +60,6 @@ public class HrsIngestScenarios {
 
 
         TimeUnit.SECONDS.sleep(30);
-
-        await()
-            .atMost(THIRTY_SECONDS)
-            .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
-                .containsAll(testUtil.getFilesForFolder(HRS_BLOBSTORE_FOLDER1))
-                .size()
-                .isEqualTo(5));
 
         await()
             .atMost(THIRTY_SECONDS)
