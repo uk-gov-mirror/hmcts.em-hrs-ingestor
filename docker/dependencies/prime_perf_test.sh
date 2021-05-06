@@ -13,22 +13,22 @@ source docker/dependencies/secret_envsettings.sh
 echo "connection string: $CONNSTRING"
 
 #200M - once this has uploaded, clone it 9 times with a different segment number - this will produce 10 files of 200M
-#az storage blob upload --content-md5 "H4pMd2A50GZh8F2ovbufjA==" -f ~/Desktop/audio_test-1hour-192kbs.mp4 -c recordings -n audiostream999000/FM-0111-testfile200M_2020-01-01-11.11.11.123-UTC_0.mp4 --connection-string "$CONNSTRING"
+#az storage blob upload --content-md5 "H4pMd2A50GZh8F2ovbufjA==" -f ~/Desktop/audio_test-1hour-192kbs.mp4 -c cvptestcontainer -n audiostream999000/FM-0111-testfile200M_2020-01-01-11.11.11.123-UTC_0.mp4 --connection-string "$CONNSTRING"
 
 
 #
 #
 ##1GIG
-az storage blob upload --content-md5 "qyQ2rKG3WF3VwgHkybLYKw==" -f ~/Desktop/audio_test-5hours-192kbs.mp4 -c recordings -n audiostream999000/FM-0222-testfile1GIG_2020-02-02-12.22.22.234-UTC_0.mp4 --connection-string "$CONNSTRING"
+#az storage blob upload --content-md5 "qyQ2rKG3WF3VwgHkybLYKw==" -f ~/Desktop/audio_test-5hours-192kbs.mp4 -c cvptestcontainer -n audiostream999000/FM-0222-testfile1GIG_2020-02-02-12.22.22.234-UTC_0.mp4 --connection-string "$CONNSTRING"
 #
 #
 #
 ##2GIG
-az storage blob upload --content-md5 "aBnlrPbO3v23QoSpe/oBrA==" -f ~/Desktop/audio_test-10hours-192kbs.mp4 -c recordings -n audiostream999000/FM-0333-testfile2GIG_2020-03-03-13.33.33.345-UTC_0.mp4 --connection-string "$CONNSTRING"
+#az storage blob upload --content-md5 "aBnlrPbO3v23QoSpe/oBrA==" -f ~/Desktop/audio_test-10hours-192kbs.mp4 -c cvptestcontainer -n audiostream999000/FM-0333-testfile2GIG_2020-03-03-13.33.33.345-UTC_0.mp4 --connection-string "$CONNSTRING"
 #
 #
 ##3GIG
-az storage blob upload --content-md5 "EW/LzbT3e++7OLfpS2sfiw==" -f ~/Desktop/audio_test-15hours-192kbs.mp4 -c recordings -n audiostream999000/FM-0444-testfile3GIG_2020-04-04-14.44.44.456-UTC_0.mp4 --connection-string "$CONNSTRING"
+#az storage blob upload --content-md5 "EW/LzbT3e++7OLfpS2sfiw==" -f ~/Desktop/audio_test-15hours-192kbs.mp4 -c cvptestcontainer -n audiostream999000/FM-0444-testfile3GIG_2020-04-04-14.44.44.456-UTC_0.mp4 --connection-string "$CONNSTRING"
 #
 ##4GIG
-az storage blob upload --content-md5 "WeG+UMubON0b+1olefSbBg==" -f ~/Desktop/audio_test-20hours-192kbs.mp4 -c recordings -n audiostream999000/FM-0555-testfile4GIG_2020-05-05-15.55.55.567-UTC_0.mp4 --connection-string "$CONNSTRING"
+az storage blob upload --content-md5 "WeG+UMubON0b+1olefSbBg==" -f ~/Desktop/audio_test-20hours-192kbs.mp4 -c cvptestcontainer -n audiostream999000/FM-0555-testfile4GIG_2020-05-05-15.55.55.567-UTC_0.mp4 --connection-string "$CONNSTRING"
