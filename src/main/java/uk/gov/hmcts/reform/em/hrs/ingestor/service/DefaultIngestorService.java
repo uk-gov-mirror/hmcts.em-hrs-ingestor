@@ -54,7 +54,7 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
             if (batchProcessingLimitReached()) {
-                LOGGER.info("BATCH PROCESSING LIMIT REACHED");
+                LOGGER.info("BATCH PROCESSING LIMIT REACHED of {}",maxNumberOfFilesToProcessPerBatch);
                 return;
             }
 
