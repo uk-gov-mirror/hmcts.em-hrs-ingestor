@@ -18,7 +18,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
     @Value("${toggle.cronjob}")
     private boolean enableCronjob;
-
+    boolean shouldShutDownAfterInitialIngestion = enableCronjob;
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
@@ -43,3 +43,36 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
         System.exit(0); //DON'T EXIT UNTIL THIS IS RUNNING AS A CRON JOB
     }
 }
+//    @Override
+//    public void onApplicationEvent(ApplicationReadyEvent event) {
+//        try {
+//            LOGGER.info("Application Started {}\n...About to Ingest", event.toString());
+//            boolean isServiceNull = defaultIngestorService == null;
+//            LOGGER.info("isServiceNull {}", isServiceNull);
+//            defaultIngestorService.ingest();
+//
+//        } catch (Exception e) {
+//            LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}", e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//        if (shouldShutDownAfterInitialIngestion) {
+//            LOGGER.info("Application Shutting Down");
+//            shutDownGracefully();
+//        }
+//    }
+//
+//    private void shutDownGracefully() {
+//        long minutesBeforeShutdownAfterInitialIngestion = 10;
+//        long msBeforeShutdown = 1000 * 60 * minutesBeforeShutdownAfterInitialIngestion;
+//        LOGGER.info("Application Finished...Waiting {} mins to shutdown to allow for functional tests",
+//                    minutesBeforeShutdownAfterInitialIngestion);
+//
+//        try {
+//            Thread.sleep(msBeforeShutdown);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        LOGGER.info("Application Shutdown Delay completed, now exiting System.");
+//        System.exit(0);
+//    }
