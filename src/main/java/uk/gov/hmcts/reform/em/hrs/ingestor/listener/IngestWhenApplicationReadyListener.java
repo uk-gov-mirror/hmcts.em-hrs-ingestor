@@ -43,7 +43,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
     private void shutDownGracefully() {
         long minutesBeforeShutdownAfterInitialIngestion =
-            10;//TODO consider making this configurable/forced outside of AAT.staging & preview
+            10;//TODO consider making this configurable/forced during AAT.staging & preview tests
         long msBeforeShutdown = 1000 * 60 * minutesBeforeShutdownAfterInitialIngestion;
         LOGGER.info(
             "Application Finished...Waiting {} mins to shutdown to allow for functional tests",
