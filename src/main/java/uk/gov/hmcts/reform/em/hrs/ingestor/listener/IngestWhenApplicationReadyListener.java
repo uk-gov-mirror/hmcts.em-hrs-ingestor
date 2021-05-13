@@ -26,7 +26,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             defaultIngestorService.ingest();
 
         } catch (Exception e) {
-            LOGGER.error("FATAL Error during Ingestion {}", e.getMessage());
+            LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}", e.getMessage());
             e.printStackTrace();
         }
 

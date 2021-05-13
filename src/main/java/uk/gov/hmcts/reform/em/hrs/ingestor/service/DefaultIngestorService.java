@@ -49,7 +49,7 @@ public class DefaultIngestorService implements IngestorService {
         filesAttempted = 0;
         filesParsedOk = 0;
         filesSubmittedOk = 0;
-        LOGGER.info("Ingestion Started");
+        LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}",maxNumberOfFilesToProcessPerBatch);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
