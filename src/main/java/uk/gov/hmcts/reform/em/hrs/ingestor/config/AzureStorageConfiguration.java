@@ -28,16 +28,17 @@ public class AzureStorageConfiguration {
         LOGGER.info("****************************");
         LOGGER.info("Starting Up");
         LOGGER.info("****************************");
-        LOGGER.info("connection string: {}", StringUtils.left(connectionString, 15));
+        LOGGER.info("cvp connection string(60): {}", StringUtils.left(connectionString, 60));
+        LOGGER.info("cvp container name: {}", containerReference);
 
-        //debugging connection string for cvp storage
+        //connectionstring is overloaded and used as endpoint when connecting to cvp, and connection string against
+        // CFT/HRS test storage accounts
         boolean isACvpEndpointUrl =
             connectionString.contains("cvprecordings") && !connectionString.contains("AccountName");
 
         if (isACvpEndpointUrl) {
             LOGGER.info("****************************");
-            LOGGER.info("end point: {}", connectionString);
-            LOGGER.info("container name: {}", containerReference);
+
             LOGGER.info(
                 "Building client with default credential builder (will use SAS endpoint instead of attempt " +
                     "ManagedIdentityCredential");
