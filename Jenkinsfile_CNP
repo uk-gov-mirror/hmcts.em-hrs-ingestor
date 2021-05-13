@@ -60,6 +60,7 @@ withPipeline(type, product, component) {
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
+  nonServiceApp()
   onMaster {
     after('test') {
       sh '''
