@@ -7,6 +7,6 @@ version: 0.0.15
 maintainers:
   - name: HMCTS Evidence Management team
 dependencies:
-  - name: job
-    version: 0.7.1
+  - name: java
+    version: 3.4.5
     repository: '@hmctspublic'
