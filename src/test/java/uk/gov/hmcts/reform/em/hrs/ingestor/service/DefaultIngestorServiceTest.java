@@ -112,6 +112,8 @@ class DefaultIngestorServiceTest {
         verify(metadataResolver, times(3)).resolve(any(CvpItem.class));
     }
 
+
+
     @Test
     void testShouldRefuseIngestionWhenGettingFilesFromHrsApiRaisesInputOutException() throws Exception {
         doReturn(Set.of(FOLDER_ONE)).when(cvpBlobstoreClient).getFolders();
@@ -186,9 +188,7 @@ class DefaultIngestorServiceTest {
         doReturn(CVP_FILES_1_2_3_AS_SET).when(ingestionFilterer).filter(CVP_ITEMSET_OF_3_FILES, HRS_FILESET_OF_0_FILES);
         doReturn(METADATA).when(metadataResolver).resolve(any(CvpItem.class));
 
-        underTest.setMaxNumberOfFilesToProcessPerBatch(2);
-        underTest.ingest();
-        underTest.setMaxNumberOfFilesToProcessPerBatch(100);
+        underTest.ingest(2);
 
         verify(cvpBlobstoreClient, times(1)).getFolders();
         verify(cvpBlobstoreClient, times(1)).findByFolder(FOLDER_ONE);

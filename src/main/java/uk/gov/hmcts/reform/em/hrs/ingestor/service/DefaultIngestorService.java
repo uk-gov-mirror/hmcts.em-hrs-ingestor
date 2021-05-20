@@ -46,15 +46,19 @@ public class DefaultIngestorService implements IngestorService {
 
     @Override
     public void ingest() {
+        ingest(maxNumberOfFilesToProcessPerBatch);
+    }
+
+    @Override
+    public void ingest(Integer maxNumberOfFiles) {
         filesAttempted = 0;
         filesParsedOk = 0;
         filesSubmittedOk = 0;
-        LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}",maxNumberOfFilesToProcessPerBatch);
+        LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}",maxNumberOfFiles);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
-            if (batchProcessingLimitReached()) {
-                LOGGER.info("BATCH PROCESSING LIMIT REACHED of {}",maxNumberOfFilesToProcessPerBatch);
+            if (batchProcessingLimitReached(maxNumberOfFiles)) {
                 return;
             }
 
@@ -62,7 +66,7 @@ public class DefaultIngestorService implements IngestorService {
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
             LOGGER.info("filterSet size: {}",filteredSet.size());
             filteredSet.forEach(file -> {
-                if (batchProcessingLimitReached()) {
+                if (batchProcessingLimitReached(maxNumberOfFiles)) {
                     return;
                 }
                 filesAttempted++;
@@ -72,9 +76,12 @@ public class DefaultIngestorService implements IngestorService {
 
         });
         LOGGER.info("Ingestion Complete");
-        LOGGER.info("Total filesAttempted: {}", filesAttempted);
-        LOGGER.info("Total filesParsedOk: {}", filesParsedOk);
-        LOGGER.info("Total filesSubmittedOk: {}", filesSubmittedOk);
+        if (batchProcessingLimitReached(maxNumberOfFiles)) {
+            LOGGER.info("Batch Processing Limit Reached ({})", maxNumberOfFiles);
+        }
+        LOGGER.info("Total files Attempted: {}", filesAttempted);
+        LOGGER.info("Total files Parsed Ok: {}", filesParsedOk);
+        LOGGER.info("Total files Submitted Ok: {}", filesSubmittedOk);
 
     }
 
@@ -100,8 +107,8 @@ public class DefaultIngestorService implements IngestorService {
         }
     }
 
-    private boolean batchProcessingLimitReached() {
-        return filesAttempted >= maxNumberOfFilesToProcessPerBatch;
+    private boolean batchProcessingLimitReached(Integer maxNumberOfFiles) {
+        return filesAttempted >= maxNumberOfFiles;
     }
 
     private Set<CvpItem> getFilesToIngest(final String folder) {
