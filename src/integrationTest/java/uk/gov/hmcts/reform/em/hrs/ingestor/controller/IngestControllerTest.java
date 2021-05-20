@@ -24,4 +24,14 @@ class IngestControllerTest extends AbstractBaseTest {
         MvcResult response = mockMvc.perform(get("/ingest")).andExpect(status().isOk()).andReturn();
         assertThat(response.getResponse().getContentAsString()).startsWith("Ingestion");
     }
+
+    @DisplayName("Should welcome upon root request with 200 response code")
+    @Test
+    public void ingestEndpointWithLimit() throws Exception {
+        Integer maxFilesToProcess = 1;
+        MvcResult response =
+            mockMvc.perform(get("/ingest/" + maxFilesToProcess)).andExpect(status().isOk()).andReturn();
+        String welcomeText = "Ingestion Initiated with " + maxFilesToProcess + " limit";
+        assertThat(response.getResponse().getContentAsString()).startsWith(welcomeText);
+    }
 }
