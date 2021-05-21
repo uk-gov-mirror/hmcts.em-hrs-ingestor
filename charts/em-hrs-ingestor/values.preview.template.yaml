@@ -3,6 +3,7 @@ job:
   ingressHost: ${SERVICE_FQDN}
   environment:
     ENABLE_CRONJOB: false
+  kind: Job
 #using job type  might provide what we need for an autostart up for testing purposes
 global:
   jobKind: Job
