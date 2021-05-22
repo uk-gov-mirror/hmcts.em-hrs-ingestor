@@ -31,14 +31,14 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
                 defaultIngestorService.ingest();
                 LOGGER.info("Initial Ingestion Complete", event);
             } catch (Exception e) {
-                LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}", e.getMessage());
+                LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}");
                 e.printStackTrace();
             }
 
-            if (shouldShutDownAfterInitialIngestion) {
-                LOGGER.info("Application Shutting Down");
-                shutDownGracefully();
-            }
+
+            LOGGER.info("Application Shutting Down");
+            shutDownGracefully();
+
         }
     }
 

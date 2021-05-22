@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class IdamAPIConsumerTest {
+public class IdamApiConsumerTest {
 
     private static final String IDAM_OPENID_TOKEN_URL = "/o/token";
     private static final String IDAM_DETAILS_URL = "/o/userinfo";

@@ -25,6 +25,6 @@ public class IngestController {
     @GetMapping(value = "/ingest/{maxFilesToProcess}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<String> ingest(@PathVariable("maxFilesToProcess") Integer maxFilesToProcess) {
         defaultIngestorService.ingest(maxFilesToProcess);
-        return ok("Ingestion Initiated with "+maxFilesToProcess+" limit");
+        return ok("Ingestion Initiated with " + maxFilesToProcess + " limit");
     }
 }
