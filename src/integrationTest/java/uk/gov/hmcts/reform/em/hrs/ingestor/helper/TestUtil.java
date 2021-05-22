@@ -18,7 +18,6 @@ public interface TestUtil {
     static byte[] getFileContent(final String filename) throws URISyntaxException, IOException {
         final URL resource = TestUtil.class.getClassLoader().getResource(filename);
         final File file = Paths.get(Objects.requireNonNull(resource).toURI()).toFile();
-
         return Files.readAllBytes(file.toPath());
     }
 

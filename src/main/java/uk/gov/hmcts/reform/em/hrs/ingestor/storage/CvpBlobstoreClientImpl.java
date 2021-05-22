@@ -7,7 +7,6 @@ import com.azure.storage.blob.models.BlobItemProperties;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
 import java.io.OutputStream;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
 

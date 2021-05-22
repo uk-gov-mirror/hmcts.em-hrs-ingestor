@@ -23,13 +23,13 @@ class MetadataResolverImplTest {
         "audiostream12/bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_X.mp4";
     private static final String FILENAME_NO_FOLDER = "bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_X.mp4";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss.SSS");
-    private static final CvpItem CVP_ITEM = createCVPItem(FILENAME_VALID);
-    private static final CvpItem CVP_ITEM_NO_SEGMENT = createCVPItem(FILENAME_NO_SEGMENT);
-    private static final CvpItem CVP_ITEM_INVALID_SEGMENT = createCVPItem(FILENAME_INVALID_SEGMENT);
-    private static final CvpItem CVP_ITEM_NO_FOLDER = createCVPItem(FILENAME_NO_FOLDER);
+    private static final CvpItem CVP_ITEM = createCvpItem(FILENAME_VALID);
+    private static final CvpItem CVP_ITEM_NO_SEGMENT = createCvpItem(FILENAME_NO_SEGMENT);
+    private static final CvpItem CVP_ITEM_INVALID_SEGMENT = createCvpItem(FILENAME_INVALID_SEGMENT);
+    private static final CvpItem CVP_ITEM_NO_FOLDER = createCvpItem(FILENAME_NO_FOLDER);
 
     @NotNull
-    private static CvpItem createCVPItem(String fileName) {
+    private static CvpItem createCvpItem(String fileName) {
         return new CvpItem(
             fileName,
             "file-uri",
@@ -44,20 +44,20 @@ class MetadataResolverImplTest {
 
     @Test
     void testFilenameWithoutFolderInPathThrowsFileParsingException() {
-        assertThatExceptionOfType(FilenameParsingException.class).
-            isThrownBy(() -> underTest.resolve(CVP_ITEM_NO_FOLDER));
+        assertThatExceptionOfType(FilenameParsingException.class)
+            .isThrownBy(() -> underTest.resolve(CVP_ITEM_NO_FOLDER));
     }
 
     @Test
     void testFilenameWithoutSegmentThrowsFileParsingException() {
-        assertThatExceptionOfType(FilenameParsingException.class).
-            isThrownBy(() -> underTest.resolve(CVP_ITEM_NO_SEGMENT));
+        assertThatExceptionOfType(FilenameParsingException.class)
+            .isThrownBy(() -> underTest.resolve(CVP_ITEM_NO_SEGMENT));
     }
 
     @Test
     void testFilenameWithInvalidSegmentThrowsFileParsingException() {
-        assertThatExceptionOfType(FilenameParsingException.class).
-            isThrownBy(() -> underTest.resolve(CVP_ITEM_INVALID_SEGMENT));
+        assertThatExceptionOfType(FilenameParsingException.class)
+            .isThrownBy(() -> underTest.resolve(CVP_ITEM_INVALID_SEGMENT));
     }
 
     @Test

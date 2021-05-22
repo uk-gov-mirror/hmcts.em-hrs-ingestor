@@ -36,8 +36,8 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
             }
 
 
-                LOGGER.info("Application Shutting Down");
-                shutDownGracefully();
+            LOGGER.info("Application Shutting Down");
+            shutDownGracefully();
 
         }
     }
