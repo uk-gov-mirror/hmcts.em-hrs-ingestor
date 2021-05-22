@@ -66,7 +66,7 @@ class CvpBlobstoreClientImplTest {
     @Test
     void testShouldReturnASetContainingOneWhenFolderContainsOneItem() throws Exception {
         final String filePath = ONE_ITEM_FOLDER + "/" + UUID.randomUUID().toString() + ".txt";
-        final String expectedHash = getMd5Hash();
+        final String expectedHash = generateMd5Hash(TEST_DATA);
         azureOperations.uploadToContainer(filePath, TEST_DATA);
 
         final CvpItemSet cvpItemSet = underTest.findByFolder(ONE_ITEM_FOLDER);
@@ -140,9 +140,9 @@ class CvpBlobstoreClientImplTest {
             .collect(Collectors.toUnmodifiableSet());
     }
 
-    private String getMd5Hash() throws NoSuchAlgorithmException {
+    private String generateMd5Hash(String testData) throws NoSuchAlgorithmException {
         final MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(TEST_DATA.getBytes());
+        md.update(testData.getBytes());
         final byte[] digest = md.digest();
         return Base64.getEncoder().encodeToString(digest);
     }
