@@ -60,10 +60,14 @@ withPipeline(type, product, component) {
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
+  after('test') {
+    builder.gradle('integration')
+  }
+  enableAksStagingDeployment()
+  disableLegacyDeployment()
   nonServiceApp()
   onMaster {
     after('test') {
-      builder.gradle('integration')
       sh '''
             curl https://raw.githubusercontent.com/hmcts/reform-api-docs/master/bin/publish-swagger-docs.sh > publish-swagger-docs.sh
             sh ./publish-swagger-docs.sh
@@ -246,4 +250,63 @@ withPipeline(type, product, component) {
     ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
+
+
+
+
+  after('akschartsinstall') {
+
+    echo "Overriding vault environment"
+    overrideVaultEnvironments(vaultOverrides)
+    echo "Loading the secrets again"
+    loadVaultSecrets(secrets)
+
+    // To run functional tests
+    env.IDAM_API_BASE_URI = 'https://idam-api.aat.platform.hmcts.net'
+    env.OPEN_ID_API_BASE_URI = 'https://idam-web-public.aat.platform.hmcts.net/o'
+    env.OIDC_ISSUER_BASE_URI = 'https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts'
+    env.S2S_BASE_URI = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+    env.IDAM_WEBSHOW_WHITELIST = 'https://em-show-aat.service.core-compute-aat.internal/oauth2/callback'
+    env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'
+
+
+    echo "Just waiting a while to ensure that the pod has run the job"
+    sh "sleep 120s"
+    echo "Verifying that functional test data was processed correctly"
+    try {
+      builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
+  }
+
+  after('functionalTest:aat') {
+    junit 'build/test-results/functional/**/*.xml'
+    archiveArtifacts 'build/reports/tests/functional/index.html'
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/functional",
+      reportFiles          : "index.html",
+      reportName           : "Ingestor Functional Test Report"
+    ]
+  }
+
+  after('functionalTest:preview') {
+    junit 'build/test-results/functional/**/*.xml'
+    archiveArtifacts 'build/reports/tests/functional/index.html'
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/functional",
+      reportFiles          : "index.html",
+      reportName           : "IngestoreFunctional Test Report"
+    ]
+  }
+
+
 }
