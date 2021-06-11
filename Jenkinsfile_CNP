@@ -73,21 +73,103 @@ withPipeline(type, product, component) {
  // }
 
 //  onMaster()
-  //  {
+    {
       enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
-    //}
+    }
 
   after('test') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/checkstyle",
+        reportFiles          : "main.html",
+        reportName           : "HRS Ingestor Checkstyle Main Report"
+      ]
 
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/tests/contract",
-      reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Contract Tests Report"
-    ]
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/checkstyle",
+        reportFiles          : "test.html",
+        reportName           : "HRS Ingestor Checkstyle Test Report"
+      ]
 
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/checkstyle",
+        reportFiles          : "aat.html",
+        reportName           : "HRS Ingestor Checkstyle AAT Report"
+      ]
+
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/pmd",
+        reportFiles          : "main.html",
+        reportName           : "HRS Ingestor PMD Main Report"
+      ]
+
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/pmd",
+        reportFiles          : "test.html",
+        reportName           : "HRS Ingestor PMD Test Report"
+      ]
+
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/test",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor Unit Tests Report"
+      ]
+    }
+
+    after('smoketest:aat') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/smoke",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor Smoke Test Report"
+      ]
+    }
+
+    after('contractTest:aat') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/contract",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor Contract Test Report"
+      ]
+    }
+
+    after('functionalTest:aat') {
+
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "build/reports/tests/functional",
+        reportFiles          : "index.html",
+        reportName           : "HRS Ingestor API Functional Test Report"
+      ]
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
+
+
+  after('test') {
     publishHTML target: [
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -110,6 +192,15 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
+      reportDir            : "build/reports/checkstyle",
+      reportFiles          : "aat.html",
+      reportName           : "HRS Ingestor Checkstyle AAT Report"
+    ]
+
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
       reportDir            : "build/reports/pmd",
       reportFiles          : "main.html",
       reportName           : "HRS Ingestor PMD Main Report"
@@ -119,66 +210,10 @@ withPipeline(type, product, component) {
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "build/reports/tests/test",
-      reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Unit Tests Report"
-    ]
-  }
-
-
-
-  after('smoketest:aat') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/tests/smoke",
-      reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Smoke Test Report"
-    ]
-  }
-
-  after('functionalTest:aat') {
-
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/tests/functional",
-      reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Functional Test Report"
-    ]
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
-  }
-
-  after('test') {
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/checkstyle",
-      reportFiles          : "main.html",
-      reportName           : "HRS Ingestor Checkstyle Main Report"
-    ]
-
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/checkstyle",
+      reportDir            : "build/reports/pmd",
       reportFiles          : "test.html",
-      reportName           : "HRS Ingestor Checkstyle Test Report"
+      reportName           : "HRS Ingestor PMD Test Report"
     ]
-
-    publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "build/reports/pmd",
-      reportFiles          : "main.html",
-      reportName           : "HRS Ingestor PMD Main Report"
-    ]
-
 
     publishHTML target: [
       allowMissing         : true,
@@ -190,6 +225,7 @@ withPipeline(type, product, component) {
     ]
 
   }
+
 
   after('smoketest:preview') {
     publishHTML target: [
@@ -209,7 +245,7 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "build/reports/tests/functional",
       reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Functional Test Report"
+      reportName           : "HRS Ingestor API Functional Test Report"
     ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
@@ -221,7 +257,7 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "build/reports/tests/contract",
       reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Contract Test Report Preview"
+      reportName           : "HRS API Contract Test Report Preview"
     ]
   }
 
@@ -232,8 +268,7 @@ withPipeline(type, product, component) {
       keepAll              : true,
       reportDir            : "build/reports/tests/contract",
       reportFiles          : "index.html",
-      reportName           : "HRS Ingestor Contract Test Report AAT"
+      reportName           : "HRS API Contract Test Report AAT"
     ]
   }
-
 }
