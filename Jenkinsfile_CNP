@@ -67,6 +67,16 @@ withPipeline(type, product, component) {
             curl https://raw.githubusercontent.com/hmcts/reform-api-docs/master/bin/publish-swagger-docs.sh > publish-swagger-docs.sh
             sh ./publish-swagger-docs.sh
              '''
+
+    }
+  }
+
+  onMaster()
+    {
+      enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
+    }
+
+  after('test') {
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
@@ -132,9 +142,6 @@ withPipeline(type, product, component) {
         reportName           : "HRS Ingestor Smoke Test Report"
       ]
     }
-//    enablePactAs([
-//      AppPipelineDsl.PactRoles.CONSUMER
-//    ])
 
     after('contractTest:aat') {
       publishHTML target: [
@@ -159,7 +166,7 @@ withPipeline(type, product, component) {
       ]
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
     }
-  }
+
 
   after('test') {
     publishHTML target: [
@@ -218,9 +225,6 @@ withPipeline(type, product, component) {
 
   }
 
-//  enablePactAs([
-//    AppPipelineDsl.PactRoles.CONSUMER
-//  ])
 
   after('smoketest:preview') {
     publishHTML target: [
@@ -230,6 +234,17 @@ withPipeline(type, product, component) {
       reportDir            : "build/reports/tests/smoke",
       reportFiles          : "index.html",
       reportName           : "HRS Ingestor Smoke Test Report"
+    ]
+  }
+
+  after('contract:preview') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/contract",
+      reportFiles          : "index.html",
+      reportName           : "HRS Ingestor Contract Test Report"
     ]
   }
 
@@ -244,4 +259,27 @@ withPipeline(type, product, component) {
     ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
+
+  after('pactconsumerVerification:preview') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/contract",
+      reportFiles          : "index.html",
+      reportName           : "HRS API Contract Test Report Preview"
+    ]
+  }
+
+  after('pactconsumerVerification:aat') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/contract",
+      reportFiles          : "index.html",
+      reportName           : "HRS API Contract Test Report AAT"
+    ]
+  }
+
 }
