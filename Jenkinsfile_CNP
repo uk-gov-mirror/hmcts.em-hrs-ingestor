@@ -73,9 +73,9 @@ withPipeline(type, product, component) {
  // }
 
 //  onMaster()
-    {
+  //  {
       enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
-    }
+   // }
 
   after('test') {
       publishHTML target: [
@@ -271,4 +271,5 @@ withPipeline(type, product, component) {
       reportName           : "HRS API Contract Test Report AAT"
     ]
   }
+
 }
