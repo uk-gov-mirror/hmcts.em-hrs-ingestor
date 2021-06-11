@@ -238,6 +238,17 @@ withPipeline(type, product, component) {
     ]
   }
 
+  after('contract:preview') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "build/reports/tests/contract",
+      reportFiles          : "index.html",
+      reportName           : "HRS Ingestor Contract Test Report"
+    ]
+  }
+
   after('functionalTest:preview') {
     publishHTML target: [
       allowMissing         : true,
