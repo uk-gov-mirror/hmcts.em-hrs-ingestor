@@ -37,9 +37,11 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
 
             LOGGER.info("Application Shutting Down");
-            shutDownGracefully();
-
+        } else {
+            LOGGER.info("Application Not Starting as ENABLE_CRONJOB is false");
         }
+        
+        shutDownGracefully();
     }
 
     private void shutDownGracefully() {
