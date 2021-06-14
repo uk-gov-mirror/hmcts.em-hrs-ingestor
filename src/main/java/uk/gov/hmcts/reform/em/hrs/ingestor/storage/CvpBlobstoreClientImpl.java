@@ -9,7 +9,6 @@ import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
@@ -24,12 +23,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(CvpBlobstoreClient.class);
 
     private static final int BLOB_LIST_TIMEOUT = 30;
-    private final BlobContainerClient blobContainerClient;
-
-    @Autowired
-    public CvpBlobstoreClientImpl(final BlobContainerClient blobContainerClient) {
-        this.blobContainerClient = blobContainerClient;
-    }
+    private final BlobContainerClient blobContainerClient = null;
 
     @Override
     public Set<String> getFolders() {
