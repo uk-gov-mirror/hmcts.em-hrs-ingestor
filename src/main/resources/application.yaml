@@ -44,4 +44,4 @@ idam:
     microservice: em_hrs_ingestor
 
 toggle:
-  cronjob: ${ENABLE_CRONJOB:false}
+  cronjob: ${ENABLE_CRONJOB:true}
