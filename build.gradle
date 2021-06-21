@@ -94,6 +94,7 @@ test {
 
 task functional(type: Test) {
   // This task is required for a Jenkins hook (fullFunctionalTest)
+  logger.info('This task is required for a Jenkins hook (fullFunctionalTest)')
 }
 
 
