@@ -15,6 +15,7 @@ properties([
 
 @Library("Infrastructure")
 
+
 def type = "java"
 def product = "em"
 def component = "hrs-ingestor"
@@ -34,6 +35,9 @@ def secrets = [
 ]
 
 env.AAT_HRS_STORAGE_CONTAINER_NAME='recordings'
+
+GradleBuilder builder = new GradleBuilder(this, product)
+
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [$class     : 'AzureKeyVaultSecret',
