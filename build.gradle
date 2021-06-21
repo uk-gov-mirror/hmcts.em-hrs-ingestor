@@ -118,17 +118,6 @@ task integration(type: Test) {
   failFast = true
 }
 
-task contract(type: Test) {
-  description = "Runs contract tests"
-  group = "Verification"
-  testClassesDirs = sourceSets.contractTest.output.classesDirs
-  classpath = sourceSets.contractTest.runtimeClasspath
-  include "uk/gov/hmcts/reform/em/hrs/consumer/**"
-  systemProperty 'pact.rootDir', "pacts"
-  environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
-  failFast = true
-}
-
 task smoke(type: Test) {
   description = "Runs Smoke Tests"
   group = 'Delivery pipeline'
@@ -138,17 +127,6 @@ task smoke(type: Test) {
   environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
   failFast = true
 }
-
-task runAndPublishConsumerPactTests(type: Test) {
-  logger.lifecycle("Runs pact Tests")
-  testClassesDirs = sourceSets.contractTest.output.classesDirs
-  classpath = sourceSets.contractTest.runtimeClasspath
-  failFast = true
-}
-
-runAndPublishConsumerPactTests.dependsOn contract
-runAndPublishConsumerPactTests.finalizedBy pactPublish
-
 
 /***********************************************************************************************************************
  * Code Checks
@@ -416,7 +394,7 @@ dependencies {
   testImplementation group: 'com.devskiller', name: 'jfairy', version: '0.6.4', {
     exclude group: 'com.google.guava', module: 'guava'
   }
-  testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.28.0'
+  testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.28.1'
   testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
   testImplementation group :'info.solidsoft.gradle.pitest', name : 'gradle-pitest-plugin',version: '1.6.0'
   testImplementation group: 'org.pitest', name: 'pitest', version: '1.6.6'
@@ -444,6 +422,7 @@ dependencies {
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     exclude group: 'com.vaadin.external.google', module: 'android-json'
   }
+
   contractTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
   contractTestImplementation group: 'io.rest-assured', name: 'json-schema-validator', version: versions.restAssured
   contractTestImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
@@ -512,6 +491,28 @@ wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
 
+task contract(type: Test) {
+  group = 'Delivery pipeline'
+  description = 'Runs the consumer Pact tests'
+  useJUnitPlatform()
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+  include "uk/gov/hmcts/reform/em/hrs/consumer/**"
+  systemProperty 'pact.rootDir', "pacts"
+  environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
+}
+
+task runAndPublishConsumerPactTests(type: Test){
+  logger.lifecycle("Runs pact Tests")
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+
+}
+
+runAndPublishConsumerPactTests.dependsOn contract
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
+
 project.ext {
   pactVersion = getCheckedOutGitCommitHash()
 }
@@ -520,22 +521,19 @@ def getCheckedOutGitCommitHash() {
   'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
+serenity {
+  reports = ["single-page-html"]
+}
+
 pact {
-
-  reports {
-    defaultReports() // adds the standard console output
-
-    markdown // report in markdown format
-    json // report in json format
-  }
-
   publish {
     pactDirectory = 'pacts'
     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
-    tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
     version = project.pactVersion
   }
 }
+
+compileJava.dependsOn processResources
 
 pitest {
   targetClasses = ['uk.gov.hmcts.reform.em.hrs.ingestor.*']
@@ -560,6 +558,4 @@ pitest {
   detectInlinedCode = true
 }
 
-serenity {
-  reports = ["single-page-html"]
-}
+

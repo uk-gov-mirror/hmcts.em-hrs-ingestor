@@ -56,15 +56,15 @@ class IngestorServiceIntegrationTest {
         wireMockServer.stubFor(
             get(urlMatching(GET_FOLDERS_PATH))
                 .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                .withBody("{\"folder-name\":\"" + DUMMY_FOLDER + "\",\"filenames\":[]}"))
+                    .withStatus(200)
+                    .withHeader("Content-Type", APPLICATION_JSON_VALUE)
+                    .withBody("{\"folder-name\":\"" + DUMMY_FOLDER + "\",\"filenames\":[]}"))
         );
 
         wireMockServer.stubFor(
             post(urlMatching(POST_PATH))
                 .willReturn(aResponse()
-                                .withStatus(202))
+                    .withStatus(202))
         );
     }
 
