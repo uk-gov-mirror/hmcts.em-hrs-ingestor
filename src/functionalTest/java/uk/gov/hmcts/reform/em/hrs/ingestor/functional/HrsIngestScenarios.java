@@ -30,6 +30,7 @@ public class HrsIngestScenarios {
     private static final String HRS_BLOBSTORE_FOLDER2 = "audiostream999998";
     private static final String HRS_BLOBSTORE_FOLDER3 = "audiostream999999";
     private static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
+    private static final Duration FIFTEEN_MINUTES = Duration.ofMinutes(15);
 
     @Value("${test.url}")
     private String testUrl;
@@ -49,18 +50,20 @@ public class HrsIngestScenarios {
 
     @Test
     public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() throws InterruptedException {
-        SerenityRest
-            .given()
-            .relaxedHTTPSValidation()
-            .baseUri(testUrl)
-            .get("/ingest")
-            .then().log().all()
-            .assertThat()
-            .statusCode(200);
+//        SerenityRest
+//            .given()
+//            .relaxedHTTPSValidation()
+//            .baseUri(testUrl)
+//            .get("/ingest")
+//            .then().log().all()
+//            .assertThat()
+//            .statusCode(200);
+
+        //wait for 15 minutes for scheduled job to run and copy files
 
 
         await()
-            .atMost(THIRTY_SECONDS)
+            .atMost(FIFTEEN_MINUTES)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
                 .size()
                 .isEqualTo(5));
