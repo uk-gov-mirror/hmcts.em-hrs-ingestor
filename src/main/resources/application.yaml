@@ -29,6 +29,11 @@ azure:
     cvp-storage-container-name: ${CVP_STORAGE_CONTAINER_NAME:cvptestcontainer}
     enabled: true
 
+app-insights:
+  dev-mode: off
+  request-component: on
+  telemetry-component: on
+
 s2s.hrs.api:
   url: ${HRS_API_BASE_URI:http://localhost:8080}
 
