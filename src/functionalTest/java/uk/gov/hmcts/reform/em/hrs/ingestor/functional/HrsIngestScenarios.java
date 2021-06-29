@@ -30,7 +30,7 @@ public class HrsIngestScenarios {
     private static final String HRS_BLOBSTORE_FOLDER2 = "audiostream999998";
     private static final String HRS_BLOBSTORE_FOLDER3 = "audiostream999999";
     private static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
-    private static final Duration FIFTEEN_MINUTES = Duration.ofMinutes(15);
+
 
     @Value("${test.url}")
     private String testUrl;
@@ -48,22 +48,31 @@ public class HrsIngestScenarios {
         testUtil.clearHrsContainer();
     }
 
+
+    /*
+    Please Note - these functional tests only test the /ingest method which is available on local dev environments.
+
+    This endpoint is not available in deployed environments as it is deployed as a cronjob, and so is not invoked
+
+
+
+
+     */
+
     @Test
     public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() throws InterruptedException {
-//        SerenityRest
-//            .given()
-//            .relaxedHTTPSValidation()
-//            .baseUri(testUrl)
-//            .get("/ingest")
-//            .then().log().all()
-//            .assertThat()
-//            .statusCode(200);
-
-        //wait for 15 minutes for scheduled job to run and copy files
+        SerenityRest
+            .given()
+            .relaxedHTTPSValidation()
+            .baseUri(testUrl)
+            .get("/ingest")
+            .then().log().all()
+            .assertThat()
+            .statusCode(200);
 
 
         await()
-            .atMost(FIFTEEN_MINUTES)
+            .atMost(THIRTY_SECONDS)
             .untilAsserted(() -> assertThat(testUtil.getHrsBlobsFrom(HRS_BLOBSTORE_FOLDER1))
                 .size()
                 .isEqualTo(5));
