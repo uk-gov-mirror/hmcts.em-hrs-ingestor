@@ -3,7 +3,7 @@ spring:
     propertiesvolume:
       enabled: true
       prefixed: true
-      paths: /mnt/secrets/em-hrs-ingestor,/mnt/secrets/em-hrs-api
+      paths: /mnt/secrets/em-hrs-ingestor,/mnt/secrets/em-hrs-api,/mnt/secrets/rpa
       aliases:
         rpa.AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
         em-hrs-ingestor.microservicekey-em-hrs-ingestor: S2S_KEY

@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.listener;
 
+import com.microsoft.applicationinsights.TelemetryClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,21 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     private boolean enableCronjob;
     boolean shouldShutDownAfterInitialIngestion = enableCronjob;
 
+    @Autowired
+    private TelemetryClient client;
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
         LOGGER.info("Enable Cronjob is set to {}", enableCronjob);
+
+        if (client != null && client.getContext() != null) {
+            String ik = client.getContext().getInstrumentationKey();
+            LOGGER.info("Application Insights Key(4) = " + StringUtils.left(ik, 4));
+
+        } else {
+            LOGGER.info("No Application Insights Key");
+        }
 
         if (enableCronjob) {
             try {
@@ -42,6 +55,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     }
 
     private void shutDownGracefully() {
+        client.flush();
         System.exit(0);
     }
 }
