@@ -312,8 +312,8 @@ withPipeline(type, product, component) {
     sh "sleep 120s"
     echo "Verifying that functional test data was processed correctly"
     try {
-      echo "Not Bypassing functionalPostDeploy"
-      builder.gradle('functionalPostDeploy')
+      echo "Bypassing functionalPostDeploy as Jenkins does not have ingestor MI"
+//      builder.gradle('functionalPostDeploy')
     } finally {
       echo "Running Junit against results"
       //junit '**/test-results/**/*.xml'

@@ -35,30 +35,13 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
                 e.printStackTrace();
             }
 
-
-            LOGGER.info("Application Shutting Down");
         } else {
             LOGGER.info("Application Not Starting as ENABLE_CRONJOB is false");
         }
-        
         shutDownGracefully();
     }
 
     private void shutDownGracefully() {
-        long minutesBeforeShutdownAfterInitialIngestion =
-            10;//TODO consider making this configurable/forced during AAT.staging & preview tests
-        long msBeforeShutdown = 1000 * 60 * minutesBeforeShutdownAfterInitialIngestion;
-        LOGGER.info(
-            "Application Finished...Waiting {} mins to shutdown to allow for functional tests",
-            minutesBeforeShutdownAfterInitialIngestion
-        );
-
-        try {
-            Thread.sleep(msBeforeShutdown);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LOGGER.info("Application Shutdown Delay completed, now exiting System.");
         System.exit(0);
     }
 }

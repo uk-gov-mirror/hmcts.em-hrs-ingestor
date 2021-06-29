@@ -31,6 +31,7 @@ public class HrsIngestScenarios {
     private static final String HRS_BLOBSTORE_FOLDER3 = "audiostream999999";
     private static final Duration THIRTY_SECONDS = Duration.ofSeconds(30);
 
+
     @Value("${test.url}")
     private String testUrl;
 
@@ -46,6 +47,17 @@ public class HrsIngestScenarios {
     public void clear() {
         testUtil.clearHrsContainer();
     }
+
+
+    /*
+    Please Note - these functional tests only test the /ingest method which is available on local dev environments.
+
+    This endpoint is not available in deployed environments as it is deployed as a cronjob, and so is not invoked
+
+
+
+
+     */
 
     @Test
     public void shouldIngestFilesFromCvpBlobStoreToHrsBlobStore() throws InterruptedException {
