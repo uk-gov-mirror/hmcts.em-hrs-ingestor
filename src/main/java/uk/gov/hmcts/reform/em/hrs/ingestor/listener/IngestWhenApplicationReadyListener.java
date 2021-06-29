@@ -30,13 +30,11 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
         LOGGER.info("Enable Cronjob is set to {}", enableCronjob);
 
-        if (client!=null && client.getContext()!=null ) {
-         String ik=   client.getContext().getInstrumentationKey();
-         LOGGER.info("Application Insights Key(4) = "+ StringUtils.left(ik,4));
+        if (client != null && client.getContext() != null) {
+            String ik = client.getContext().getInstrumentationKey();
+            LOGGER.info("Application Insights Key(4) = " + StringUtils.left(ik, 4));
 
-        }
-        else
-        {
+        } else {
             LOGGER.info("No Application Insights Key");
         }
 
@@ -57,7 +55,6 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     }
 
     private void shutDownGracefully() {
-
         client.flush();
         System.exit(0);
     }
