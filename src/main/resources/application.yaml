@@ -18,7 +18,9 @@ spring:
 ingestion:
   max-number-of-files-to-process-per-batch: ${MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH:1001}
 
-
+logging:
+  level:
+    root: DEBUG
 
 azure:
   app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
@@ -30,7 +32,7 @@ azure:
     enabled: true
 
 app-insights:
-  dev-mode: off
+  dev-mode: on
   request-component: on
   telemetry-component: on
 
@@ -49,4 +51,5 @@ idam:
     microservice: em_hrs_ingestor
 
 toggle:
+  shutdown: ${ENABLE_SHUTDOWN:false}
   cronjob: ${ENABLE_CRONJOB:true}

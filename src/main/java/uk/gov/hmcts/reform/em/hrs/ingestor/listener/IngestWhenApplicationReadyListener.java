@@ -20,7 +20,9 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
     @Value("${toggle.cronjob}")
     private boolean enableCronjob;
-    boolean shouldShutDownAfterInitialIngestion = enableCronjob;
+
+    @Value("${toggle.shutdown}")
+    boolean shouldShutDownAfterInitialIngestion;
 
     @Autowired
     private TelemetryClient client;
@@ -56,6 +58,9 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
 
     private void shutDownGracefully() {
         client.flush();
-        System.exit(0);
+
+        if (shouldShutDownAfterInitialIngestion) {
+            System.exit(0);
+        }
     }
 }
