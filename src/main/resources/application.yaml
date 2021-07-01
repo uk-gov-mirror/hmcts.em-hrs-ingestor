@@ -13,7 +13,7 @@ management:
 
 spring:
   application:
-    name: Hearing Recordings Ingestor
+    name: Hearing Recordings CVP Ingestor
 
 ingestion:
   max-number-of-files-to-process-per-batch: ${MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH:1001}

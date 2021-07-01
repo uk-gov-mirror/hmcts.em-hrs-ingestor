@@ -476,7 +476,7 @@ dependencies {
  * Adhoc
  **********************************************************************************************************************/
 
-//mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
+mainClassName = 'uk.gov.hmcts.reform.em.hrs.ingestor.Application'
 
 bootJar {
   getArchiveFileName().set(provider {
