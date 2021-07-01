@@ -20,7 +20,7 @@ ingestion:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
 
 azure:
   app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:true}
@@ -51,5 +51,5 @@ idam:
     microservice: em_hrs_ingestor
 
 toggle:
-  shutdown: ${ENABLE_SHUTDOWN:false}
+  shutdown: ${ENABLE_SHUTDOWN:true}
   cronjob: ${ENABLE_CRONJOB:true}

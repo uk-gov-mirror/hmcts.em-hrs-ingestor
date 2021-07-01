@@ -60,6 +60,12 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
         client.flush();
 
         if (shouldShutDownAfterInitialIngestion) {
+            long millisToSleepForClientToFlush = 1000 * 10;
+            try {
+                Thread.sleep(millisToSleepForClientToFlush);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             System.exit(0);
         }
     }
