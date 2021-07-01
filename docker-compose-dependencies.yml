@@ -10,10 +10,6 @@ services:
     command: "azurite-blob --blobHost 0.0.0.0 --loose"
     volumes:
       - em-hrs-docker-azure-blob-data:/opt/azurite/folder
-  clamav:
-    image: citizensadvice/clamav-mock
-    ports:
-      - 3310:3310
 
 volumes:
   em-hrs-docker-azure-blob-data:
