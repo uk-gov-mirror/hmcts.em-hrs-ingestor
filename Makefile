@@ -52,6 +52,9 @@ app-run:
 app-smoke-test:
 	./gradlew smoke -i
 
+app-run-with-ai:
+	sudo mkdir -p /opt/app/;sudo chown $$USER /opt/app/;cp lib/* /opt/app/;./gradlew bootRun -i -DJAVA_TOOL_OPTIONS=-javaagent:/opt/app/applicationinsights-agent-2.5.1.jar -DENABLE_SHUTDOWN=false
+
 
 
 

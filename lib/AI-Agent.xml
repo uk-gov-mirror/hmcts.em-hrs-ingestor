@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ApplicationInsightsAgent>
-  <SDKLogger type="CONSOLE">
-    <enabled>true</enabled>
-    <UniquePrefix>JavaSDKLog</UniquePrefix>
+  <SDKLogger>
+    <Level>TRACE</Level>
   </SDKLogger>
-  <AgentLogger>INFO</AgentLogger>
+  <AgentLogger>TRACE</AgentLogger>
   <Instrumentation>
     <BuiltIn enabled="true">
+      <!-- capture logging via Log4j 1.2, Log4j2, and Logback, default is true -->
+      <Logging enabled="true"/>
+
       <HTTP enabled="true"/>
       <JDBC enabled="true"/>
     </BuiltIn>
