@@ -290,16 +290,15 @@ dependencyManagement {
 }
 
 repositories {
-  maven { url "https://dl.bintray.com/hmcts/hmcts-maven" }
   mavenCentral()
   jcenter()
-
+  maven { url 'https://jitpack.io' }
 }
 
 def versions = [
   junit              : '5.7.1',
   junitPlatform      : '1.7.1',
-  reformLogging      : '5.1.5',
+  reformLogging      : '5.1.7',
   springBoot         : springBoot.class.package.implementationVersion,
   springfoxSwagger   : '2.9.2',
   pact_version       : '3.6.15',
@@ -343,6 +342,7 @@ dependencies {
 
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
 
   //CVE-2020-13956
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
@@ -504,7 +504,6 @@ task contract(type: Test) {
 }
 
 task runAndPublishConsumerPactTests(type: Test){
-  logger.lifecycle("Runs pact Tests")
   testClassesDirs = sourceSets.contractTest.output.classesDirs
   classpath = sourceSets.contractTest.runtimeClasspath
 
