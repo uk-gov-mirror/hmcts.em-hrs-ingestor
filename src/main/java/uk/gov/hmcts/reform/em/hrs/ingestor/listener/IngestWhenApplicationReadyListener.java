@@ -24,6 +24,11 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     @Value("${toggle.shutdown}")
     boolean shouldShutDownAfterInitialIngestion;
 
+
+    @Value("${ingestion.max-number-of-files-to-process-per-batch}")
+    Integer maxNumberOfFilesToProcessPerBatch;
+
+
     @Autowired
     private TelemetryClient client;
 
@@ -31,6 +36,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
         LOGGER.info("Enable Cronjob is set to {}", enableCronjob);
+        LOGGER.info("maxNumberOfFilesToProcessPerBatch", maxNumberOfFilesToProcessPerBatch);
 
         if (client != null && client.getContext() != null) {
             String ik = client.getContext().getInstrumentationKey();

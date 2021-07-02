@@ -94,7 +94,7 @@ public final class FilenameParser {
 
             String dateTimePart = datetimeWithTimeZone.substring(0, timeZoneDelimeter);
             String timeZonePart = datetimeWithTimeZone.substring(timeZoneDelimeter + 1);
-            
+
             LocalDateTime recordingDateTime = processRawDatePart(dateTimePart, timeZonePart);
 
 
