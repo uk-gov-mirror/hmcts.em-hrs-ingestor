@@ -22,17 +22,17 @@ public class MetadataResolverImpl implements MetadataResolver {
     static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filename -> {
         LOGGER.info("resolving filename {}", filename);
         final String folderPrefix = "^audiostream";
-        final String[] split = filename.split("/");
-        LOGGER.info("split length: {}", split.length);
-        final String folder = split[0];
-        final String postfix = split[1];
-        final int lastIndexOfPeriodCharacter = postfix.lastIndexOf(".");
+        final String[] splitOnForwardSlash = filename.split("/");
+        LOGGER.info("splitOnForwardSlash length: {}", splitOnForwardSlash.length);
+        final String folder = splitOnForwardSlash[0];
+        final String filenameWithExtension = splitOnForwardSlash[1];
+        final int lastIndexOfPeriodCharacter = filenameWithExtension.lastIndexOf(".");
 
         return Tuples.of(
             folder,
             Integer.parseInt(folder.replaceFirst(folderPrefix, "")),
-            postfix.substring(0, lastIndexOfPeriodCharacter),
-            postfix.substring(lastIndexOfPeriodCharacter + 1)
+            filenameWithExtension.substring(0, lastIndexOfPeriodCharacter),
+            filenameWithExtension.substring(lastIndexOfPeriodCharacter + 1)
         );
     };
 

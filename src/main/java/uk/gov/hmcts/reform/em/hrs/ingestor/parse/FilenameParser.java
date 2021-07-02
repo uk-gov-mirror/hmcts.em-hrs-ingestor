@@ -83,11 +83,25 @@ public final class FilenameParser {
             log.debug("This is a Tribunals based match");
             return processNonLocationMatcher(tribunalsMatcher);
         } else {
+            //Pattern Not Recognised, will try to parse filename with datetime suffix only
             String[] values = fileName.split("_");
+            String caseReference = values[0];
+            String datetimeWithTimeZone = values[1];
+
+            log.info("datetimeWithTimeZoneParts: {}", datetimeWithTimeZone);
+            int timeZoneDelimeter = datetimeWithTimeZone.lastIndexOf("-");
+
+
+            String dateTimePart = datetimeWithTimeZone.substring(0, timeZoneDelimeter);
+            String timeZonePart = datetimeWithTimeZone.substring(timeZoneDelimeter + 1);
+            
+            LocalDateTime recordingDateTime = processRawDatePart(dateTimePart, timeZonePart);
+
 
             ParsedFilenameDto defaultParsing = ParsedFilenameDto
                 .builder()
-                .caseID(values[0])
+                .caseID(caseReference)
+                .recordingDateTime(recordingDateTime)
                 .segment(values[values.length - 1])
                 .build();
 
