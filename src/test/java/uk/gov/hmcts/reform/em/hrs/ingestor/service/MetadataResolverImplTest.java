@@ -65,7 +65,7 @@ class MetadataResolverImplTest {
 
     @Test
     void testShouldResolveMetadataFromLoadTestFilename() throws FilenameParsingException {
-        String input="audiostream1562/LoadTest8562_2020-06-24-14.40.22.991-UTC_0.mp4";
+        String input = "audiostream1562/LoadTest8562_2020-06-24-14.40.22.991-UTC_0.mp4";
         final Metadata metadata = underTest.resolve(createCvpItem(input));
 
         assertThat(metadata).satisfies(x -> {

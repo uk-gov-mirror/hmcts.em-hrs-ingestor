@@ -20,10 +20,10 @@ public class MetadataResolverImpl implements MetadataResolver {
 
 
     static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filename -> {
-        LOGGER.info("resolving filename {}",filename);
+        LOGGER.info("resolving filename {}", filename);
         final String folderPrefix = "^audiostream";
         final String[] split = filename.split("/");
-        LOGGER.info("split length: {}",split.length);
+        LOGGER.info("split length: {}", split.length);
         final String folder = split[0];
         final String postfix = split[1];
         final int lastIndexOfPeriodCharacter = postfix.lastIndexOf(".");
@@ -40,7 +40,8 @@ public class MetadataResolverImpl implements MetadataResolver {
     public Metadata resolve(final CvpItem item) throws FilenameParsingException {
 
         try {
-                final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(item.getFilename());
+            final Tuple4<String, Integer, String, String> fragments =
+                FULLPATH_FILENAME_PARSER.apply(item.getFilename());
             final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT3());
 
             String parsedSegmentNumber = parsedDataDto.getSegment();
@@ -75,7 +76,7 @@ public class MetadataResolverImpl implements MetadataResolver {
 
         } catch (Exception e) {
             LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
-            LOGGER.error("Unhandled Exception",e);
+            LOGGER.error("Unhandled Exception", e);
             throw new FilenameParsingException(
                 "Unexpected Error parsing cvpItem: " + String.valueOf(e.getMessage()),
                 e
