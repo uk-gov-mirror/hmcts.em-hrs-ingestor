@@ -87,6 +87,7 @@ public class DefaultIngestorService implements IngestorService {
 
     private void resolveMetaDataAndPostFileToHrs(CvpItem file) {
         try {
+            LOGGER.info("Resolving Filename {}",file.getFilename());
             final Metadata metaData = metadataResolver.resolve(file);
             filesParsedOk++;
             hrsApiClient.postFile(metaData);

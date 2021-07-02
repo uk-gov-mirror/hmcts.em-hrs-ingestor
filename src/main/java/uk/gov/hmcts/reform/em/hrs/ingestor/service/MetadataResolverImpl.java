@@ -19,18 +19,20 @@ public class MetadataResolverImpl implements MetadataResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataResolverImpl.class);
 
 
-    static Function<String, Tuple4<String, Integer, String, String>> FRAGMENT = x -> {
+    static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filename -> {
+        LOGGER.info("resolving filename {}",filename);
         final String folderPrefix = "^audiostream";
-        final String[] split = x.split("/");
+        final String[] split = filename.split("/");
+        LOGGER.info("split length: {}",split.length);
         final String folder = split[0];
         final String postfix = split[1];
-        final int index = postfix.lastIndexOf(".");
+        final int lastIndexOfPeriodCharacter = postfix.lastIndexOf(".");
 
         return Tuples.of(
             folder,
             Integer.parseInt(folder.replaceFirst(folderPrefix, "")),
-            postfix.substring(0, index),
-            postfix.substring(index + 1)
+            postfix.substring(0, lastIndexOfPeriodCharacter),
+            postfix.substring(lastIndexOfPeriodCharacter + 1)
         );
     };
 
@@ -38,7 +40,7 @@ public class MetadataResolverImpl implements MetadataResolver {
     public Metadata resolve(final CvpItem item) throws FilenameParsingException {
 
         try {
-            final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(item.getFilename());
+                final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(item.getFilename());
             final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT3());
 
             String parsedSegmentNumber = parsedDataDto.getSegment();
