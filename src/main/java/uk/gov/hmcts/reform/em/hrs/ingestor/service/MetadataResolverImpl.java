@@ -19,18 +19,20 @@ public class MetadataResolverImpl implements MetadataResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataResolverImpl.class);
 
 
-    static Function<String, Tuple4<String, Integer, String, String>> FRAGMENT = x -> {
+    static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filename -> {
+        LOGGER.info("resolving filename {}", filename);
         final String folderPrefix = "^audiostream";
-        final String[] split = x.split("/");
-        final String folder = split[0];
-        final String postfix = split[1];
-        final int index = postfix.lastIndexOf(".");
+        final String[] splitOnForwardSlash = filename.split("/");
+        LOGGER.info("splitOnForwardSlash length: {}", splitOnForwardSlash.length);
+        final String folder = splitOnForwardSlash[0];
+        final String filenameWithExtension = splitOnForwardSlash[1];
+        final int lastIndexOfPeriodCharacter = filenameWithExtension.lastIndexOf(".");
 
         return Tuples.of(
             folder,
             Integer.parseInt(folder.replaceFirst(folderPrefix, "")),
-            postfix.substring(0, index),
-            postfix.substring(index + 1)
+            filenameWithExtension.substring(0, lastIndexOfPeriodCharacter),
+            filenameWithExtension.substring(lastIndexOfPeriodCharacter + 1)
         );
     };
 
@@ -38,7 +40,8 @@ public class MetadataResolverImpl implements MetadataResolver {
     public Metadata resolve(final CvpItem item) throws FilenameParsingException {
 
         try {
-            final Tuple4<String, Integer, String, String> fragments = FRAGMENT.apply(item.getFilename());
+            final Tuple4<String, Integer, String, String> fragments =
+                FULLPATH_FILENAME_PARSER.apply(item.getFilename());
             final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT3());
 
             String parsedSegmentNumber = parsedDataDto.getSegment();
@@ -73,7 +76,7 @@ public class MetadataResolverImpl implements MetadataResolver {
 
         } catch (Exception e) {
             LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
-            LOGGER.error("Unhandled Exception",e);
+            LOGGER.error("Unhandled Exception", e);
             throw new FilenameParsingException(
                 "Unexpected Error parsing cvpItem: " + String.valueOf(e.getMessage()),
                 e

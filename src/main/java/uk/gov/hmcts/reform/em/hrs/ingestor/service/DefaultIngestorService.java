@@ -54,7 +54,7 @@ public class DefaultIngestorService implements IngestorService {
         filesAttempted = 0;
         filesParsedOk = 0;
         filesSubmittedOk = 0;
-        LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}",maxNumberOfFiles);
+        LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}", maxNumberOfFiles);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
@@ -64,7 +64,7 @@ public class DefaultIngestorService implements IngestorService {
 
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
-            LOGGER.info("filterSet size: {}",filteredSet.size());
+            LOGGER.info("filterSet size: {}", filteredSet.size());
             filteredSet.forEach(file -> {
                 if (batchProcessingLimitReached(maxNumberOfFiles)) {
                     return;
@@ -87,6 +87,7 @@ public class DefaultIngestorService implements IngestorService {
 
     private void resolveMetaDataAndPostFileToHrs(CvpItem file) {
         try {
+            LOGGER.info("Resolving Filename {}", file.getFilename());
             final Metadata metaData = metadataResolver.resolve(file);
             filesParsedOk++;
             hrsApiClient.postFile(metaData);

@@ -28,3 +28,5 @@ Invalid File Format-(No Valid Jurisdiction Code),MORNING-TIB-ALDERSHOT-20-08-202
 Invalid File Format-(Not a Valid Jurisdiction Code),980-Family-0274-SA19P01379-16July20-1000am_2020-07-16-08.59.50.552-UTC_0
 Invalid File Format-(Underscored File),------------------------------------------------------------------------_2020-09-21-08.42.19.960-UTC_0
 Invalid File Format-(Invalid Jurisdiction Code for 3 Digit Location Code),co-808-2020_2020-10-28-10.51.07.072-UTC_0
+# Invalid Data Accumulated During Performance Testing
+Invalid File Format-(LoadTest),LoadTest8562_2020-06-24-14.40.22.991-UTC_0
