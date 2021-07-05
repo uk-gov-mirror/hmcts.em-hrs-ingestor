@@ -21,8 +21,9 @@ import java.util.Set;
 @Component
 public class DefaultIngestorService implements IngestorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultIngestorService.class);
-    private static int filesAttempted;
+    private static int itemsAttempted;
     private static int filesParsedOk;
+    private static int itemsIgnoredOk;
     private static int filesSubmittedOk;
     private final CvpBlobstoreClient cvpBlobstoreClient;
     private final HrsApiClient hrsApiClient;
@@ -51,8 +52,9 @@ public class DefaultIngestorService implements IngestorService {
 
     @Override
     public void ingest(Integer maxNumberOfFiles) {
-        filesAttempted = 0;
+        itemsAttempted = 0;
         filesParsedOk = 0;
+        itemsIgnoredOk = 0;
         filesSubmittedOk = 0;
         LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}", maxNumberOfFiles);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
@@ -69,26 +71,31 @@ public class DefaultIngestorService implements IngestorService {
                 if (batchProcessingLimitReached(maxNumberOfFiles)) {
                     return;
                 }
-                filesAttempted++;
+                itemsAttempted++;
                 resolveMetaDataAndPostFileToHrs(file);
             });
-            LOGGER.info("Running Total of Files Attempted: {}", filesAttempted);
+            LOGGER.info("Running Total of Files Attempted: {}", itemsAttempted);
 
         });
         LOGGER.info("Ingestion Complete");
         if (batchProcessingLimitReached(maxNumberOfFiles)) {
             LOGGER.info("Batch Processing Limit Reached ({})", maxNumberOfFiles);
         }
-        LOGGER.info("Total files Attempted: {}", filesAttempted);
+        LOGGER.info("Total files Attempted: {}", itemsAttempted);
         LOGGER.info("Total files Parsed Ok: {}", filesParsedOk);
+        LOGGER.info("Total files Ignored Ok: {}", itemsIgnoredOk);
         LOGGER.info("Total files Submitted Ok: {}", filesSubmittedOk);
 
     }
 
-    private void resolveMetaDataAndPostFileToHrs(CvpItem file) {
+    private void resolveMetaDataAndPostFileToHrs(CvpItem cvpItem) {
         try {
-            LOGGER.info("Resolving Filename {}", file.getFilename());
-            final Metadata metaData = metadataResolver.resolve(file);
+            LOGGER.info("Resolving Filename {}", cvpItem.getFilename());
+            final Metadata metaData = metadataResolver.resolve(cvpItem);
+            if (metaData==null) {
+                 itemsIgnoredOk++;
+                return;
+            }
             filesParsedOk++;
             hrsApiClient.postFile(metaData);
             filesSubmittedOk++;
@@ -101,15 +108,15 @@ public class DefaultIngestorService implements IngestorService {
             );
         } catch (Exception e) {
             LOGGER.error(
-                "Exception processing file {}:: ",
-                file.getFilename(),
+                "Exception processing cvpItem Filename{}:: ",
+                cvpItem.getFilename(),
                 e
             ); // TODO: covered by EM-3582
         }
     }
 
     private boolean batchProcessingLimitReached(Integer maxNumberOfFiles) {
-        return filesAttempted >= maxNumberOfFiles;
+        return itemsAttempted >= maxNumberOfFiles;
     }
 
     private Set<CvpItem> getFilesToIngest(final String folder) {
