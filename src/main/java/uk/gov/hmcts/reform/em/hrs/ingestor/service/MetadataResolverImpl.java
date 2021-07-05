@@ -23,16 +23,23 @@ public class MetadataResolverImpl implements MetadataResolver {
         LOGGER.info("resolving filename {}", filename);
         final String folderPrefix = "^audiostream";
         final String[] splitOnForwardSlash = filename.split("/");
-        LOGGER.info("splitOnForwardSlash length: {}", splitOnForwardSlash.length);
+        LOGGER.info("splitOnForwardSlash length: {}", splitOnForwardSlash.length);//2
         final String folder = splitOnForwardSlash[0];
+        LOGGER.info("folder: {}",folder);
         final String filenameWithExtension = splitOnForwardSlash[1];
+        LOGGER.info("filenameWithExtension {}",filenameWithExtension);
         final int lastIndexOfPeriodCharacter = filenameWithExtension.lastIndexOf(".");
+
+        String fileNamePart = filenameWithExtension.substring(0, lastIndexOfPeriodCharacter);
+        String fileExtensionPart = filenameWithExtension.substring(lastIndexOfPeriodCharacter + 1);
+        LOGGER.info("fileNamePart {}",fileNamePart);
+        LOGGER.info("fileExtensionPart {}",fileExtensionPart);
 
         return Tuples.of(
             folder,
             Integer.parseInt(folder.replaceFirst(folderPrefix, "")),
-            filenameWithExtension.substring(0, lastIndexOfPeriodCharacter),
-            filenameWithExtension.substring(lastIndexOfPeriodCharacter + 1)
+            fileNamePart,
+            fileExtensionPart
         );
     };
 
@@ -47,9 +54,8 @@ public class MetadataResolverImpl implements MetadataResolver {
             String parsedSegmentNumber = parsedDataDto.getSegment();
 
             if (!NumberUtils.isParsable(parsedSegmentNumber)) {
-                //TODO consider guarding against other required fields
-                LOGGER.warn("Filepath does not contain a valid segment number: {}", String.valueOf(item.getFilename()));
-                throw new FilenameParsingException("Filepath does not contain a valid segment number");
+
+
             }
 
             Metadata metadata = new Metadata(

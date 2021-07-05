@@ -47,6 +47,7 @@ az storage blob upload -f README.md -c cvptestcontainer -n audiostream999999/FM-
 
 #used in functional tests somewhere
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream115/FM-0111-testfile200M_2020-01-01-11.11.11.123-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
+az storage blob upload -f README.md -c cvptestcontainer -n audiostream1958/LoadTest8958_2020-06-24-14.49.04.935-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
 
 
 
