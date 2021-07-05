@@ -19,11 +19,17 @@ public class MetadataResolverImpl implements MetadataResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataResolverImpl.class);
 
 
-    static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filename -> {
-        LOGGER.info("resolving filename {}", filename);
+    static Function<String, Tuple4<String, Integer, String, String>> FULLPATH_FILENAME_PARSER = filenameWithPath -> {
+        LOGGER.info("resolving filenameWithPath {}", filenameWithPath);
         final String folderPrefix = "^audiostream";
-        final String[] splitOnForwardSlash = filename.split("/");
-        LOGGER.info("splitOnForwardSlash length: {}", splitOnForwardSlash.length);//2
+        final String[] splitOnForwardSlash = filenameWithPath.split("/");
+        int fileNamePartsCount = splitOnForwardSlash.length;
+        LOGGER.info("fileNamePartsCount length: {}", fileNamePartsCount);
+        if (fileNamePartsCount!=2)
+        {
+            LOGGER.warn("not valid filename (req folder/filename)");
+            return null;
+        }
         final String folder = splitOnForwardSlash[0];
         LOGGER.info("folder: {}",folder);
         final String filenameWithExtension = splitOnForwardSlash[1];
