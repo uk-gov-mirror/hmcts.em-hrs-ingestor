@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.listener;
 
 import com.microsoft.applicationinsights.TelemetryClient;
+import com.microsoft.applicationinsights.telemetry.TelemetryContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
+
+import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class IngestWhenApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
@@ -36,15 +39,24 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
         LOGGER.info("Enable Cronjob is set to {}", enableCronjob);
-        LOGGER.info("maxNumberOfFilesToProcessPerBatch", maxNumberOfFilesToProcessPerBatch);
+        LOGGER.info("maxNumberOfFilesToProcessPerBatch: {}", maxNumberOfFilesToProcessPerBatch);
 
         if (client != null && client.getContext() != null) {
             String ik = client.getContext().getInstrumentationKey();
             LOGGER.info("Application Insights Key(4) = " + StringUtils.left(ik, 4));
+            TelemetryContext context = client.getContext();
+            ConcurrentMap<String, String> tags = context.getTags();
+            tags.forEach((s, s2) -> LOGGER.info(s + ": " + s2));
+            LOGGER.info("context.getSession(): {}", context.getSession().getId());
+            LOGGER.info("context..getUserAgent(): {}", context.getUser().getUserAgent());
+            LOGGER.info("context.getOperation(): {}}", context.getOperation().getName());
+            LOGGER.info("context.getLocation(): {}", context.getLocation().toString());
+
 
         } else {
             LOGGER.info("No Application Insights Key");
         }
+
 
         if (enableCronjob) {
             try {
