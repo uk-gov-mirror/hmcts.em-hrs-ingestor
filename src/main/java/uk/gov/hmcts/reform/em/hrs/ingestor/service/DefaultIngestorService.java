@@ -52,10 +52,7 @@ public class DefaultIngestorService implements IngestorService {
 
     @Override
     public void ingest(Integer maxNumberOfFiles) {
-        itemsAttempted = 0;
-        filesParsedOk = 0;
-        itemsIgnoredOk = 0;
-        filesSubmittedOk = 0;
+        resetCounters();
         LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}", maxNumberOfFiles);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
@@ -71,7 +68,7 @@ public class DefaultIngestorService implements IngestorService {
                 if (batchProcessingLimitReached(maxNumberOfFiles)) {
                     return;
                 }
-                itemsAttempted++;
+                tallyItemsAttempted();
                 resolveMetaDataAndPostFileToHrs(file);
             });
             LOGGER.info("Running Total of Files Attempted: {}", itemsAttempted);
@@ -88,17 +85,18 @@ public class DefaultIngestorService implements IngestorService {
 
     }
 
+
     private void resolveMetaDataAndPostFileToHrs(CvpItem cvpItem) {
         try {
             LOGGER.info("Resolving Filename {}", cvpItem.getFilename());
             final Metadata metaData = metadataResolver.resolve(cvpItem);
-            if (metaData==null) {
-                 itemsIgnoredOk++;
+            if (metaData == null) {
+                tallyItemsIgnored();
                 return;
             }
-            filesParsedOk++;
+            tallyFilesParsedOk();
             hrsApiClient.postFile(metaData);
-            filesSubmittedOk++;
+            tallyFilesSubmittedOk();
         } catch (HrsApiException hrsApi) {
             LOGGER.error(
                 "Response error: {} => {} => {}",
@@ -113,6 +111,30 @@ public class DefaultIngestorService implements IngestorService {
                 e
             ); // TODO: covered by EM-3582
         }
+    }
+
+    private static void resetCounters() {
+        itemsAttempted = 0;
+        filesParsedOk = 0;
+        itemsIgnoredOk = 0;
+        filesSubmittedOk = 0;
+    }
+
+
+    private static void tallyItemsAttempted() {
+        itemsAttempted++;
+    }
+
+    private static void tallyFilesSubmittedOk() {
+        filesSubmittedOk++;
+    }
+
+    private static void tallyFilesParsedOk() {
+        filesParsedOk++;
+    }
+
+    private static void tallyItemsIgnored() {
+        itemsIgnoredOk++;
     }
 
     private boolean batchProcessingLimitReached(Integer maxNumberOfFiles) {
