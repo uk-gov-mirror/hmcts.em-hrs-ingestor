@@ -121,26 +121,6 @@ public final class FilenameParser {
             .build();
     }
 
-    //    private static ParsedFilenameDto processLocationMatcherForRoyalCourtsOfJustice(
-    //        final Matcher matcher) {
-    //
-    //        return ParsedFilenameDto
-    //            .builder()
-    //            .jurisdiction(matcher.group(1))
-    //            .locationCode(matcher.group(2).trim().length() == 4
-    //                          ? matcher.group(2).replaceFirst("^0*", "")
-    //                          : matcher.group(2))
-    //            .caseID(matcher.group(3))
-    //            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
-    //            .segment(matcher.group(6))
-    //            .uniqueIdentifier(matcher.group(1)
-    //                                  + "-" + matcher.group(2)
-    //                                  + "-" + matcher.group(3)
-    //                                  + "_" + matcher.group(4)
-    //                                  + "-" + matcher.group(5))
-    //            .build();
-    //
-    //    }
 
     private static ParsedFilenameDto processNonLocationMatcher(
         final Matcher matcher) {
