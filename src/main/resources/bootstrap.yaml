@@ -7,6 +7,6 @@ spring:
       aliases:
         rpa.AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
         em-hrs-ingestor.microservicekey-em-hrs-ingestor: S2S_KEY
-        em-hrs-ingestor.max-number-of-files-to-process-per-batch: MAX_NUMBER_OF_FILES_TO_PROCESS_PER_BATCH
+        em-hrs-ingestor.max-files-to-process: MAX_FILES_TO_PROCESS
         em-hrs-api.cvp-storage-connection-string: CVP_STORAGE_CONNECTION_STRING
         em-hrs-api.cvp-storage-container-name: CVP_STORAGE_CONTAINER_NAME

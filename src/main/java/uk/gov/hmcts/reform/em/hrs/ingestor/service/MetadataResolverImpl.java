@@ -25,21 +25,20 @@ public class MetadataResolverImpl implements MetadataResolver {
         final String[] splitOnForwardSlash = filenameWithPath.split("/");
         int fileNamePartsCount = splitOnForwardSlash.length;
         LOGGER.info("fileNamePartsCount length: {}", fileNamePartsCount);
-        if (fileNamePartsCount!=2)
-        {
+        if (fileNamePartsCount != 2) {
             LOGGER.warn("not valid filename (req folder/filename)");
             return null;
         }
         final String folder = splitOnForwardSlash[0];
-        LOGGER.info("folder: {}",folder);
+        LOGGER.info("folder: {}", folder);
         final String filenameWithExtension = splitOnForwardSlash[1];
-        LOGGER.info("filenameWithExtension {}",filenameWithExtension);
+        LOGGER.info("filenameWithExtension {}", filenameWithExtension);
         final int lastIndexOfPeriodCharacter = filenameWithExtension.lastIndexOf(".");
 
         String fileNamePart = filenameWithExtension.substring(0, lastIndexOfPeriodCharacter);
         String fileExtensionPart = filenameWithExtension.substring(lastIndexOfPeriodCharacter + 1);
-        LOGGER.info("fileNamePart {}",fileNamePart);
-        LOGGER.info("fileExtensionPart {}",fileExtensionPart);
+        LOGGER.info("fileNamePart {}", fileNamePart);
+        LOGGER.info("fileExtensionPart {}", fileExtensionPart);
 
         return Tuples.of(
             folder,
@@ -55,6 +54,10 @@ public class MetadataResolverImpl implements MetadataResolver {
         try {
             final Tuple4<String, Integer, String, String> fragments =
                 FULLPATH_FILENAME_PARSER.apply(item.getFilename());
+            if (fragments == null) {
+                return null;
+            }
+
             final ParsedFilenameDto parsedDataDto = FilenameParser.parseFileName(fragments.getT3());
 
             String parsedSegmentNumber = parsedDataDto.getSegment();
@@ -83,14 +86,14 @@ public class MetadataResolverImpl implements MetadataResolver {
 
 
         } catch (FilenameParsingException e) {
-            LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
+            LOGGER.warn("Error parsing Filename {}", item.getFilename());
             throw new FilenameParsingException(e.getMessage(), e);
 
         } catch (Exception e) {
-            LOGGER.warn("Error parsing Filename {}", String.valueOf(item.getFilename()));
+            LOGGER.warn("Error parsing Filename {}", item.getFilename());
             LOGGER.error("Unhandled Exception", e);
             throw new FilenameParsingException(
-                "Unexpected Error parsing cvpItem: " + String.valueOf(e.getMessage()),
+                "Unexpected Error parsing cvpItem: " + e.getMessage(),
                 e
             );
         }

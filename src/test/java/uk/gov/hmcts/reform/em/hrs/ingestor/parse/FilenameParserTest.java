@@ -9,16 +9,12 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.dto.ParsedFilenameDto;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FilenameParserTest {
 
     private static final Logger log = LoggerFactory.getLogger(FilenameParserTest.class);
-
-
-
 
 
     @ParameterizedTest(name = "Invalid parameter test : {0} --> {1}")
@@ -40,9 +36,11 @@ class FilenameParserTest {
     void test_negative_wrong_format_file_name_input(final String inputKey, final String inputValue)
         throws Exception {
         ParsedFilenameDto parsedFilenameDto = FilenameParser.parseFileName(inputValue);
+        String withoutSegment = inputValue.substring(0, inputValue.lastIndexOf("_"));
+        String withoutTimeZone = withoutSegment.substring(0, withoutSegment.lastIndexOf("_"));
         assertEquals(
-            Arrays.stream(inputValue.split("_")).findFirst().get(),
-            parsedFilenameDto.getCaseID().toString().trim()
+            withoutTimeZone,
+            parsedFilenameDto.getCaseID().trim()
         );
     }
 

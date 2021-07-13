@@ -25,6 +25,9 @@ public final class FilenameParser {
     private static final String ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX
         = "^(CI|QB|HF|CF|BP|SC|CR|CV)-([A-Z0-9-]*)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
 
+    private static final String MINIMAL_FORMAT_REGEX
+        = "^(.*?)_([0-9-.]*)-([A-Z]{3})_([0-9]+)$";
+
     private FilenameParser() {
     }
 
@@ -54,12 +57,19 @@ public final class FilenameParser {
             ROYAL_COURTS_OF_JUSTICE_FILE_WITHOUT_LOCATION_FORMAT_REGEX,
             Pattern.CASE_INSENSITIVE
         ).matcher(fileName);
+        Matcher caseRefAndTimeStampOnlyMatcher
+            = Pattern.compile(
+            MINIMAL_FORMAT_REGEX,
+            Pattern.CASE_INSENSITIVE
+        ).matcher(fileName);
+
         return processMatcher(
             fileName,
             civilAndFamilyMatcher,
             tribunalsMatcher,
             royalCourtsOfJusticeWithLocationMatcher,
-            royalCourtsOfJusticeWithoutLocationMatcher
+            royalCourtsOfJusticeWithoutLocationMatcher,
+            caseRefAndTimeStampOnlyMatcher
         );
     }
 
@@ -67,49 +77,32 @@ public final class FilenameParser {
                                                     final Matcher civilAndFamilyMatcher,
                                                     final Matcher tribunalsMatcher,
                                                     final Matcher royalCourtsOfJusticeWithLocationMatcher,
-                                                    final Matcher royalCourtsOfJusticeWithoutLocationMatcher) {
+                                                    final Matcher royalCourtsOfJusticeWithoutLocationMatcher,
+                                                    final Matcher caseRefAndTimeStampOnlyFormatMatcher) {
 
         if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
-            return processLocationMatcherForRoyalCourtsOfJustice(
+            return processLocationMatcher(
                 royalCourtsOfJusticeWithLocationMatcher);
         } else if (civilAndFamilyMatcher.matches()) {
             log.debug("This is a Civil and Family based match");
-            return processLocationMatcherForCivilAndFamilies(civilAndFamilyMatcher);
+            return processLocationMatcher(civilAndFamilyMatcher);
         } else if (royalCourtsOfJusticeWithoutLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Without Locations based match");
             return processNonLocationMatcher(royalCourtsOfJusticeWithoutLocationMatcher);
         } else if (tribunalsMatcher.matches()) {
             log.debug("This is a Tribunals based match");
             return processNonLocationMatcher(tribunalsMatcher);
+        } else if (caseRefAndTimeStampOnlyFormatMatcher.matches()) {
+            log.debug("Unable To match, looking for timepart and case ref");
+            return processBadFormatMatcher(caseRefAndTimeStampOnlyFormatMatcher);
         } else {
-            //Pattern Not Recognised, will try to parse filename with datetime suffix only
-            String[] values = fileName.split("_");
-            String caseReference = values[0];
-            String datetimeWithTimeZone = values[1];
-
-            log.info("datetimeWithTimeZoneParts: {}", datetimeWithTimeZone);
-            int timeZoneDelimeter = datetimeWithTimeZone.lastIndexOf("-");
-
-
-            String dateTimePart = datetimeWithTimeZone.substring(0, timeZoneDelimeter);
-            String timeZonePart = datetimeWithTimeZone.substring(timeZoneDelimeter + 1);
-
-            LocalDateTime recordingDateTime = processRawDatePart(dateTimePart, timeZonePart);
-
-
-            ParsedFilenameDto defaultParsing = ParsedFilenameDto
-                .builder()
-                .caseID(caseReference)
-                .recordingDateTime(recordingDateTime)
-                .segment(values[values.length - 1])
-                .build();
-
-            return defaultParsing;
+            throw new IllegalArgumentException("Bad format");
         }
+
     }
 
-    private static ParsedFilenameDto processLocationMatcherForCivilAndFamilies(final Matcher matcher) {
+    private static ParsedFilenameDto processLocationMatcher(final Matcher matcher) {
         return ParsedFilenameDto
             .builder()
             .jurisdiction(matcher.group(1))
@@ -128,26 +121,26 @@ public final class FilenameParser {
             .build();
     }
 
-    private static ParsedFilenameDto processLocationMatcherForRoyalCourtsOfJustice(
-        final Matcher matcher) {
-
-        return ParsedFilenameDto
-            .builder()
-            .jurisdiction(matcher.group(1))
-            .locationCode(matcher.group(2).trim().length() == 4
-                          ? matcher.group(2).replaceFirst("^0*", "")
-                          : matcher.group(2))
-            .caseID(matcher.group(3))
-            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
-            .segment(matcher.group(6))
-            .uniqueIdentifier(matcher.group(1)
-                                  + "-" + matcher.group(2)
-                                  + "-" + matcher.group(3)
-                                  + "_" + matcher.group(4)
-                                  + "-" + matcher.group(5))
-            .build();
-
-    }
+    //    private static ParsedFilenameDto processLocationMatcherForRoyalCourtsOfJustice(
+    //        final Matcher matcher) {
+    //
+    //        return ParsedFilenameDto
+    //            .builder()
+    //            .jurisdiction(matcher.group(1))
+    //            .locationCode(matcher.group(2).trim().length() == 4
+    //                          ? matcher.group(2).replaceFirst("^0*", "")
+    //                          : matcher.group(2))
+    //            .caseID(matcher.group(3))
+    //            .recordingDateTime(processRawDatePart(matcher.group(4), matcher.group(5)))
+    //            .segment(matcher.group(6))
+    //            .uniqueIdentifier(matcher.group(1)
+    //                                  + "-" + matcher.group(2)
+    //                                  + "-" + matcher.group(3)
+    //                                  + "_" + matcher.group(4)
+    //                                  + "-" + matcher.group(5))
+    //            .build();
+    //
+    //    }
 
     private static ParsedFilenameDto processNonLocationMatcher(
         final Matcher matcher) {
@@ -164,6 +157,23 @@ public final class FilenameParser {
             .build();
 
     }
+
+
+    private static ParsedFilenameDto processBadFormatMatcher(
+        final Matcher matcher) {
+        return ParsedFilenameDto
+            .builder()
+            .caseID(matcher.group(1))
+            .recordingDateTime(processRawDatePart(matcher.group(2), matcher.group(3)))
+            .segment(matcher.group(4))
+            .uniqueIdentifier(matcher.group(1) + "-"
+                                  + matcher.group(2)
+                                  + "_" + matcher.group(3)
+                                  + "-" + matcher.group(4))
+            .build();
+
+    }
+
 
     private static LocalDateTime processRawDatePart(final String rawDatePart, final String timeZone) {
 
