@@ -51,7 +51,7 @@ public class MetadataResolverImpl implements MetadataResolver {
     @Override
     public Metadata resolve(final CvpItem item) throws FilenameParsingException {
 
-        //        try {
+        
         String filename = item.getFilename();
         final FileLocationAndParts fragments = extractFileLocationAndParts(filename);
         if (fragments == null) {
