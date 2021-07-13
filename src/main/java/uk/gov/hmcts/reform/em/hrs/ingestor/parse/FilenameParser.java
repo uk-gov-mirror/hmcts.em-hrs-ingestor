@@ -78,7 +78,8 @@ public final class FilenameParser {
                                                     final Matcher tribunalsMatcher,
                                                     final Matcher royalCourtsOfJusticeWithLocationMatcher,
                                                     final Matcher royalCourtsOfJusticeWithoutLocationMatcher,
-                                                    final Matcher caseRefAndTimeStampOnlyFormatMatcher) {
+                                                    final Matcher caseRefAndTimeStampOnlyFormatMatcher)
+        throws FilenameParsingException {
 
         if (royalCourtsOfJusticeWithLocationMatcher.matches()) {
             log.debug("This is a Royal Courts of Justice Locations based match");
@@ -97,7 +98,7 @@ public final class FilenameParser {
             log.debug("Unable To match, looking for timepart and case ref");
             return processBadFormatMatcher(caseRefAndTimeStampOnlyFormatMatcher);
         } else {
-            throw new IllegalArgumentException("Bad format");
+            throw new FilenameParsingException("Bad format");
         }
 
     }

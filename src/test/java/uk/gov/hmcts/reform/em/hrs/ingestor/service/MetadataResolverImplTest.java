@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import reactor.util.function.Tuple4;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.Metadata;
@@ -12,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static uk.gov.hmcts.reform.em.hrs.ingestor.service.MetadataResolverImpl.FULLPATH_FILENAME_PARSER;
+
 
 class MetadataResolverImplTest {
     private static final String FILENAME_VALID =
@@ -28,7 +27,7 @@ class MetadataResolverImplTest {
     private static final CvpItem CVP_ITEM_NO_SEGMENT = createCvpItem(FILENAME_NO_SEGMENT);
     private static final CvpItem CVP_ITEM_INVALID_SEGMENT = createCvpItem(FILENAME_INVALID_SEGMENT);
     private static final CvpItem CVP_ITEM_NO_FOLDER = createCvpItem(FILENAME_NO_FOLDER);
-
+    private final MetadataResolver underTest = new MetadataResolverImpl();
 
     @NotNull
     private static CvpItem createCvpItem(String fileName) {
@@ -39,10 +38,6 @@ class MetadataResolverImplTest {
             123L
         );
     }
-
-
-    private final MetadataResolver underTest = new MetadataResolverImpl();
-
 
     @Test
     void testFilenameWithoutFolderInPathThrowsFileParsingException() {
@@ -86,33 +81,37 @@ class MetadataResolverImplTest {
 
     @Test
     void testShouldReturnRoomReference() {
-        final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(FILENAME_VALID);
+        final MetadataResolverImpl.FileLocationAndParts fragments =
+            underTest.extractFileLocationAndParts(FILENAME_VALID);
 
-        assertThat(fragments.getT2()).isEqualTo(12);
+        assertThat(fragments.getRoomNumber()).isEqualTo(12);
     }
 
     @Test
     void testShouldReturnFolder() {
-        final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(FILENAME_VALID);
+        final MetadataResolverImpl.FileLocationAndParts fragments =
+            underTest.extractFileLocationAndParts(FILENAME_VALID);
 
-        assertThat(fragments.getT1()).isEqualTo("audiostream12");
+        assertThat(fragments.getFolder()).isEqualTo("audiostream12");
     }
 
     @Test
     void testShouldReturnRecordingReference() {
         final String expectedString = "bp-0266-hu-02785-2020_2020-07-16-10.07.31.680-UTC_0";
 
-        final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(FILENAME_VALID);
+        final MetadataResolverImpl.FileLocationAndParts fragments =
+            underTest.extractFileLocationAndParts(FILENAME_VALID);
 
-        assertThat(fragments.getT3()).isEqualTo(expectedString);
+        assertThat(fragments.getFilenamePart()).isEqualTo(expectedString);
     }
 
     @Test
     void testShouldReturnFilenameExtension() {
         final String expectedString = "mp4";
 
-        final Tuple4<String, Integer, String, String> fragments = FULLPATH_FILENAME_PARSER.apply(FILENAME_VALID);
+        final MetadataResolverImpl.FileLocationAndParts fragments =
+            underTest.extractFileLocationAndParts(FILENAME_VALID);
 
-        assertThat(fragments.getT4()).isEqualTo(expectedString);
+        assertThat(fragments.getFilenameSuffix()).isEqualTo(expectedString);
     }
 }
