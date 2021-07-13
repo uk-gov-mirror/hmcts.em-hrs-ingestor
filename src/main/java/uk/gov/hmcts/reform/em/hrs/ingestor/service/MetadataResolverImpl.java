@@ -84,19 +84,6 @@ public class MetadataResolverImpl implements MetadataResolver {
         );
         return metadata;
 
-        //
-        //        } catch (FilenameParsingException e) {
-        //            LOGGER.warn("Error parsing Filename {}", item.getFilename());
-        //            throw new FilenameParsingException(e.getMessage(), e);
-        //
-        //        } catch (Exception e) {
-        //            LOGGER.warn("Error parsing Filename {}", item.getFilename());
-        //            LOGGER.error("Unhandled Exception", e);
-        //            throw new FilenameParsingException(
-        //                "Unexpected Error parsing cvpItem: " + e.getMessage(),
-        //                e
-        //            );
-        //        }
     }
 
     @AllArgsConstructor
