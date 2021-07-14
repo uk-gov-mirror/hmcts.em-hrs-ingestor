@@ -5,7 +5,6 @@
 echo "Please ensure you have the relevant branch of hrs-api, started the local environment dependencies - and then run ./gradlew bootRun"
 echo "https://github.com/hmcts/em-hrs-api/blob/master/docker/dependencies/start-local-environment.sh"
 
-
 # Set variables
 COMPOSE_FILE="-f docker-compose-dependencies.yml"
 
@@ -18,11 +17,10 @@ docker-compose ${COMPOSE_FILE} up -d azure-storage-emulator-azurite-cvp
 echo "Adding files to local test folders"
 az storage container create --name 'cvptestcontainer' --connection-string 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;'
 
-
-
-
 #invalid patterns
-az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/AB-0144-GF0YM700_2020-10-20-11.30.00.150-UTC_0.mp4  --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
+
+az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/EM3582_TRB-3582-testfile200M_2021-05-28-15.35.00.000-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
+az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/AB-0144-GF0YM700_2020-10-20-11.30.00.150-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/00_2020-10-20-09.05.50.150-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/0144-GF0YM622_2020-10-20-10.00.30.150-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream999996/CV0144-HL0NP630_2020-10-20-13.10.20.150-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
@@ -48,8 +46,6 @@ az storage blob upload -f README.md -c cvptestcontainer -n audiostream999999/FM-
 #used in functional tests somewhere
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream115/FM-0111-testfile200M_2020-01-01-11.11.11.123-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
 az storage blob upload -f README.md -c cvptestcontainer -n audiostream1958/LoadTest8958_2020-06-24-14.49.04.935-UTC_0.mp4 --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1"
-
-
 
 docker-compose ${COMPOSE_FILE} up -d clamav
 

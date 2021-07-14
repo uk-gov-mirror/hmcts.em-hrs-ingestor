@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.http.HrsApiClient;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
@@ -31,8 +33,9 @@ public class DefaultIngestorService implements IngestorService {
     private final MetadataResolver metadataResolver;
 
     @Setter
-    @Value("${ingestion.max-number-of-files-to-process-per-batch}")
-    private Integer maxNumberOfFilesToProcessPerBatch = 100;
+    @Getter
+    @Value("${ingestion.max-files-to-process}")
+    private Integer maxFilesToProcess = 100;
 
     @Autowired
     public DefaultIngestorService(final CvpBlobstoreClient cvpBlobstoreClient,
@@ -45,9 +48,32 @@ public class DefaultIngestorService implements IngestorService {
         this.metadataResolver = metadataResolver;
     }
 
+    private static void resetCounters() {
+        itemsAttempted = 0;
+        filesParsedOk = 0;
+        itemsIgnoredOk = 0;
+        filesSubmittedOk = 0;
+    }
+
+    private static void tallyItemsAttempted() {
+        itemsAttempted++;
+    }
+
+    private static void tallyFilesSubmittedOk() {
+        filesSubmittedOk++;
+    }
+
+    private static void tallyFilesParsedOk() {
+        filesParsedOk++;
+    }
+
+    private static void tallyItemsIgnored() {
+        itemsIgnoredOk++;
+    }
+
     @Override
     public void ingest() {
-        ingest(maxNumberOfFilesToProcessPerBatch);
+        ingest(maxFilesToProcess);
     }
 
     @Override
@@ -85,10 +111,9 @@ public class DefaultIngestorService implements IngestorService {
 
     }
 
-
     private void resolveMetaDataAndPostFileToHrs(CvpItem cvpItem) {
         try {
-            LOGGER.info("Resolving Filename {}", cvpItem.getFilename());
+            LOGGER.debug("Resolving Filename {}", cvpItem.getFilename());
             final Metadata metaData = metadataResolver.resolve(cvpItem);
             if (metaData == null) {
                 tallyItemsIgnored();
@@ -97,44 +122,26 @@ public class DefaultIngestorService implements IngestorService {
             tallyFilesParsedOk();
             hrsApiClient.postFile(metaData);
             tallyFilesSubmittedOk();
+        } catch (FilenameParsingException fp) {
+            LOGGER.error(
+                "Unable to parse filename: {} => {}",
+                cvpItem.getFilename(),
+                fp.getMessage()
+            );
         } catch (HrsApiException hrsApi) {
             LOGGER.error(
-                "Response error: {} => {} => {}",
+                "HRS API Response error: {} => {} => {}",
                 hrsApi.getCode(),
                 hrsApi.getMessage(),
                 hrsApi.getBody()
             );
         } catch (Exception e) {
             LOGGER.error(
-                "Exception processing cvpItem Filename{}:: ",
+                "Exception processing cvpItem Filename::{}",
                 cvpItem.getFilename(),
                 e
             ); // TODO: covered by EM-3582
         }
-    }
-
-    private static void resetCounters() {
-        itemsAttempted = 0;
-        filesParsedOk = 0;
-        itemsIgnoredOk = 0;
-        filesSubmittedOk = 0;
-    }
-
-
-    private static void tallyItemsAttempted() {
-        itemsAttempted++;
-    }
-
-    private static void tallyFilesSubmittedOk() {
-        filesSubmittedOk++;
-    }
-
-    private static void tallyFilesParsedOk() {
-        filesParsedOk++;
-    }
-
-    private static void tallyItemsIgnored() {
-        itemsIgnoredOk++;
     }
 
     private boolean batchProcessingLimitReached(Integer maxNumberOfFiles) {

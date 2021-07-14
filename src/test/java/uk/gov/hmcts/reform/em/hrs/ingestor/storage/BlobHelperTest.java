@@ -14,9 +14,9 @@ class BlobHelperTest {
     @Test
     void testParsesBadFoldersWithoutExceptions() {
         BlobHelper.parseFolderFromPath("");
-        BlobHelper.parseFolderFromPath("/folder");
-        BlobHelper.parseFolderFromPath("/folder/");
-        BlobHelper.parseFolderFromPath("/folder/with_filename.mp4");
+        BlobHelper.parseFolderFromPath("folder");
+        BlobHelper.parseFolderFromPath("folder/");
+        BlobHelper.parseFolderFromPath("folder/with_filename.mp4");
     }
 
 

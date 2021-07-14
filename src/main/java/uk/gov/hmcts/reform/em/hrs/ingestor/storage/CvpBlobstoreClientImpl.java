@@ -45,10 +45,11 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
 
         return blobItems.streamByPage()
             .flatMap(pagedResponse -> pagedResponse.getValue().stream()
+                .filter(blobItem -> blobItem.getName().contains("/"))
                 .map(blobItem -> {
-                    LOGGER.info("Processing blobItem");
+                    LOGGER.debug("Processing blobItem");
                     String filePath = blobItem.getName();
-                    LOGGER.info("File Path {}", filePath);
+                    LOGGER.debug("File Path {}", filePath);
                     String folder = BlobHelper.parseFolderFromPath(filePath);
                     return folder;
                 }))
