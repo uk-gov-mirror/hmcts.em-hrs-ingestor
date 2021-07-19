@@ -190,15 +190,7 @@ sonarqube {
 /***********************************************************************************************************************
  * Dependency Management
  **********************************************************************************************************************/
-configurations.all {
-  resolutionStrategy {
-    eachDependency { DependencyResolveDetails details ->
-      if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '9.0.43'
-      }
-    }
-  }
-}
+
 // before committing a change, make sure task still works
 dependencyUpdates {
   def isNonStable = { String version ->
@@ -289,6 +281,12 @@ dependencyManagement {
     //CVE-2021-27568
     dependencySet(group: 'net.minidev', version: '2.4.7') {
       entry 'json-smart'
+    }
+
+    //CVE-2021-33037
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.48') {
+      entry 'tomcat-embed-core'
+      entry 'tomcat-embed-websocket'
     }
 
   }
