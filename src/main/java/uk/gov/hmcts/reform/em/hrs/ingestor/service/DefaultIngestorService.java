@@ -198,15 +198,15 @@ public class DefaultIngestorService implements IngestorService {
         return filesToIngestCount == 0 ? "COMPLETE" : "PENDING";
     }
 
-    private void tallyFilesToIngestCount(int filesToIngestCount) {
+    private static void tallyFilesToIngestCount(int filesToIngestCount) {
         filesToIngestCountTotal += filesToIngestCount;
     }
 
-    private void tallyHrsFilesCountTotal(int hrsFileCount) {
+    private static void tallyHrsFilesCountTotal(int hrsFileCount) {
         hrsFileCountTotal += hrsFileCount;
     }
 
-    private void tallyCVPFilesCountTotal(int cvpFilesCount) {
+    private static void tallyCVPFilesCountTotal(int cvpFilesCount) {
         cvpFilesCountTotal += cvpFilesCount;
     }
 
