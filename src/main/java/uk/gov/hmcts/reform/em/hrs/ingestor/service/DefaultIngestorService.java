@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class DefaultIngestorService implements IngestorService {
     private static int filesParsedOk;
     private static int itemsIgnoredOk;
     private static int filesSubmittedOk;
+
+    private static int cvpFilesCountTotal;
+    private static int hrsFileCountTotal;
+    private static int filesToIngestCountTotal;
+
+
     private final CvpBlobstoreClient cvpBlobstoreClient;
     private final HrsApiClient hrsApiClient;
     private final IngestionFilterer ingestionFilterer;
@@ -53,6 +60,11 @@ public class DefaultIngestorService implements IngestorService {
         filesParsedOk = 0;
         itemsIgnoredOk = 0;
         filesSubmittedOk = 0;
+
+        cvpFilesCountTotal = 0;
+        hrsFileCountTotal = 0;
+        filesToIngestCountTotal = 0;
+
     }
 
     private static void tallyItemsAttempted() {
@@ -83,19 +95,16 @@ public class DefaultIngestorService implements IngestorService {
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
-            if (batchProcessingLimitReached(maxNumberOfFiles)) {
-                return;
-            }
+
             LOGGER.info("--------------------------------------------");
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
             LOGGER.debug("filterSet size: {}", filteredSet.size());
             filteredSet.forEach(file -> {
-                if (batchProcessingLimitReached(maxNumberOfFiles)) {
-                    return;
+                if (!batchProcessingLimitReached(maxNumberOfFiles)) {
+                    tallyItemsAttempted();
+                    resolveMetaDataAndPostFileToHrs(file);
                 }
-                tallyItemsAttempted();
-                resolveMetaDataAndPostFileToHrs(file);
             });
             LOGGER.debug("Running Total of Files Attempted: {}", itemsAttempted);
 
@@ -108,6 +117,12 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Total files Parsed Ok: {}", filesParsedOk);
         LOGGER.info("Total files Ignored Ok: {}", itemsIgnoredOk);
         LOGGER.info("Total files Submitted Ok: {}", filesSubmittedOk);
+
+
+        String ingestionStatus = determineFolderStatus(filesToIngestCountTotal);
+        LOGGER.info("VALIDATION REPORT: CVP Files:{}, HRS Files:{}, To Ingest:{}, INGESTION-STATUS:{}",
+                    cvpFilesCountTotal, hrsFileCountTotal, filesToIngestCountTotal, ingestionStatus
+        );
 
     }
 
@@ -161,14 +176,38 @@ public class DefaultIngestorService implements IngestorService {
             int hrsFileCount = hrsFileSet.getHrsFiles().size();
             int filesToIngestCount = filesToIngest.size();
 
-            LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}",
-                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount
+            tallyCVPFilesCountTotal(cvpFilesCount);
+            tallyHrsFilesCountTotal(hrsFileCount);
+            tallyFilesToIngestCount(filesToIngestCount);
+
+
+            String ingestionStatus = determineFolderStatus(filesToIngestCount);
+
+            LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}, FOLDER-STATUS:{}",
+                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount, ingestionStatus
             );
             return filesToIngest;
         } catch (HrsApiException | IOException e) {
             LOGGER.error("", e); // TODO: covered by EM-3582
             return Collections.emptySet();
         }
+    }
+
+    @NotNull
+    private String determineFolderStatus(int filesToIngestCount) {
+        return filesToIngestCount == 0 ? "COMPLETE" : "PENDING";
+    }
+
+    private static void tallyFilesToIngestCount(int filesToIngestCount) {
+        filesToIngestCountTotal += filesToIngestCount;
+    }
+
+    private static void tallyHrsFilesCountTotal(int hrsFileCount) {
+        hrsFileCountTotal += hrsFileCount;
+    }
+
+    private static void tallyCVPFilesCountTotal(int cvpFilesCount) {
+        cvpFilesCountTotal += cvpFilesCount;
     }
 
 }
