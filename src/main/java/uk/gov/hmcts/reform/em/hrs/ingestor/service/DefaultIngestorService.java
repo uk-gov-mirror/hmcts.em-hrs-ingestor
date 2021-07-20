@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.em.hrs.ingestor.service;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,8 @@ public class DefaultIngestorService implements IngestorService {
         filesSubmittedOk = 0;
 
         cvpFilesCountTotal = 0;
-         hrsFileCountTotal = 0;
-         filesToIngestCountTotal = 0;
+        hrsFileCountTotal = 0;
+        filesToIngestCountTotal = 0;
 
     }
 
@@ -94,17 +95,12 @@ public class DefaultIngestorService implements IngestorService {
         final Set<String> folders = cvpBlobstoreClient.getFolders();
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
-//            if (batchProcessingLimitReached(maxNumberOfFiles)) {
-//                return;
-//            }
+
             LOGGER.info("--------------------------------------------");
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
             LOGGER.debug("filterSet size: {}", filteredSet.size());
             filteredSet.forEach(file -> {
-//                if (batchProcessingLimitReached(maxNumberOfFiles)) {
-//                    return;
-//                }
                 if (!batchProcessingLimitReached(maxNumberOfFiles)) {
                     tallyItemsAttempted();
                     resolveMetaDataAndPostFileToHrs(file);
@@ -123,7 +119,7 @@ public class DefaultIngestorService implements IngestorService {
         LOGGER.info("Total files Submitted Ok: {}", filesSubmittedOk);
 
 
-        String ingestionStatus = filesToIngestCountTotal == 0 ? "COMPLETE" : "PENDING";
+        String ingestionStatus = determineFolderStatus(filesToIngestCountTotal);
         LOGGER.info("VALIDATION REPORT: CVP Files:{}, HRS Files:{}, To Ingest:{}, INGESTION-STATUS:{}",
                     cvpFilesCountTotal, hrsFileCountTotal, filesToIngestCountTotal, ingestionStatus
         );
@@ -180,21 +176,38 @@ public class DefaultIngestorService implements IngestorService {
             int hrsFileCount = hrsFileSet.getHrsFiles().size();
             int filesToIngestCount = filesToIngest.size();
 
-            cvpFilesCountTotal+=cvpFilesCount;
-            hrsFileCountTotal += hrsFileCount;
-            filesToIngestCountTotal += filesToIngestCount;
+            tallyCVPFilesCountTotal(cvpFilesCount);
+            tallyHrsFilesCountTotal(hrsFileCount);
+            tallyFilesToIngestCount(filesToIngestCount);
 
 
-            String ingestionStatus = filesToIngestCount == 0 ? "COMPLETE" : "PENDING";
+            String ingestionStatus = determineFolderStatus(filesToIngestCount);
 
             LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}, FOLDER-STATUS:{}",
-                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount,ingestionStatus
+                        folder, cvpFilesCount, hrsFileCount, filesToIngestCount, ingestionStatus
             );
             return filesToIngest;
         } catch (HrsApiException | IOException e) {
             LOGGER.error("", e); // TODO: covered by EM-3582
             return Collections.emptySet();
         }
+    }
+
+    @NotNull
+    private String determineFolderStatus(int filesToIngestCount) {
+        return filesToIngestCount == 0 ? "COMPLETE" : "PENDING";
+    }
+
+    private void tallyFilesToIngestCount(int filesToIngestCount) {
+        filesToIngestCountTotal += filesToIngestCount;
+    }
+
+    private void tallyHrsFilesCountTotal(int hrsFileCount) {
+        hrsFileCountTotal += hrsFileCount;
+    }
+
+    private void tallyCVPFilesCountTotal(int cvpFilesCount) {
+        cvpFilesCountTotal += cvpFilesCount;
     }
 
 }
