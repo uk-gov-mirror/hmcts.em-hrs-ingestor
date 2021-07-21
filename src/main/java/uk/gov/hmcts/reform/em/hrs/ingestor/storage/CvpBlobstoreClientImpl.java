@@ -7,6 +7,7 @@ import com.azure.storage.blob.models.BlobItemProperties;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.ListBlobsOptions;
 import com.azure.storage.blob.specialized.BlockBlobClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,20 +58,41 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     }
 
 
+    //    @Override
+    //    public CvpItemSet findByFolder(String folderName) {
+    //        final BlobListDetails blobListDetails = new BlobListDetails()
+    //            .setRetrieveDeletedBlobs(false)
+    //            .setRetrieveSnapshots(false);
+    //        final ListBlobsOptions options = new ListBlobsOptions()
+    //            .setDetails(blobListDetails)
+    //            .setPrefix(folderName);
+    //        final Duration duration = Duration.ofMinutes(BLOB_LIST_TIMEOUT);
+    //
+    //        final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
+    //
+    //        return transform(blobItems);
+    //    }
+
     @Override
-    public CvpItemSet findByFolder(String folderName) {
+    public CvpItemSet findByFolder(final String folderName) {
+        boolean folderNameIncludesTrailingSlash = StringUtils.endsWith(folderName, "/");
+
+        final String folderPath = folderNameIncludesTrailingSlash ? folderName : folderName + "/";
+
         final BlobListDetails blobListDetails = new BlobListDetails()
             .setRetrieveDeletedBlobs(false)
             .setRetrieveSnapshots(false);
         final ListBlobsOptions options = new ListBlobsOptions()
             .setDetails(blobListDetails)
-            .setPrefix(folderName);
+            .setPrefix(folderPath);
         final Duration duration = Duration.ofMinutes(BLOB_LIST_TIMEOUT);
 
         final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
 
         return transform(blobItems);
+
     }
+
 
     @Override
     public void downloadFile(final String filename, final OutputStream output) {

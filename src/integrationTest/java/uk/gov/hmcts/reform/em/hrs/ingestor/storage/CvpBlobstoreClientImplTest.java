@@ -90,6 +90,17 @@ class CvpBlobstoreClientImplTest {
         assertThat(cvpItemSet.getCvpFiles()).hasSameElementsAs(filePaths);
     }
 
+
+    @Test
+    void testShouldReturnContentsOfFolderNotWildcardForFoldername() {
+        populateCvpBlobstoreWithSimilarFoldernames();
+
+        final CvpItemSet cvpItemSet = underTest.findByFolder("/multi1");
+
+        assertThat(cvpItemSet.getCvpFiles().stream().count()).isEqualTo(1);
+    }
+
+
     @Test
     void testShouldDownloadFile() throws Exception {
         final String filePath = ONE_ITEM_FOLDER + "/" + UUID.randomUUID().toString() + ".txt";
@@ -130,6 +141,16 @@ class CvpBlobstoreClientImplTest {
         );
         azureOperations.uploadToContainer(filePaths);
     }
+
+    private void populateCvpBlobstoreWithSimilarFoldernames() {
+        final Set<String> filePaths = Set.of(
+            "/multi1/" + UUID.randomUUID().toString() + ".txt",
+            "/multi10/" + UUID.randomUUID().toString() + ".txt",
+            "/multi1000/" + UUID.randomUUID().toString() + ".txt"
+        );
+        azureOperations.uploadToContainer(filePaths);
+    }
+
 
     private Set<String> generateFilePaths() {
         final Random random = new Random();
