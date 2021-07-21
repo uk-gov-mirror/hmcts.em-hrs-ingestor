@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItem;
 import uk.gov.hmcts.reform.em.hrs.ingestor.model.CvpItemSet;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     public CvpItemSet findByFolder(final String folderName) {
         boolean folderNameIncludesTrailingSlash = StringUtils.endsWith(folderName, "/");
 
-        final String folderPath = folderNameIncludesTrailingSlash ? folderName : folderName + "/";
+        final String folderPath = folderNameIncludesTrailingSlash ? folderName : folderName + File.separator;
 
         final BlobListDetails blobListDetails = new BlobListDetails()
             .setRetrieveDeletedBlobs(false)
