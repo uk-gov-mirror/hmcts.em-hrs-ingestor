@@ -57,22 +57,6 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
             .collect(Collectors.toUnmodifiableSet());
     }
 
-
-    //    @Override
-    //    public CvpItemSet findByFolder(String folderName) {
-    //        final BlobListDetails blobListDetails = new BlobListDetails()
-    //            .setRetrieveDeletedBlobs(false)
-    //            .setRetrieveSnapshots(false);
-    //        final ListBlobsOptions options = new ListBlobsOptions()
-    //            .setDetails(blobListDetails)
-    //            .setPrefix(folderName);
-    //        final Duration duration = Duration.ofMinutes(BLOB_LIST_TIMEOUT);
-    //
-    //        final PagedIterable<BlobItem> blobItems = blobContainerClient.listBlobs(options, duration);
-    //
-    //        return transform(blobItems);
-    //    }
-
     @Override
     public CvpItemSet findByFolder(final String folderName) {
         boolean folderNameIncludesTrailingSlash = StringUtils.endsWith(folderName, "/");
