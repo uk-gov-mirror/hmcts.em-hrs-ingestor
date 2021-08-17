@@ -289,6 +289,9 @@ dependencyManagement {
       entry 'tomcat-embed-websocket'
     }
 
+    //CVE-2021-28170
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+
   }
 }
 
