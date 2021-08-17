@@ -23,14 +23,11 @@
       with reactor libs.
     </notes>
     <cve>CVE-2017-1000190</cve>
-    <suppress>
-      <notes>
-        https://nvd.nist.gov/vuln/detail/CVE-2021-28170
-        In the Jakarta Expression Language implementation 3.0.3 and earlier, a bug in the
-        ELParserTokenManager enables invalid EL expressions to be evaluated as if they were valid.
-      </notes>
-      <packageUrl regex="true">^pkg:maven/org\.glassfish/jakarta\.el@.*$</packageUrl>
-      <cve>CVE-2021-28170</cve>
-    </suppress>
   </suppress>
+  <suppress>
+    <notes><![CDATA[file name: jakarta.el-3.0.3.jar]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.glassfish/jakarta\.el@.*$</packageUrl>
+    <cve>CVE-2021-28170</cve>
+  </suppress>
+
 </suppressions>
