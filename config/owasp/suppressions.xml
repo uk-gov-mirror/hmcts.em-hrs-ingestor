@@ -24,4 +24,7 @@
     </notes>
     <cve>CVE-2017-1000190</cve>
   </suppress>
+  <suppress>
+    <cve>CVE-2020-23171</cve>
+  </suppress>
 </suppressions>
