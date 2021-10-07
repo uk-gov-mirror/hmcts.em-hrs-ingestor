@@ -163,6 +163,18 @@ You should get a response similar to this:
   {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
 ```
 
+After running make app-run, you should a response similar to this:
+
+```
+2021-09-30 15:40:11.253  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : Ingestion Complete
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : Total files Attempted: 0
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : Total files Parsed Ok: 0
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : Total files Ignored Ok: 0
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : Total files Submitted Ok: 0
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] u.g.h.r.e.h.i.s.DefaultIngestorService   : VALIDATION REPORT: CVP Files:27, HRS Files:27, To Ingest:0, INGESTION-STATUS:COMPLETE
+2021-09-30 15:40:11.254  INFO 23274 --- [           main] h.i.l.IngestWhenApplicationReadyListener : Initial Ingestion Complete
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
