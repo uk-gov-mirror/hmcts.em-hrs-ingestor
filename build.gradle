@@ -275,8 +275,8 @@ dependencyManagement {
       entry 'json-smart'
     }
 
-    //CVE-2021-33037
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.48') {
+    //CVE-2021-42340
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.54') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
