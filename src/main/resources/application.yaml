@@ -39,10 +39,6 @@ app-insights:
 s2s.hrs.api:
   url: ${HRS_API_BASE_URI:http://localhost:8080}
 
-clamav:
-  host: ${HRS_CLAM_AV_HOST:localhost}
-  port: ${HRS_CLAM_AV_PORT:3310}
-  timeout: 60000
 
 idam:
   s2s-auth:
