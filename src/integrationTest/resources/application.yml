@@ -1,6 +1,3 @@
 ---
 s2s.hrs.api.url: http://localhost:8088
 
-clamav:
-  host: localhost
-  timeout: 60000

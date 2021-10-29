@@ -364,9 +364,6 @@ dependencies {
   implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
   implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.9.0'
 
-  // antivirus client
-  implementation group: 'fi.solita.clamav', name: 'clamav-client', version: '1.0.1'
-
   implementation group: 'net.sf.jsignature.io-tools', name: 'easystream', version: '1.2.15'
 
   //test implementation
