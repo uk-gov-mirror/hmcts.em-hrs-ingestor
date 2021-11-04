@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
+
 @Configuration
 public class AzureStorageConfiguration {
 
@@ -56,6 +58,15 @@ public class AzureStorageConfiguration {
             .connectionString(connectionString)
             .containerName(containerReference);
 
-        return clientBuilder.buildClient();
+
+        BlobContainerClient blobContainerClient = clientBuilder.buildClient();
+
+        final boolean containerExists = blobContainerClient.exists();
+
+        if (!containerExists) {
+            blobContainerClient.create();
+        }
+
+        return blobContainerClient;
     }
 }
