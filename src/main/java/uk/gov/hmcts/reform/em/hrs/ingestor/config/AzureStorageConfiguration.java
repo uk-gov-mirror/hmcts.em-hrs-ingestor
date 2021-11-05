@@ -56,6 +56,15 @@ public class AzureStorageConfiguration {
             .connectionString(connectionString)
             .containerName(containerReference);
 
-        return clientBuilder.buildClient();
+
+        BlobContainerClient blobContainerClient = clientBuilder.buildClient();
+
+        final boolean containerExists = blobContainerClient.exists();
+
+        if (!containerExists) {
+            blobContainerClient.create();
+        }
+
+        return blobContainerClient;
     }
 }
