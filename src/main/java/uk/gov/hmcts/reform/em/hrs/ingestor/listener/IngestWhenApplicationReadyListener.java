@@ -18,14 +18,18 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class IngestWhenApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(IngestWhenApplicationReadyListener.class);
-    @Value("${toggle.shutdown}")
-    boolean shouldShutDownAfterInitialIngestion;
+
     @Autowired
     private DefaultIngestorService defaultIngestorService;
+
     @Value("${toggle.cronjob}")
     private boolean enableCronjob;
+
     @Autowired
     private TelemetryClient client;
+
+    static int secondsToAllowFlushingOfLogs = 10;
+
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -53,35 +57,29 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
         if (enableCronjob) {
             try {
                 LOGGER.info("Application Started {}\n...About to Ingest", event);
-                try {
-                    defaultIngestorService.ingest();
-                } catch (Exception e) {
-                    throw new IngestorExecutionException("Error Intialising or Running Ingestor", e);
-                }
-
-                LOGGER.info("Initial Ingestion Complete", event);
+                defaultIngestorService.ingest();
             } catch (Exception e) {
-                LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}");
-                e.printStackTrace();
+                flushLogs();
+                LOGGER.error("Unhandled Exception during Ingestion - Aborted ... {}");
+                throw new IngestorExecutionException("Error Intialising or Running Ingestor", e);
             }
+            LOGGER.info("Initial Ingestion Complete", event);
 
         } else {
             LOGGER.info("Application Not Starting as ENABLE_CRONJOB is false");
         }
-        shutDownGracefully();
+        flushLogs();
+        System.exit(0);
+
     }
 
-    private void shutDownGracefully() {
+    private void flushLogs() {
         client.flush();
-
-        if (shouldShutDownAfterInitialIngestion) {
-            long millisToSleepForClientToFlush = 1000 * 10;
-            try {
-                Thread.sleep(millisToSleepForClientToFlush);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.exit(0);
+        long millisToSleepForClientToFlush = 1000 * secondsToAllowFlushingOfLogs;
+        try {
+            Thread.sleep(millisToSleepForClientToFlush);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
