@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.em.hrs.ingestor.exception.IngestorExecutionException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.service.DefaultIngestorService;
 
 import java.util.concurrent.ConcurrentMap;
@@ -52,7 +53,12 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
         if (enableCronjob) {
             try {
                 LOGGER.info("Application Started {}\n...About to Ingest", event);
-                defaultIngestorService.ingest();
+                try {
+                    defaultIngestorService.ingest();
+                } catch (Exception e) {
+                    throw new IngestorExecutionException("Error Intialising or Running Ingestor", e);
+                }
+
                 LOGGER.info("Initial Ingestion Complete", event);
             } catch (Exception e) {
                 LOGGER.error("Unhandled Exception  during Ingestion - Aborted ... {}");
