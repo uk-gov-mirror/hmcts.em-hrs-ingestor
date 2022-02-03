@@ -34,6 +34,8 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
+        client.trackEvent("HRS Ingestor invoked");
+        LOGGER.info("HRS Ingestor invoked");
         LOGGER.info("Enable Cronjob is set to {}", enableCronjob);
         LOGGER.info("defaultIngestorService.maxFilesToProcess: {}", defaultIngestorService.getMaxFilesToProcess());
 
