@@ -28,7 +28,7 @@ public class IngestWhenApplicationReadyListener implements ApplicationListener<A
     @Autowired
     private TelemetryClient client;
 
-    static int secondsToAllowFlushingOfLogs = 10;
+    static int secondsToAllowFlushingOfLogs = 100;
 
 
     @Override
