@@ -88,8 +88,7 @@ public class DefaultIngestorService implements IngestorService {
         ingest(maxFilesToProcess);
     }
 
-    @Override
-    public void ingest(Integer maxNumberOfFiles) {
+    private void ingest(Integer maxNumberOfFiles) {
         resetCounters();
         LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}", maxNumberOfFiles);
         final Set<String> folders = cvpBlobstoreClient.getFolders();
