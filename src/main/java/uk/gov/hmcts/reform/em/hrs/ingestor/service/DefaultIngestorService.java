@@ -175,7 +175,7 @@ public class DefaultIngestorService implements IngestorService {
             int hrsFileCount = hrsFileSet.getHrsFiles().size();
             int filesToIngestCount = filesToIngest.size();
 
-            tallyCVPFilesCountTotal(cvpFilesCount);
+            tallyCvpFilesCountTotal(cvpFilesCount);
             tallyHrsFilesCountTotal(hrsFileCount);
             tallyFilesToIngestCount(filesToIngestCount);
 
@@ -205,7 +205,7 @@ public class DefaultIngestorService implements IngestorService {
         hrsFileCountTotal += hrsFileCount;
     }
 
-    private static void tallyCVPFilesCountTotal(int cvpFilesCount) {
+    private static void tallyCvpFilesCountTotal(int cvpFilesCount) {
         cvpFilesCountTotal += cvpFilesCount;
     }
 
