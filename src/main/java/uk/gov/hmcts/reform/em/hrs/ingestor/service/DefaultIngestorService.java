@@ -19,7 +19,9 @@ import uk.gov.hmcts.reform.em.hrs.ingestor.storage.CvpBlobstoreClient;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DefaultIngestorService implements IngestorService {
@@ -91,7 +93,10 @@ public class DefaultIngestorService implements IngestorService {
     private void ingest(Integer maxNumberOfFiles) {
         resetCounters();
         LOGGER.info("Ingestion Started with BATCH PROCESSING LIMIT of {}", maxNumberOfFiles);
-        final Set<String> folders = cvpBlobstoreClient.getFolders();
+        final Set<String> foldersSet = cvpBlobstoreClient.getFolders();
+        List<String> folders = foldersSet.stream().collect(Collectors.toList());
+        Collections.shuffle(folders);
+
         LOGGER.info("Folders found in CVP {} ", folders.size());
         folders.forEach(folder -> {
 
