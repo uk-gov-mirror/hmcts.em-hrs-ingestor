@@ -30,7 +30,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     private static final int BLOB_LIST_TIMEOUT = 30;
     private final BlobContainerClient blobContainerClient;
 
-    @Value("${ingestion.only-process-old-files")
+    @Value("${ingestion.only-process-old-files}")
     private boolean onlyProcessOldFiles;
 
     @Autowired
@@ -66,7 +66,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
 
     private boolean isOldFolder(BlobItem blobItem) {
         if (onlyProcessOldFiles) {
-            return OffsetDateTime.now().minusDays(4).isAfter(blobItem.getProperties().getCreationTime());
+            return OffsetDateTime.now().minusDays(8).isAfter(blobItem.getProperties().getCreationTime());
         } else {
             return true;
         }
