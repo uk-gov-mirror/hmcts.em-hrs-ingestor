@@ -197,7 +197,7 @@ public class DefaultIngestorService implements IngestorService {
             return filesToIngest;
         } catch (HrsApiException e) {
             LOGGER.warn("Get Files To Ingest error for folder {}, status: {}:", folder, e.getCode(), e);
-            if(e.getCode() == HttpStatus.TOO_MANY_REQUESTS.value()){
+            if (e.getCode() == HttpStatus.TOO_MANY_REQUESTS.value()) {
                 busyErrorCount++;
                 try {
                     TimeUnit.SECONDS.sleep(5 * busyErrorCount);
@@ -206,8 +206,7 @@ public class DefaultIngestorService implements IngestorService {
                 }
             }
             return Collections.emptySet();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("IOException for Get Files To Ingest error for folder {} :", folder, e);
             return Collections.emptySet();
         }
