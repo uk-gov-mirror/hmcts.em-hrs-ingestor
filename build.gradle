@@ -207,7 +207,7 @@ dependencyManagement {
     }
 
     // CVE-2021-37136, CVE-2021-37137, CVE-2021-43797
-    dependencySet(group: 'io.netty', version: '4.1.72.Final') {
+    dependencySet(group: 'io.netty', version: '4.1.74.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-common'
