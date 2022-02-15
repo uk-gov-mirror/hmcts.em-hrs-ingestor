@@ -39,4 +39,18 @@
     <cve>CVE-2020-23171</cve>
   </suppress>
 
+  <!-- Suppressed till we have version above current : netty-tcnative-classes-2.0.48.Final.jar -->
+  <suppress>
+    <cve>CVE-2014-3488</cve>
+    <cve>CVE-2015-2156</cve>
+    <cve>CVE-2019-16869</cve>
+    <cve>CVE-2019-20444</cve>
+    <cve>CVE-2019-20445</cve>
+    <cve>CVE-2021-21290</cve>
+    <cve>CVE-2021-21295</cve>
+    <cve>CVE-2021-21409</cve>
+    <cve>CVE-2021-37136</cve>
+    <cve>CVE-2021-37137</cve>
+    <cve>CVE-2021-43797</cve>
+  </suppress>
 </suppressions>
