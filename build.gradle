@@ -370,7 +370,7 @@ dependencies {
 
 
 
-  testImplementation group: 'com.github.gmazzo', name: 'okhttp-mock', version: '1.4.1'
+  testImplementation group: 'com.github.gmazzo', name: 'okhttp-mock', version: '1.5.0'
 
   testImplementation libraries.junit5
 
@@ -380,7 +380,7 @@ dependencies {
     exclude group: 'com.vaadin.external.google', module: 'android-json'
   }
 
-  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'
   testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.2'
   testImplementation group: 'com.devskiller', name: 'jfairy', version: '0.6.4', {
     exclude group: 'com.google.guava', module: 'guava'
