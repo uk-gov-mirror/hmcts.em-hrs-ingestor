@@ -42,7 +42,7 @@ public class DefaultIngestorService implements IngestorService {
     private final HrsApiClient hrsApiClient;
     private final IngestionFilterer ingestionFilterer;
     private final MetadataResolver metadataResolver;
-    private static int busyErrorCount = 0;
+    private int busyErrorCount = 0;
 
     @Setter
     @Getter
@@ -200,9 +200,10 @@ public class DefaultIngestorService implements IngestorService {
             if (e.getCode() == HttpStatus.TOO_MANY_REQUESTS.value()) {
                 busyErrorCount++;
                 try {
-                    TimeUnit.SECONDS.sleep(5 * busyErrorCount);
+                    TimeUnit.SECONDS.sleep(5L * busyErrorCount);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    LOGGER.warn("Wait error InterruptedException:", e);
+                    Thread.currentThread().interrupt();
                 }
             }
             return Collections.emptySet();
