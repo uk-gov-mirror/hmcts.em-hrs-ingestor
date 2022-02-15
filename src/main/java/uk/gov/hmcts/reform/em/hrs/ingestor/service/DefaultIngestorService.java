@@ -110,7 +110,7 @@ public class DefaultIngestorService implements IngestorService {
                     resolveMetaDataAndPostFileToHrs(file);
                 }
             });
-            LOGGER.debug("Running Total of Files Attempted: {}", itemsAttempted);
+            LOGGER.info("Running Total of Files Attempted: {}", itemsAttempted);
 
         });
         LOGGER.info("Ingestion Complete");
