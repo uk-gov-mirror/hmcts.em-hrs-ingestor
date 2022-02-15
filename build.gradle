@@ -206,13 +206,16 @@ dependencyManagement {
       entry 'kotlin-stdlib-jdk8'
     }
 
-    // CVE-2021-37136, CVE-2021-37137
-    dependencySet(group: 'io.netty', version: '4.1.70.Final') {
+    // CVE-2021-37136, CVE-2021-37137, CVE-2021-43797
+    dependencySet(group: 'io.netty', version: '4.1.74.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
+      entry 'netty-codec-dns'
       entry 'netty-common'
       entry 'netty-handler'
       entry 'netty-resolver'
+      entry 'netty-resolver-dns'
+      entry 'netty-resolver-dns-native-macos'
       entry 'netty-transport'
       entry 'netty-codec-http'
       entry 'netty-codec-http2'
@@ -271,6 +274,12 @@ dependencyManagement {
 
     //CVE-2021-28170
     dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
+
+    //CVE-2021-42550
+    dependencySet(group: 'ch.qos.logback', version: '1.2.10') {
+      entry 'logback-classic'
+      entry 'logback-core'
+    }
 
   }
 }
@@ -371,7 +380,7 @@ dependencies {
     exclude group: 'com.vaadin.external.google', module: 'android-json'
   }
 
-  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'
   testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.2'
   testImplementation group: 'com.devskiller', name: 'jfairy', version: '0.6.4', {
     exclude group: 'com.google.guava', module: 'guava'
