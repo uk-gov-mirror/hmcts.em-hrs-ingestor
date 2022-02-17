@@ -358,7 +358,7 @@ dependencies {
 
   //rest clients
   implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
-  implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.1'
+  implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.3'
   implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
   implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.9.0'
 
@@ -370,7 +370,7 @@ dependencies {
 
 
 
-  testImplementation group: 'com.github.gmazzo', name: 'okhttp-mock', version: '1.4.1'
+  testImplementation group: 'com.github.gmazzo', name: 'okhttp-mock', version: '1.5.0'
 
   testImplementation libraries.junit5
 
@@ -386,7 +386,7 @@ dependencies {
     exclude group: 'com.google.guava', module: 'guava'
   }
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.31.0'
-  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
   testImplementation group :'info.solidsoft.gradle.pitest', name : 'gradle-pitest-plugin',version: '1.6.0'
   testImplementation group: 'org.pitest', name: 'pitest', version: '1.7.0'
   testImplementation group:'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: '0.5'
