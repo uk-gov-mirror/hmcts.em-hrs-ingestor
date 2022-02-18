@@ -17,7 +17,7 @@ spring:
 
 ingestion:
   max-files-to-process: ${MAX_FILES_TO_PROCESS:50}
-  only-process-old-files: ${ONLY_PROCESS_OLD_FILES:false}
+  process-back-to-day: ${PROCESS_BACK_TO_DAY:2}
 
 logging:
   level:

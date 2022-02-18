@@ -30,8 +30,8 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     private static final int BLOB_LIST_TIMEOUT = 30;
     private final BlobContainerClient blobContainerClient;
 
-    @Value("${ingestion.only-process-old-files}")
-    private boolean onlyProcessOldFiles;
+    @Value("${ingestion.process-back-to-day}")
+    private int processBackToDay;
 
     @Autowired
     public CvpBlobstoreClientImpl(final BlobContainerClient blobContainerClient) {
@@ -53,7 +53,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
         return blobItems.streamByPage()
             .flatMap(pagedResponse -> pagedResponse.getValue().stream()
                 .filter(blobItem -> blobItem.getName().contains("/"))
-                .filter(blobItem -> isOldFolder(blobItem))
+                .filter(blobItem -> isNewFile(blobItem))
                 .map(blobItem -> {
                     LOGGER.debug("Processing blobItem");
                     String filePath = blobItem.getName();
@@ -64,12 +64,8 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
             .collect(Collectors.toUnmodifiableSet());
     }
 
-    private boolean isOldFolder(BlobItem blobItem) {
-        if (onlyProcessOldFiles) {
-            return OffsetDateTime.now().minusDays(8).isAfter(blobItem.getProperties().getCreationTime());
-        } else {
-            return true;
-        }
+    private boolean isNewFile(BlobItem blobItem) {
+        return OffsetDateTime.now().minusDays(processBackToDay).isBefore(blobItem.getProperties().getCreationTime());
     }
 
     @Override
