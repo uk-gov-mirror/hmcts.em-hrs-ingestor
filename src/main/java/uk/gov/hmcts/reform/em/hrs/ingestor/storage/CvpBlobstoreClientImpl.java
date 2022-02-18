@@ -30,7 +30,7 @@ public class CvpBlobstoreClientImpl implements CvpBlobstoreClient {
     private static final int BLOB_LIST_TIMEOUT = 30;
     private final BlobContainerClient blobContainerClient;
 
-    @Value("${ingestion.process-back-to-day")
+    @Value("${ingestion.process-back-to-day}")
     private int processBackToDay;
 
     @Autowired
