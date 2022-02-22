@@ -344,7 +344,7 @@ dependencies {
 
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
-  implementation group: 'com.opencsv', name: 'opencsv', version: '5.5.2'
+  implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
 
   implementation 'org.projectlombok:lombok:1.18.22'
 
