@@ -11,7 +11,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.3.4.RELEASE'
-  id 'com.github.ben-manes.versions' version '0.36.0'// NOTE version 0.38 is suspected to be the cause of
+  id 'com.github.ben-manes.versions' version '0.42.0'// NOTE version 0.38 is suspected to be the cause of
                                                      // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '3.2.0'
   id 'uk.gov.hmcts.java' version '0.12.9'
@@ -357,7 +357,7 @@ dependencies {
 
 
   //rest clients
-  implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
+  implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
   implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.3'
   implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
   implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.9.0'
