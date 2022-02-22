@@ -303,7 +303,7 @@ repositories {
 
 def versions = [
   junit              : '5.7.1',
-  junitPlatform      : '1.8.1',
+  junitPlatform      : '1.8.2',
   reformLogging      : '5.1.7',
   log4JVersion       : "2.17.1",
   springBoot         : springBoot.class.package.implementationVersion,
