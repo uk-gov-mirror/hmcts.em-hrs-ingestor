@@ -344,7 +344,7 @@ dependencies {
 
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
-  implementation group: 'com.opencsv', name: 'opencsv', version: '5.5.2'
+  implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
 
   implementation 'org.projectlombok:lombok:1.18.22'
 
@@ -381,7 +381,7 @@ dependencies {
   }
 
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'
-  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.2'
+  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.16.3'
   testImplementation group: 'com.devskiller', name: 'jfairy', version: '0.6.4', {
     exclude group: 'com.google.guava', module: 'guava'
   }
