@@ -243,7 +243,6 @@ dependencyManagement {
       entry 'commons-io'
     }
 
-
     //CVE-2021-22118, CVE-2021-22096
     dependencySet(group: 'org.springframework', version: '5.3.16') {
       entry 'spring-aop'
@@ -281,6 +280,18 @@ dependencyManagement {
       entry 'logback-core'
     }
 
+    // CVE-2020-15522
+    dependencySet(group: 'org.bouncycastle', version: '1.70') {
+      entry 'bcprov-jdk15on'
+    }
+
+    // CVE-2020-15522, CVE-2021-22044
+    dependencySet(group: 'org.springframework.cloud', version: '2.2.10.RELEASE') {
+      entry 'spring-cloud-netflix-archaius'
+      entry 'spring-cloud-netflix-ribbon'
+      entry 'spring-cloud-openfeign-core'
+      entry 'spring-cloud-starter-openfeign'
+    }
   }
 }
 
