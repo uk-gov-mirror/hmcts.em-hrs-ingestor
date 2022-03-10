@@ -330,7 +330,7 @@ def withoutStuff = {
   exclude group: 'com.vaadin.external.google', module: 'android-json'
   exclude group: 'org.springframework.boot', module: 'spring-boot-starter-security'
   exclude group: 'org.springframework.boot', module: 'spring-boot-starter-test'
-  exclude group: 'com.github.hmcts.java-logging', name: 'logging-spring'
+  exclude group: 'com.github.hmcts.java-logging', module: 'logging-spring'
 }
 
 dependencies {
