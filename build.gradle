@@ -307,7 +307,6 @@ def versions = [
   reformLogging      : '5.1.7',
   log4JVersion       : "2.17.1",
   springBoot         : springBoot.class.package.implementationVersion,
-  springfoxSwagger   : '2.9.2',
   pact_version       : '3.6.15',
   restAssured        : '4.2.0',
   serenity           : '2.3.13',
@@ -343,8 +342,6 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
   implementation group: "uk.gov.hmcts.reform", name: "service-auth-provider-client", version: "3.1.4"
-
-  implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
