@@ -296,9 +296,9 @@ dependencyManagement {
 }
 
 repositories {
-  mavenCentral()
-  jcenter()
+  mavenLocal()
   maven { url 'https://jitpack.io' }
+  mavenCentral()
 }
 
 def versions = [
@@ -330,7 +330,7 @@ def withoutStuff = {
   exclude group: 'com.vaadin.external.google', module: 'android-json'
   exclude group: 'org.springframework.boot', module: 'spring-boot-starter-security'
   exclude group: 'org.springframework.boot', module: 'spring-boot-starter-test'
-  exclude group: 'uk.gov.hmcts.reform', module: 'java-logging-spring'
+  exclude group: 'com.github.hmcts.java-logging', name: 'logging-spring'
 }
 
 dependencies {
@@ -341,16 +341,16 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
-  implementation group: "uk.gov.hmcts.reform", name: "service-auth-provider-client", version: "3.1.4"
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
 
-  implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  implementation group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging-spring', version: versions.reformLogging
 
   //CVE-2020-13956
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
-  implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
+  implementation group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.1'
 
   implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
 
