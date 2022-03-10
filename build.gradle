@@ -299,6 +299,7 @@ repositories {
   mavenLocal()
   maven { url 'https://jitpack.io' }
   mavenCentral()
+  jcenter()
 }
 
 def versions = [
