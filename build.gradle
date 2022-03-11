@@ -196,36 +196,6 @@ dependencyManagement {
       entry 'guava'
     }
 
-    //CVE-2020-15824, CVE-2020-29582
-    dependencySet(group: 'org.jetbrains.kotlin', version: '1.6.0') {
-      entry 'kotlin'
-      entry 'kotlin-stdlib'
-      entry 'kotlin-reflect'
-      entry 'kotlin-stdlib-common'
-      entry 'kotlin-stdlib-jdk7'
-      entry 'kotlin-stdlib-jdk8'
-    }
-
-    // CVE-2021-37136, CVE-2021-37137, CVE-2021-43797
-    dependencySet(group: 'io.netty', version: '4.1.74.Final') {
-      entry 'netty-buffer'
-      entry 'netty-codec'
-      entry 'netty-codec-dns'
-      entry 'netty-common'
-      entry 'netty-handler'
-      entry 'netty-resolver'
-      entry 'netty-resolver-dns'
-      entry 'netty-resolver-dns-native-macos'
-      entry 'netty-transport'
-      entry 'netty-codec-http'
-      entry 'netty-codec-http2'
-      entry 'netty-transport-native-epoll'
-      entry 'netty-transport-native-kqueue'
-      entry 'netty-transport-native-unix-common'
-      entry 'netty-codec-socks'
-      entry 'netty-handler-proxy'
-    }
-
 
     //CVE-2021-29425
     dependencySet(group: 'commons-io', version: '2.11.0') {
@@ -255,14 +225,6 @@ dependencyManagement {
     // CVE-2020-15522
     dependencySet(group: 'org.bouncycastle', version: '1.70') {
       entry 'bcprov-jdk15on'
-    }
-
-    // CVE-2020-15522, CVE-2021-22044
-    dependencySet(group: 'org.springframework.cloud', version: '2.2.10.RELEASE') {
-      entry 'spring-cloud-netflix-archaius'
-      entry 'spring-cloud-netflix-ribbon'
-      entry 'spring-cloud-openfeign-core'
-      entry 'spring-cloud-starter-openfeign'
     }
   }
 }
