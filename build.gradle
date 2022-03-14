@@ -202,30 +202,6 @@ dependencyManagement {
       entry 'commons-io'
     }
 
-    //CVE-2021-27568
-    dependencySet(group: 'net.minidev', version: '2.4.8') {
-      entry 'json-smart'
-    }
-
-    //CVE-2021-42340, CVE-2022-23181
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.58') {
-      entry 'tomcat-embed-core'
-      entry 'tomcat-embed-websocket'
-    }
-
-    //CVE-2021-28170
-    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
-
-    //CVE-2021-42550
-    dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
-      entry 'logback-classic'
-      entry 'logback-core'
-    }
-
-    // CVE-2020-15522
-    dependencySet(group: 'org.bouncycastle', version: '1.70') {
-      entry 'bcprov-jdk15on'
-    }
   }
 }
 
@@ -290,6 +266,8 @@ dependencies {
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
   implementation group: 'com.opencsv', name: 'opencsv', version: '5.6'
+
+  implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
   implementation 'org.projectlombok:lombok:1.18.22'
 
