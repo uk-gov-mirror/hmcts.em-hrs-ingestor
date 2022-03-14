@@ -191,41 +191,7 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
 
-    dependencySet(group: 'com.google.guava', version: '31.1-jre') {
-      // Guava CVE-2018-10237 - Unbounded memory allocation
-      entry 'guava'
-    }
 
-
-    //CVE-2021-29425
-    dependencySet(group: 'commons-io', version: '2.11.0') {
-      entry 'commons-io'
-    }
-
-    //CVE-2021-27568
-    dependencySet(group: 'net.minidev', version: '2.4.8') {
-      entry 'json-smart'
-    }
-
-    //CVE-2021-42340, CVE-2022-23181
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.58') {
-      entry 'tomcat-embed-core'
-      entry 'tomcat-embed-websocket'
-    }
-
-    //CVE-2021-28170
-    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
-
-    //CVE-2021-42550
-    dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
-      entry 'logback-classic'
-      entry 'logback-core'
-    }
-
-    // CVE-2020-15522
-    dependencySet(group: 'org.bouncycastle', version: '1.70') {
-      entry 'bcprov-jdk15on'
-    }
   }
 }
 
