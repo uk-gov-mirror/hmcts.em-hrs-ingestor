@@ -110,7 +110,7 @@ public class DefaultIngestorService implements IngestorService {
                     resolveMetaDataAndPostFileToHrs(file);
                 }
             });
-            LOGGER.debug("Running Total of Files Attempted: {}", itemsAttempted);
+            LOGGER.info("Running Total of Files Attempted: {}", itemsAttempted);
 
         });
         LOGGER.info("Ingestion Complete");
@@ -192,7 +192,7 @@ public class DefaultIngestorService implements IngestorService {
             );
             return filesToIngest;
         } catch (HrsApiException | IOException e) {
-            LOGGER.warn("Get Files To Ingest error for folder {}:", folder, e);
+            LOGGER.error("", e); // TODO: covered by EM-3582
             return Collections.emptySet();
         }
     }
