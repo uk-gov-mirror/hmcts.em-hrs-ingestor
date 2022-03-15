@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.FilenameParsingException;
 import uk.gov.hmcts.reform.em.hrs.ingestor.exception.HrsApiException;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,7 +40,6 @@ public class DefaultIngestorService implements IngestorService {
     private final HrsApiClient hrsApiClient;
     private final IngestionFilterer ingestionFilterer;
     private final MetadataResolver metadataResolver;
-    private int busyErrorCount = 0;
 
     @Setter
     @Getter
@@ -106,14 +103,14 @@ public class DefaultIngestorService implements IngestorService {
             LOGGER.info("--------------------------------------------");
             LOGGER.info("Inspecting folder: {}", folder);
             final Set<CvpItem> filteredSet = getFilesToIngest(folder);
-            LOGGER.info("filterSet size: {}", filteredSet.size());
+            LOGGER.debug("filterSet size: {}", filteredSet.size());
             filteredSet.forEach(file -> {
                 if (!batchProcessingLimitReached(maxNumberOfFiles)) {
                     tallyItemsAttempted();
                     resolveMetaDataAndPostFileToHrs(file);
                 }
             });
-            LOGGER.info("Running Total of Files Attempted: {}", itemsAttempted);
+            LOGGER.debug("Running Total of Files Attempted: {}", itemsAttempted);
 
         });
         LOGGER.info("Ingestion Complete");
@@ -193,22 +190,9 @@ public class DefaultIngestorService implements IngestorService {
             LOGGER.info("Folder:{}, CVP Files:{}, HRS Files:{}, To Ingest:{}, FOLDER-STATUS:{}",
                         folder, cvpFilesCount, hrsFileCount, filesToIngestCount, ingestionStatus
             );
-            busyErrorCount = 0;
             return filesToIngest;
-        } catch (HrsApiException e) {
-            LOGGER.warn("Get Files To Ingest error for folder {}, status: {}:", folder, e.getCode(), e);
-            if (e.getCode() == HttpStatus.TOO_MANY_REQUESTS.value()) {
-                busyErrorCount++;
-                try {
-                    TimeUnit.SECONDS.sleep(5L * busyErrorCount);
-                } catch (InterruptedException ex) {
-                    LOGGER.warn("Wait error InterruptedException:", e);
-                    Thread.currentThread().interrupt();
-                }
-            }
-            return Collections.emptySet();
-        } catch (IOException e) {
-            LOGGER.error("IOException for Get Files To Ingest error for folder {} :", folder, e);
+        } catch (HrsApiException | IOException e) {
+            LOGGER.warn("Get Files To Ingest error for folder {}:", folder, e);
             return Collections.emptySet();
         }
     }
