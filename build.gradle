@@ -283,6 +283,10 @@ dependencies {
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
   implementation group: 'com.github.hmcts.java-logging', name: 'logging-spring', version: versions.reformLogging
 
+  //CVE-2022-29885
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.0-M15'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.0-M15'
+
   //CVE-2020-13956
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
