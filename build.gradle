@@ -188,6 +188,10 @@ dependencyCheck {
   suppressionFile = 'config/owasp/suppressions.xml'
 }
 
+configurations.all {
+  exclude group: 'org.springframework.security', module: 'spring-security-rsa'
+}
+
 dependencyManagement {
   dependencies {
 
