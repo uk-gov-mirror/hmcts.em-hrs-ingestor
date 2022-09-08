@@ -16,18 +16,18 @@ plugins {
   id 'org.sonarqube' version '3.4.0.2513'
   id 'uk.gov.hmcts.java' version '0.12.29'
   id 'au.com.dius.pact' version '4.3.5'
-  id "info.solidsoft.pitest" version '1.6.0'
+  id "info.solidsoft.pitest" version '1.9.0'
 }
 
 group = 'uk.gov.hmcts.reform.em.hrs'
 version = '0.0.1'
 apply plugin: 'net.serenity-bdd.aggregator'
 
-allprojects {
-  sourceCompatibility = '11'
-  targetCompatibility = '11'
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
 }
-
 /***********************************************************************************************************************
  * Source Sets
  **********************************************************************************************************************/
@@ -79,6 +79,11 @@ tasks.withType(Test) {
   }
 }
 
+// https://github.com/gradle/gradle/issues/16791
+tasks.withType(JavaExec).configureEach {
+  javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
 test {
   useJUnitPlatform()
 }
@@ -125,7 +130,8 @@ task smoke(type: Test) {
  **********************************************************************************************************************/
 
 checkstyle {
-  toolVersion = '8.29'
+  maxWarnings = 0
+  toolVersion = '9.2.1'
   getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
 }
 
@@ -485,9 +491,6 @@ compileJava.dependsOn processResources
 pitest {
   targetClasses = ['uk.gov.hmcts.reform.em.hrs.ingestor.*']
   targetTests = ['uk.gov.hmcts.reform.em.hrs.ingestor.*']
-  //excludedClasses = ['uk.gov.hmcts.reform.em.hrs.service.SecurityServiceImplTest']
-  //targetClasses = ['uk.gov.hmcts.reform.em.hrs.util.*']
-  //targetTests = ['uk.gov.hmcts.reform.em.hrs.util.*']
   enableDefaultIncrementalAnalysis = true
   historyInputLocation = 'build/reports/pitest/fastermutationtesting'
   historyOutputLocation = 'build/reports/pitest/fastermutationtestingoutput'
@@ -498,7 +501,6 @@ pitest {
   outputFormats = ['XML', 'HTML', 'CSV']
   mutationThreshold = 0
   coverageThreshold = 0
-  maxMutationsPerClass = 15
   jvmArgs = ['-Xms1G', '-Xmx3G']
   timestampedReports = false
   failWhenNoMutations = false
