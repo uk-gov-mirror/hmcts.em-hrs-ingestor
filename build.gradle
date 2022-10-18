@@ -212,6 +212,11 @@ dependencyManagement {
       entry 'commons-io'
     }
 
+    //CVE-2022-42889
+    dependencySet(group: 'org.apache.commons', version: '1.10.0') {
+      entry 'commons-text'
+    }
+
     //CVE-2022-24823
     dependencySet(group: 'io.netty', version: '4.1.82.Final') {
       entry 'netty-buffer'
