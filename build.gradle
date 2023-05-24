@@ -5,7 +5,7 @@ plugins {
   id 'checkstyle'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.0'
-  id 'org.springframework.boot' version '3.0.7'
+  id 'org.springframework.boot' version '3.1.0'
   id 'com.github.ben-manes.versions' version '0.46.0'// NOTE version 0.38 is suspected to be the cause of
                                                      // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '4.0.0.2929'
@@ -189,6 +189,12 @@ dependencyManagement {
     //CVE-2022-1471
     dependencySet(group: 'org.yaml', version: '2.0') {
       entry 'snakeyaml'
+    }
+
+    //CVE-2020-13956
+    dependencySet(group: 'org.apache.httpcomponents', version: '4.5.14') {
+      entry 'fluent-hc'
+      entry 'httpclient'
     }
   }
 }
