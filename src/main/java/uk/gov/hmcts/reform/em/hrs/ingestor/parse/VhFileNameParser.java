@@ -44,4 +44,10 @@ public class VhFileNameParser {
         log.info("Could not parse VH file name: file name {}", inputString);
         throw new FilenameParsingException("Bad VH file format: input " + inputString);
     }
+
+    public static boolean isValidFileName(String inputString) {
+        String fileNameWithoutExtension = inputString.replaceAll("\\.(mp[^\\.]+)$", "");
+        Matcher matcher = FILE_NAME_PATTERN.matcher(fileNameWithoutExtension);
+        return matcher.matches();
+    }
 }
