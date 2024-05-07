@@ -15,7 +15,7 @@ public class VhFileNameParser {
     private static final Logger log = LoggerFactory.getLogger(VhFileNameParser.class);
 
     private static final String FILE_NAME_REGEX
-        = "^(\\w+)-(.*)-([0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})(?:_(?i)"
+        = "^(\\w+)-(.{1,250})-([0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})(?:_(?i)"
         + "(Interpreter_\\d+))?_(.*)-(\\w+)_(\\d+)$";
     private static final Pattern FILE_NAME_PATTERN = Pattern.compile(FILE_NAME_REGEX);
 
@@ -48,6 +48,10 @@ public class VhFileNameParser {
     public static boolean isValidFileName(String inputString) {
         String fileNameWithoutExtension = inputString.replaceAll("\\.(mp[^\\.]+)$", "");
         Matcher matcher = FILE_NAME_PATTERN.matcher(fileNameWithoutExtension);
-        return matcher.matches();
+        boolean isMatch = matcher.matches();
+        if (!isMatch) {
+            log.info("Not matching file name {}", inputString);
+        }
+        return isMatch;
     }
 }
