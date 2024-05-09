@@ -65,15 +65,11 @@ public class VhBlobstoreClientHelper {
             .filter(blobItem -> isNewFile(blobItem))
             .filter(blobItem ->
                         wrapFilterPredicate(
-                            () -> {
-                                var tagMap = vhContainerClient
-                                    .getBlobClient(blobItem.getName())
-                                    .getTags();
-                                LOGGER.info("blob {} tags {}", blobItem.getName(), tagMap);
-                                return tagMap
-                                    .getOrDefault("processed", "false")
-                                    .equalsIgnoreCase("false");
-                            })
+                            () -> vhContainerClient
+                                .getBlobClient(blobItem.getName())
+                                .getTags()
+                                .getOrDefault("processed", "false")
+                                .equalsIgnoreCase("false"))
             )
             .filter(blobItem -> wrapFilterPredicate(() -> blobIndexHelper.setIndexLease(blobItem.getName())))
             .map(blobItem -> transform(blobItem))
