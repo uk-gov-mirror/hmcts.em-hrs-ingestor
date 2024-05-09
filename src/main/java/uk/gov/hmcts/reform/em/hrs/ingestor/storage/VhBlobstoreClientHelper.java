@@ -32,6 +32,7 @@ public class VhBlobstoreClientHelper {
     private final HearingSource hearingSource;
     private final BlobIndexHelper blobIndexHelper;
 
+    // minus value to process all records
     private int processBackToDay;
 
     @Autowired
@@ -58,8 +59,7 @@ public class VhBlobstoreClientHelper {
 
         var filteredBlobs = vhBlobItems
             .stream()
-            .filter(blobItem -> !blobItem.getName().contains("/") && blobItem.getName().contains(".mp")
-                && VhFileNameParser.isValidFileName(blobItem.getName()))
+            .filter(blobItem -> VhFileNameParser.isValidFileName(blobItem.getName()))
             .filter(blobItem -> isNewFile(blobItem))
             .filter(blobItem ->
                         wrapFilterPredicate(
@@ -87,7 +87,8 @@ public class VhBlobstoreClientHelper {
     }
 
     private boolean isNewFile(BlobItem blobItem) {
-        return OffsetDateTime.now().minusDays(processBackToDay).isBefore(blobItem.getProperties().getCreationTime());
+        return processBackToDay < 0
+            || OffsetDateTime.now().minusDays(processBackToDay).isBefore(blobItem.getProperties().getCreationTime());
     }
 
     public HearingSource getHearingSource() {
