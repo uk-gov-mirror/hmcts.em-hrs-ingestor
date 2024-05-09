@@ -57,6 +57,8 @@ public class VhBlobstoreClientHelper {
 
         final PagedIterable<BlobItem> vhBlobItems = vhContainerClient.listBlobs(options, duration);
 
+        LOGGER.info("vhBlobItems count {}", vhBlobItems.stream().count());
+
         var filteredBlobs = vhBlobItems
             .stream()
             .filter(blobItem -> VhFileNameParser.isValidFileName(blobItem.getName()))
