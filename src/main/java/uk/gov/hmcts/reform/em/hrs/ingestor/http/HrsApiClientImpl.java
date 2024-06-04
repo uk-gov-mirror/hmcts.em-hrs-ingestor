@@ -22,16 +22,22 @@ public class HrsApiClientImpl implements HrsApiClient {
 
     private final HrsHttpClient hrsHttpClient;
     private final ObjectMapper objectMapper;
+    private HrsApiTokenService hrsApiTokenService;
 
     @Autowired
-    public HrsApiClientImpl(final HrsHttpClient hrsHttpClient, final ObjectMapper objectMapper) {
+    public HrsApiClientImpl(
+        final HrsHttpClient hrsHttpClient,
+        final ObjectMapper objectMapper,
+        HrsApiTokenService hrsApiTokenService) {
         this.hrsHttpClient = hrsHttpClient;
         this.objectMapper = objectMapper;
+        this.hrsApiTokenService = hrsApiTokenService;
     }
 
     @Override
     public HrsFileSet getIngestedFiles(String folderName) throws IOException, HrsApiException {
-        final Response<ResponseBody> response = hrsHttpClient.getFiles(folderName)
+        var bearerToken = this.hrsApiTokenService.getBearerToken();
+        final Response<ResponseBody> response = hrsHttpClient.getFiles(folderName, bearerToken)
             .execute();
 
         if (!response.isSuccessful()) {
@@ -50,7 +56,8 @@ public class HrsApiClientImpl implements HrsApiClient {
 
     @Override
     public void postFile(final Metadata metadata) throws IOException, HrsApiException {
-        final Response<ResponseBody> response = hrsHttpClient.postFile(metadata).execute();
+        var bearerToken = this.hrsApiTokenService.getBearerToken();
+        final Response<ResponseBody> response = hrsHttpClient.postFile(metadata,bearerToken).execute();
         boolean isSuccessful = response.isSuccessful();
         if (!isSuccessful) {
             throw new HrsApiException(
