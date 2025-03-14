@@ -5,7 +5,7 @@ plugins {
   id 'checkstyle'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.7'
-  id 'org.springframework.boot' version '3.4.2'
+  id 'org.springframework.boot' version '3.4.3'
   id 'com.github.ben-manes.versions' version '0.52.0'// NOTE version 0.38 is suspected to be the cause of
                                                      // the intermittant failure with module metadata. TO BE CONFIRMED!!
   id 'org.sonarqube' version '6.0.1.5171'
@@ -123,7 +123,7 @@ task smoke(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '10.21.2'
+  toolVersion = '10.21.4'
   getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
 }
 
@@ -190,8 +190,8 @@ repositories {
 }
 
 def versions = [
-  junit              : '5.11.4',
-  junitPlatform      : '1.11.4',
+  junit              : '5.12.0',
+  junitPlatform      : '1.12.0',
   reformLogging      : '6.1.8',
   log4JVersion       : "2.24.3",
   pact_version       : '4.6.17',
@@ -221,7 +221,7 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.0'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-  implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.7.0'
+  implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.7.1'
 
   implementation 'org.projectlombok:lombok:1.18.36'
 
@@ -229,8 +229,8 @@ dependencies {
   implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: versions.log4JVersion
 
   //azure components
-  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.29.0'
-  implementation group: 'com.azure', name: 'azure-identity', version: '1.15.3'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.30.0'
+  implementation group: 'com.azure', name: 'azure-identity', version: '1.15.4'
 
   //rest clients
   implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttp3
@@ -251,10 +251,10 @@ dependencies {
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
-  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.20.5'
-  testImplementation group: 'org.wiremock', name: 'wiremock-standalone', version: '3.12.0'
+  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.20.6'
+  testImplementation group: 'org.wiremock', name: 'wiremock-standalone', version: '3.12.1'
 
-  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.2'
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
   testImplementation group :'info.solidsoft.gradle.pitest', name : 'gradle-pitest-plugin',version: '1.6.0'
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.7', classifier: 'all'
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
@@ -273,7 +273,7 @@ dependencies {
   contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.11.4'
+  contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.12.0'
 
   contractTestImplementation sourceSets.main.runtimeClasspath
   contractTestImplementation sourceSets.test.runtimeClasspath
