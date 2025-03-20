@@ -190,8 +190,8 @@ repositories {
 }
 
 def versions = [
-  junit              : '5.12.0',
-  junitPlatform      : '1.12.0',
+  junit              : '5.12.1',
+  junitPlatform      : '1.12.1',
   reformLogging      : '6.1.8',
   log4JVersion       : "2.24.3",
   pact_version       : '4.6.17',
@@ -217,8 +217,8 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.3.0'
   implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.3'
 
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.2.0'
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.0'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.2.1'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.1'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-core', version: '3.7.1'
@@ -244,7 +244,7 @@ dependencies {
   testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
   testImplementation 'org.projectlombok:lombok:1.18.36'
 
-  testImplementation group: 'com.github.gmazzo.okhttp.mock', name: 'mock-client', version: '2.0.0'
+  testImplementation group: 'com.github.gmazzo.okhttp.mock', name: 'mock-client', version: '2.1.0'
 
   testImplementation libraries.junit5
 
@@ -273,7 +273,7 @@ dependencies {
   contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.12.0'
+  contractTestImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.12.1'
 
   contractTestImplementation sourceSets.main.runtimeClasspath
   contractTestImplementation sourceSets.test.runtimeClasspath
